@@ -3,6 +3,8 @@
 ## Team Members
 - **TREMINE Marin**: [GitHub](https://github.com/marintremine)
 - **PUSKULLU MMuhammed**: [GitHub](https://github.com/MuhammedPuskullu)
+- **ORTI Augustin**: [Github](https://github.com/LogicPulsee)
+
 TODO: Add other team members
 
 ## Description
