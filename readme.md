@@ -3,6 +3,8 @@
 ## Team Members
 - **TREMINE Marin**: [GitHub](https://github.com/marintremine)
 - **PUSKULLU MMuhammed**: [GitHub](https://github.com/MuhammedPuskullu)
+- **ROMANET Valentin**: [GitHub]()
+- 
 TODO: Add other team members
 
 ## Description
