@@ -4,7 +4,9 @@
 - **TREMINE Marin**: [GitHub](https://github.com/marintremine)
 - **PUSKULLU MMuhammed**: [GitHub](https://github.com/MuhammedPuskullu)
 - **ROMANET Valentin**: [GitHub](https://github.com/ValRom28)
+- **ORTI Augustin**: [GitHub](https://github.com/LogicPulsee)
 - 
+  
 TODO: Add other team members
 
 ## Description
