@@ -6,7 +6,6 @@
 - **LOMBARDO Anthony**: [GitHubt](https://github.com/Liwis779)
 - **OUSAID Lilia**: [GitHub](https://github.com/Lylia-04)
 - **ORTI Augustin**: [Github](https://github.com/LogicPulsee)
-- **PUSKULLU Muhammed**: [GitHub](https://github.com/MuhammedPuskullu)
 - **MARTIN-JOVE Charles**: [GitHub](https://github.com/charlesmj18)
 - **ROMANET Valentin**: [GitHub](https://github.com/ValRom28)
 
