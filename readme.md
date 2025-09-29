@@ -65,3 +65,5 @@ You can run the game and its various modes using the `battle` command:
     - `<savefile>`: Path to the saved game file
 
 Use `python main.py battle --help` for more details on each command.
+
+pelouse
