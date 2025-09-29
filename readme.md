@@ -3,6 +3,7 @@
 ## Team Members
 - **TREMINE Marin**: [GitHub](https://github.com/marintremine)
 - **PUSKULLU MMuhammed**: [GitHub](https://github.com/MuhammedPuskullu)
+- **OUSAID Lilia**: [GitHub](https://github.com/Lylia-04)
 - **ORTI Augustin**: [Github](https://github.com/LogicPulsee)
 - **PUSKULLU Muhammed**: [GitHub](https://github.com/MuhammedPuskullu)
 - **MARTIN-JOVE Charles**: [GitHub](https://github.com/charlesmj18)
