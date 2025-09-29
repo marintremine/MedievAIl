@@ -2,7 +2,12 @@
 
 ## Team Members
 - **TREMINE Marin**: [GitHub](https://github.com/marintremine)
+<<<<<<< Updated upstream
 
+=======
+- **PUSKULLU MMuhammed**: [GitHub](https://github.com/MuhammedPuskullu)
+- **LOMBARDO Anthony**: [GitHubt](https://github.com/Liwis779)
+>>>>>>> Stashed changes
 TODO: Add other team members
 
 ## Description
