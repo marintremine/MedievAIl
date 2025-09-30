@@ -2,6 +2,12 @@
 
 ## Team Members
 - **TREMINE Marin**: [GitHub](https://github.com/marintremine)
+- **PUSKULLU Muhammed**: [GitHub](https://github.com/MuhammedPuskullu)
+- **LOMBARDO Anthony**: [GitHubt](https://github.com/Liwis779)
+- **OUSAID Lilia**: [GitHub](https://github.com/Lylia-04)
+- **ORTI Augustin**: [Github](https://github.com/LogicPulsee)
+- **MARTIN-JOVE Charles**: [GitHub](https://github.com/charlesmj18)
+- **ROMANET Valentin**: [GitHub](https://github.com/ValRom28)
 
 TODO: Add other team members
 
