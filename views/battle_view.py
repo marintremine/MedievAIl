@@ -1,10 +1,8 @@
-from views.battle_view import BattleView
 from models.battle_model import BattleModel
 
-class PygameView(BattleView):
+class BattleView:
     def __init__(self, model : BattleModel):
-        super().__init__(model)
-        # Initialize Pygame here
+        self.model = model
 
     def render(self):
         pass
