@@ -8,6 +8,6 @@ class TerminalView(BattleView):
 
     def render(self):
         pass
-
+    
     def getInput(self):
         pass

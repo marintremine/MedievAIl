@@ -2,7 +2,7 @@ class BattleModel:
     def __init__(self)->None:
         self.general_1 = None
         self.general_2 = None
-        self.running = False
+        self.running = True
         self.map_width = None
         self.map_height = None
         self.list_objects = []
