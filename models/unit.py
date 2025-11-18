@@ -53,9 +53,6 @@ class Pikeman(Unit):
             line_of_sight=4,
             speed=1,
             cooldown=3
-            bonus_attacks={
-                Pikeman: 
-            }
         )
 
 

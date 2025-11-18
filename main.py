@@ -2,6 +2,11 @@
 import argparse
 import sys
 
+from controllers.battle_controller import BattleController
+from models.battle_model import BattleModel
+from views.pygame_view import PygameView
+from views.terminal_view import TerminalView
+
 def main():
     parser = argparse.ArgumentParser(
         prog="main.py",
@@ -22,6 +27,14 @@ def main():
 
     if args.command == "run":
         print(f"Lancement de la bataille avec le scénario : {args.scenario}, AI1 : {args.ai1}, AI2 : {args.ai2}, Terminal : {args.terminal}")
+        # model = BattleModel(args.scenario, args.ai1, args.ai2) par arguments ou avec des setters faut voir
+        model = BattleModel()
+        if args.terminal:
+            view = TerminalView(model)
+        else:
+            view = PygameView(model)
+        controller = BattleController(model, view)
+        controller.run()
     else:
         parser.print_help()
         sys.exit(1)
