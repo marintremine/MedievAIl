@@ -1,7 +1,11 @@
 import time
+import threading
+from pynput import keyboard
 
 from models.battle_model import BattleModel
 from views.battle_view import BattleView
+
+
 
 class BattleController:
     def __init__(self, model : BattleModel, view : BattleView, tick_rate: int = 20, fps: int = 60):
@@ -9,6 +13,20 @@ class BattleController:
         self.view = view
         self.tick_rate = tick_rate
         self.fps = fps
+
+        self._start_keyboard_listener()
+
+    def _start_keyboard_listener(self):
+        def on_press(key):
+            try:
+                if key == keyboard.Key.space:
+                    self.model.pause()
+            except AttributeError:
+                pass
+
+        listener = keyboard.Listener(on_press=on_press)
+        listener.daemon = True
+        listener.start()
 
     def run(self):
         tick_interval = 1 / self.tick_rate
@@ -21,11 +39,11 @@ class BattleController:
         tick_count = 0
         frame_count = 0
 
-        while self.model.running:
+        while True:
             now = time.time()
 
             # --- LOGIC TICK ---
-            if now - last_tick >= tick_interval:
+            if self.model.running and (now - last_tick >= tick_interval):
                 self.model.update()
                 tick_count += 1
                 last_tick = now
@@ -41,7 +59,7 @@ class BattleController:
 
             # --- STATS OUTPUT ---
             if now - last_stats >= 1.0:
-                print(f"TPS: {tick_count} | FPS: {frame_count}")
+                # print(f"TPS: {tick_count} | FPS: {frame_count}")
                 tick_count = 0
                 frame_count = 0
                 last_stats = now

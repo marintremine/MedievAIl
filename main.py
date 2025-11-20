@@ -7,6 +7,8 @@ from models.battle_model import BattleModel
 from views.pygame_view import PygameView
 from views.terminal_view import TerminalView
 
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="main.py",
@@ -26,7 +28,7 @@ def main():
     args = parser.parse_args()
 
     if args.command == "run":
-        print(f"Lancement de la bataille avec le scénario : {args.scenario}, AI1 : {args.ai1}, AI2 : {args.ai2}, Terminal : {args.terminal}")
+        # print(f"Lancement de la bataille avec le scénario : {args.scenario}, AI1 : {args.ai1}, AI2 : {args.ai2}, Terminal : {args.terminal}")
         # model = BattleModel(args.scenario, args.ai1, args.ai2) par arguments
         model = BattleModel()
         model.load(args.scenario, args.ai1, args.ai2)
