@@ -1,5 +1,6 @@
 from __future__ import annotations
 from models.order import Wait, Attack, Move
+import random
 
 class Object:
     def __init__(self, x: int, y: int):
@@ -8,7 +9,7 @@ class Object:
 
 class Unit(Object):
     def __init__(self, name: str, general: "General", hp: int, attack: int, armor: int, pierce_armor: int, # pyright: ignore[reportUndefinedVariable]
-                 range_: int, line_of_sight: int, speed: float, cooldown: float, x: int, y: int):
+                 range_: int, line_of_sight: int, speed: float, cooldown: float, x: int, y: int, bonus_attacks: dict):
         super().__init__(x, y)
         self.name = name
         self.general = general
@@ -21,12 +22,16 @@ class Unit(Object):
         self.line_of_sight = line_of_sight
         self.speed = speed
         self.cooldown = cooldown
+        self.cooldown_timer = 0
         self.move_progress = 0
         self.action = Wait(self)
-        # self.bonus_attacks = bonus_attacks
+        self.bonus_attacks = bonus_attacks
 
     def is_alive(self) -> bool:
         return self.hp > 0
+    
+    def can_attack(self) -> bool:
+        return self.cooldown_timer <= 0
 
     def attack_target(self, target: "Unit") -> None:
         pass
@@ -54,10 +59,9 @@ class Pikeman(Unit):
             speed=1,
             cooldown=3,
             x=x,
-            y=y
+            y=y,
+            bonus_attacks={}
         )
-
-
 
 
 class Knight(Unit):
@@ -74,7 +78,8 @@ class Knight(Unit):
             speed=1.35,
             cooldown=1.8,
             x=x,
-            y=y
+            y=y,
+            bonus_attacks={}
         )
 
 
@@ -92,9 +97,21 @@ class Crossbowman(Unit):
             speed=0.96,
             cooldown=2,
             x=x,
-            y=y
+            y=y,
+            bonus_attacks={}
         )
         self.accuracy = 0.85
+
+    def attack_target(self, target):
+        if not self.can_attack():
+            return
+
+        if random.random() <= self.accuracy:
+            super().attack_target(target)
+        else:
+            pass
+
+        self.cooldown_timer = self.cooldown
 
 
 def unitFactory(unit_type, general, x, y):

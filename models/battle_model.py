@@ -13,7 +13,7 @@ class BattleModel:
     def __init__(self)->None:
         self.general_1 = None
         self.general_2 = None
-        self.running = True
+        self.running = False
         self.map_width = None
         self.map_height = None
         self.list_objects = []
@@ -64,17 +64,8 @@ class BattleModel:
         for unit in self.list_objects:
             isinstance(unit, Unit) and unit.action.action(self)
 
-    def start(self)->None:
-        pass
-
-    def stop(self)->None:
-        pass
-
-    def restart(self)->None:
-        pass
-
     def pause(self)->None:
-        pass
+        self.running = not self.running
 
     def save(self, scenario_file:str)->None:
         pass

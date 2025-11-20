@@ -7,35 +7,35 @@
     "army1": [
       {
         "type": "crossbowman",
-        "x": 2,
-        "y": 5
+        "x": 0,
+        "y": 0
       },
       {
         "type": "knight",
-        "x": 4,
-        "y": 7
+        "x": 1,
+        "y": 0
       },
       {
         "type": "pikeman",
-        "x": 3,
-        "y": 6
+        "x": 2,
+        "y": 0
       }
     ],
     "army2": [
       {
         "type": "crossbowman",
-        "x": 15,
-        "y": 10
+        "x": 19,
+        "y": 14
       },
       {
         "type": "knight",
-        "x": 17,
-        "y": 12
+        "x": 18,
+        "y": 14
       },
       {
         "type": "pikeman",
-        "x": 16,
-        "y": 11
+        "x": 17,
+        "y": 14
       }
     ]
   }

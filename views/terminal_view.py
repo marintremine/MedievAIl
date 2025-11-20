@@ -1,3 +1,4 @@
+from time import time
 from views.battle_view import BattleView
 from models.battle_model import BattleModel
 from models.unit import *
@@ -33,14 +34,6 @@ class TerminalView(BattleView):
     
     def render(self) -> None:
         """Affiche la carte, les unités et obstacles en mode texte."""
-        # Créer un snapshot de l'état actuel
-        current_state = self._get_state_snapshot()
-        
-        # Ne redessiner que si l'état a changé
-        if current_state == self.last_state:
-            return
-        
-        self.last_state = current_state
         
         # Récupérer les dimensions
         max_y, max_x = self.stdscr.getmaxyx()
@@ -73,13 +66,25 @@ class TerminalView(BattleView):
                                     curses.color_pair(color_pair) | curses.A_BOLD)
                 except curses.error:
                     pass
+
+
+        # --- Affichage des infos système / debug ---
+        status_y = min(self.model.map_height + 1, max_y - 1)
+
+        time_str = f"Temps : {time():.1f}s"
+        running_str = "RUNNING" if self.model.running else "PAUSED"
+
+        info_line = f"{time_str}   |   État : {running_str}"
+
+        try:
+            self.stdscr.addstr(status_y, 0, info_line[:max_x - 1])
+        except curses.error:
+            pass
+
         
         # Rafraîchir l'écran une seule fois à la fin
         self.stdscr.refresh()
     
-    def _get_state_snapshot(self):
-        """Crée un snapshot de l'état actuel pour détecter les changements."""
-        return tuple((obj.x, obj.y, type(obj).__name__) for obj in self.model.list_objects)
     
     def _get_unit_symbol(self, unit):
         """Définit un symbole simple pour représenter les unités."""
