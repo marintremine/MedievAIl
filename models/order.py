@@ -8,7 +8,7 @@ class Order:
         pass
 
 class Move(Order):
-    def __init__(self, unit: "Unit", x: int, y: int) -> None:
+    def __init__(self, unit: "Unit", x: int, y: int) -> None: 
         super().__init__(unit)
         self.target_x = x
         self.target_y = y
