@@ -14,7 +14,7 @@ def main():
         prog="main.py",
         description="MedievAIl Battle Simulator (2025-2026)"
     )
-    
+
 
     subparsers = parser.add_subparsers(dest="command", required=True)
 
