@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 class General:
-    def __init__(self, name: str, my_units: list["Unit"]):
+    def __init__(self, name: str, my_units: list["Unit"]): # pyright: ignore[reportUndefinedVariable]
         self.name = name
         self.my_units = my_units
 
@@ -18,6 +18,13 @@ class Daft(General):
 class BrainDead(General):
     def __init__(self):
         super().__init__("BrainDead", [])
+
+    def decide(self) -> None:
+        pass
+
+class TestGeneral(General):
+    def __init__(self):
+        super().__init__("TestGeneral", [])
 
     def decide(self) -> None:
         pass

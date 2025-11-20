@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 class Order:
-    def __init__(self, unit: "Unit") -> None:
+    def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         self.unit = unit
 
     def action(self) -> None:
         pass
 
 class Move(Order):
-    def __init__(self, unit: "Unit", x: int, y: int) -> None:
+    def __init__(self, unit: "Unit", x: int, y: int) -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
         self.target_x = x
         self.target_y = y
@@ -17,7 +17,7 @@ class Move(Order):
         self.unit.move(self.target_x, self.target_y)
 
 class Attack(Order) :
-    def __init__(self, unit: "Unit", target: "Unit") -> None:
+    def __init__(self, unit: "Unit", target: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
         self.target = target
 
@@ -25,7 +25,7 @@ class Attack(Order) :
         self.unit.attack_target(self.target)
 
 class Wait(Order):
-    def __init__(self, unit: "Unit"):
+    def __init__(self, unit: "Unit"): # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
 
     def action(self) -> None:

@@ -7,7 +7,7 @@ class Object:
         self.y = y
 
 class Unit(Object):
-    def __init__(self, name: str, general: "General", hp: int, attack: int, armor: int, pierce_armor: int,
+    def __init__(self, name: str, general: "General", hp: int, attack: int, armor: int, pierce_armor: int, # pyright: ignore[reportUndefinedVariable]
                  range_: int, line_of_sight: int, speed: float, cooldown: float, x: int, y: int):
         super().__init__(x, y)
         self.name = name
@@ -31,17 +31,17 @@ class Unit(Object):
     def attack_target(self, target: "Unit") -> None:
         pass
 
-    def move(self, x: int, y: int) -> None:
+    def move(self, new_x: int, new_y: int) -> None:
         """Déplace l'unité vers les coordonnées spécifiées"""
-        self.x = x
-        self.y = y
+        self.x = new_x
+        self.y = new_y
 
     def __str__(self) -> str:
         return f"Unit({self.name}, HP: {self.hp}/{self.max_hp}, Pos: ({self.x}, {self.y}))"
     
 
 class Pikeman(Unit):
-    def __init__(self, general: "General", x: int, y: int):
+    def __init__(self, general: "General", x: int, y: int): # pyright: ignore[reportUndefinedVariable]
         super().__init__(
             name="Pikeman",
             general=general,
@@ -61,7 +61,7 @@ class Pikeman(Unit):
 
 
 class Knight(Unit):
-    def __init__(self, general: "General", x:int, y:int):
+    def __init__(self, general: "General", x:int, y:int): # pyright: ignore[reportUndefinedVariable]
         super().__init__(
             name="Knight",
             general=general,
@@ -79,7 +79,7 @@ class Knight(Unit):
 
 
 class Crossbowman(Unit):
-    def __init__(self, general: "General", x:int, y:int):
+    def __init__(self, general: "General", x:int, y:int): # pyright: ignore[reportUndefinedVariable]
         super().__init__(
             name="Crossbowman",
             general=general,
