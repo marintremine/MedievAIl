@@ -1,4 +1,4 @@
-from models.general import General
+from __future__ import annotations
 from models.order import Wait
 
 
@@ -8,7 +8,7 @@ class Object:
         self.y = y
 
 class Unit(Object):
-    def __init__(self, name: str, general: General, hp: int, attack: int, armor: int, pierce_armor: int,
+    def __init__(self, name: str, general: "General", hp: int, attack: int, armor: int, pierce_armor: int,
                  range_: int, line_of_sight: int, speed: float, cooldown: float, x: int, y: int, bonus_attacks: dict):
         super().__init__(x, y)
         self.name = name
@@ -36,58 +36,77 @@ class Unit(Object):
         pass
 
     def __str__(self) -> str:
-        return f' TODO '
+        return f"Unit({self.name}, HP: {self.hp}/{self.max_hp}, Pos: ({self.x}, {self.y}))"
     
 
 class Pikeman(Unit):
-    def __init__(self, general: General, x: int, y: int):
+    def __init__(self, general: "General", x: int, y: int):
         super().__init__(
             name="Pikeman",
             general=general,
             hp=55,
-            max_hp=55,
             attack=4,
             armor=0,
             pierce_armor=0,
             range_=0,
             line_of_sight=4,
             speed=1,
-            cooldown=3
+            cooldown=3,
+            x=x,
+            y=y,
+            bonus_attacks={}
         )
 
 
 
 
 class Knight(Unit):
-    def __init__(self, general:General, x:int, y:int):
+    def __init__(self, general:"General", x:int, y:int):
         super().__init__(
             name="Knight",
             general=general,
             hp=100,
-            max_hp=100,
             attack=10,
             armor=2,
             pierce_armor=2,
             range_=0,
             line_of_sight=4,
             speed=1.35,
-            cooldown=1.8
+            cooldown=1.8,
+            x=x,
+            y=y,
+            bonus_attacks={}
         )
 
 
 class Crossbowman(Unit):
-    def __init__(self, general:General, x:int, y:int):
+    def __init__(self, general:"General", x:int, y:int):
         super().__init__(
             name="Crossbowman",
             general=general,
             hp=35,
-            max_hp=35,
             attack=5,
             armor=0,
             pierce_armor=0,
             range_=5,
             line_of_sight=7,
             speed=0.96,
-            cooldown=2
+            cooldown=2,
+            x=x,
+            y=y,
+            bonus_attacks={}
         )
         self.accuracy = 0.85
+
+
+def UnitFactory(unit_type, player, x=0, y=0) -> Unit:
+    unit_classes = {
+        "pikeman": Pikeman,
+        "knight": Knight,
+        "crossbowman": Crossbowman
+    }
+    key = unit_type.lower()
+    if key in unit_classes:
+        return unit_classes[key](player, x, y)
+    else:
+        raise ValueError(f"Unknown unit type: {key}")
