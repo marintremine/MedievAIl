@@ -27,8 +27,9 @@ def main():
 
     if args.command == "run":
         print(f"Lancement de la bataille avec le scénario : {args.scenario}, AI1 : {args.ai1}, AI2 : {args.ai2}, Terminal : {args.terminal}")
-        # model = BattleModel(args.scenario, args.ai1, args.ai2) par arguments ou avec des setters faut voir
+        # model = BattleModel(args.scenario, args.ai1, args.ai2) par arguments
         model = BattleModel()
+        model.load(args.scenario, args.ai1, args.ai2)
         if args.terminal:
             view = TerminalView(model)
         else:
