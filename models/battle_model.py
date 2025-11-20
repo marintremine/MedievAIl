@@ -2,6 +2,11 @@ import json
 
 from models.general import generalFactory
 from models.unit import unitFactory
+from models.unit import *
+from models.order import *
+from models.general import *
+from models.obstacle import *
+from utils import bfs_path
 
 
 class BattleModel:
@@ -13,13 +18,14 @@ class BattleModel:
         self.map_height = None
         self.list_objects = []
 
+
     def load(self, path:str, ai1:str, ai2:str)->None:
         # load json
 
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
-        
-        # load map 
+            
+        # load map
 
         map_data = data["map"]
         self.map_width = map_data["width"]
@@ -54,8 +60,9 @@ class BattleModel:
 
         print(f"BattleModel loaded: Map {self.map_width}x{self.map_height}, General 1: {self.general_1.name} with {len(self.general_1.my_units)} units, General 2: {self.general_2.name} with {len(self.general_2.my_units)} units.")
 
-    def update(self)->None:
-        pass
+    def update(self) -> None:
+        for unit in self.list_objects:
+            isinstance(unit, Unit) and unit.action.action(self)
 
     def start(self)->None:
         pass
