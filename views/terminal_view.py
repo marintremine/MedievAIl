@@ -1,8 +1,6 @@
 from views.battle_view import BattleView
 from models.battle_model import BattleModel
-from models.unit import Knight
-from models.unit import Pikeman
-from models.unit import Crossbowman
+from models.unit import *
 import curses
 
 class TerminalView(BattleView):
