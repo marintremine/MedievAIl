@@ -35,7 +35,7 @@ class Unit(Object):
         pass
 
     def __str__(self) -> str:
-        return f' TODO '
+        return f"Unit({self.name}, HP: {self.hp}/{self.max_hp}, Pos: ({self.x}, {self.y}))"
     
 
 class Pikeman(Unit):
