@@ -10,15 +10,26 @@ class General:
 
 
 class Daft(General):
-    def __init__(self, name: str, my_units: list["Unit"]):
-        super().__init__(name, my_units)
-
+    def __init__(self):
+        super().__init__("Daft", [])
     def decide(self) -> None:
         pass
 
 class BrainDead(General):
-    def __init__(self, name: str, my_units: list["Unit"]):
-        super().__init__(name, my_units)
+    def __init__(self):
+        super().__init__("BrainDead", [])
 
     def decide(self) -> None:
         pass
+
+
+def generalFactory(general_type: str) -> General:
+    general_classes = {
+        "daft": Daft,
+        "braindead": BrainDead
+    }
+    key = general_type.lower()
+    if key in general_classes:
+        return general_classes[key]()
+    else:
+        raise ValueError(f"Unknown general type: {key}")
