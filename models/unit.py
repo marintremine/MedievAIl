@@ -27,6 +27,7 @@ class Unit(Object):
         self.cooldown_timer = 0
         self.move_progress = 0
         self.action = Wait(self)
+        self.direction = (0, 0)
         self.bonus_attacks = bonus_attacks
 
     def is_alive(self) -> bool:
@@ -60,11 +61,16 @@ class Unit(Object):
         if not self.is_alive() or not self.battle_model.is_in_map(new_x, new_y) or self.battle_model.is_obstacle_at(new_x, new_y):
             return False
         
-        # distance = abs(new_x - self.x) + abs(new_y - self.y)
-        # if distance == 0:
-        #     self.move_progress = 0
-        #     return False
+        # Calcul direction
+        dx = new_x - self.x
+        dy = new_y - self.y
+
+        dx = (dx > 0) - (dx < 0)
+        dy = (dy > 0) - (dy < 0)
+
+        self.direction = (dx, dy)
     
+        # Mouvement progressif
         self.move_progress += self.speed * self.battle_model.delta_time
         
         if self.move_progress >= 1.0:

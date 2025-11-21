@@ -21,7 +21,7 @@ class BattleController:
                     self.model.pause()
                 elif key == keyboard.Key.up:
                     # Augmenter la vitesse
-                    self.game_speed = min(self.game_speed + 0.25, 5.0)
+                    self.game_speed = min(self.game_speed + 0.25, 10.0)
                 elif key == keyboard.Key.down:
                     # Diminuer la vitesse
                     self.game_speed = max(self.game_speed - 0.25, 0.25)
