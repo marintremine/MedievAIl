@@ -5,8 +5,8 @@ from models.unit import *
 import curses
 
 class TerminalView(BattleView):
-    def __init__(self, model: BattleModel):
-        super().__init__(model)
+    def __init__(self, model, controller):
+        super().__init__(model, controller)
         self.stdscr = curses.initscr()
         curses.noecho()
         curses.cbreak()
@@ -54,6 +54,9 @@ class TerminalView(BattleView):
         
         # Afficher les unités avec leur couleur
         for obj in self.model.list_objects:
+            if isinstance(obj, Unit) and not obj.is_alive():
+                continue
+
             if 0 <= obj.y < max_y and 0 <= obj.x < max_x:
                 if obj.y == max_y - 1 and obj.x == max_x - 1:
                     continue
@@ -73,8 +76,9 @@ class TerminalView(BattleView):
 
         time_str = f"Temps : {time():.1f}s"
         running_str = "RUNNING" if self.model.running else "PAUSED"
+        speed_str = f"Speed: {self.controller.game_speed}x"
 
-        info_line = f"{time_str}   |   État : {running_str}"
+        info_line = f"{time_str}   |   État : {running_str}   |   {speed_str}"
 
         try:
             self.stdscr.addstr(status_y, 0, info_line[:max_x - 1])

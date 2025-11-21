@@ -15,38 +15,54 @@ class Move(Order):
         self.target_x = x
         self.target_y = y
 
-    def action(self) -> None:
-        path = self.battle_model.shortest_path(
+        # calcul du chemin le plus court vers la cible
+
+        self.path = self.battle_model.shortest_path(
             start=(self.unit.x, self.unit.y),
             end=(self.target_x, self.target_y)
         )
-        if len(path) > 2:
-            next_x, next_y = path[1]
-            self.unit.move(next_x, next_y)
-        elif len(path) == 2:
-            next_x, next_y = path[1]
-            self.unit.move(next_x, next_y)
-            self.unit.action = Wait(self.unit)  # Reached destination
-        elif len(path) == 1:
-            # Already at the target
-            pass
-        else:
-            pass  # No valid path found; unit stays in place
 
+    def action(self) -> None:
+
+        if len(self.path) < 2:
+            self.unit.action = Wait(self.unit)
+            return
+         
+        next_x, next_y = self.path[1]
+
+        if self.unit.move(next_x, next_y):
+            self.path.pop(1)  # Remove the step if movement was successful
+        
 class Attack(Order) :
     def __init__(self, unit: "Unit", target: "Unit", battle_model) -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit, battle_model)
         self.target = target
 
     def action(self) -> None:
-        if self.unit.can_attack():
-            pass
-
-        # self.unit.attack_target(self.target)
+        if not self.target.is_alive():
+            self.unit.action = Wait(self.unit)
+            return
+        
+        if self.unit.in_range(self.target):
+            self.unit.attack_target(self.target)
+        else:
+            path = self.battle_model.shortest_path(
+                start=(self.unit.x, self.unit.y),
+                end=(self.target.x, self.target.y)
+            )
+            if len(path) < 2:
+                self.unit.action = Wait(self.unit)
+                return
+            
+            next_x, next_y = path[1]
+            
+            if self.unit.move(next_x, next_y):
+                pass  # Move successful, continue attacking next tick, we need to recalculate path et check range again
 
 class Wait(Order):
     def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit, None)
+        self.unit.direction = (0, 0)
 
     def action(self) -> None:
         pass
