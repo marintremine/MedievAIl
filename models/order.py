@@ -14,12 +14,16 @@ class Move(Order):
         super().__init__(unit, battle_model)
         self.target_x = x
         self.target_y = y
+
+        # calcul du chemin le plus court vers la cible
+
         self.path = self.battle_model.shortest_path(
             start=(self.unit.x, self.unit.y),
             end=(self.target_x, self.target_y)
         )
 
     def action(self) -> None:
+
         if len(self.path) < 2:
             self.unit.action = Wait(self.unit)
             return
@@ -58,6 +62,7 @@ class Attack(Order) :
 class Wait(Order):
     def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit, None)
+        self.unit.direction = (0, 0)
 
     def action(self) -> None:
         pass
