@@ -35,7 +35,6 @@ class Unit(Object):
     def in_range(self, target: "Unit") -> bool:
         distance = abs(self.x - target.x) + abs(self.y - target.y)
         return distance <= self.range
-    
 
     def attack_target(self, target: "Unit") -> bool:
         if not self.is_alive() or not target.is_alive() or not self.in_range(target):
@@ -75,11 +74,6 @@ class Unit(Object):
             return True
         
         return False
-
-    def move(self, new_x: int, new_y: int) -> None:
-        """Déplace l'unité vers les coordonnées spécifiées"""
-        self.x = new_x
-        self.y = new_y
 
     def __str__(self) -> str:
         return f"Unit({self.name}, HP: {self.hp}/{self.max_hp}, Pos: ({self.x}, {self.y}))"
