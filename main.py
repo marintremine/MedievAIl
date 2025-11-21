@@ -15,7 +15,6 @@ def main():
         description="MedievAIl Battle Simulator (2025-2026)"
     )
     
-
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # ---- RUN ----
@@ -28,15 +27,14 @@ def main():
     args = parser.parse_args()
 
     if args.command == "run":
-        # print(f"Lancement de la bataille avec le scénario : {args.scenario}, AI1 : {args.ai1}, AI2 : {args.ai2}, Terminal : {args.terminal}")
-        # model = BattleModel(args.scenario, args.ai1, args.ai2) par arguments
         model = BattleModel()
         model.load(args.scenario, args.ai1, args.ai2)
+        controller = BattleController(model, None)
         if args.terminal:
-            view = TerminalView(model)
+            view = TerminalView(model, controller)
         else:
-            view = PygameView(model)
-        controller = BattleController(model, view)
+            view = PygameView(model, controller)
+        controller.view = view
         controller.run()
     else:
         parser.print_help()
