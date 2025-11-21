@@ -41,13 +41,12 @@ class BattleController:
 
         while True:
             now = time.time()
-
             # --- LOGIC TICK ---
             if self.model.running and (now - last_tick >= tick_interval):
                 self.model.update()
                 tick_count += 1
                 last_tick = now
-                # print(f"Tick executed ({tick_count}/{self.tick_rate} TPS)")
+                #print(f"Tick executed ({tick_count}/{self.tick_rate} TPS)")
 
             # --- RENDER FRAME ---
 
@@ -55,11 +54,11 @@ class BattleController:
                 self.view.render()
                 frame_count += 1
                 last_frame = now
-                # print(f"Frame rendered ({frame_count}/{self.fps} FPS)")
+                #print(f"Frame rendered ({frame_count}/{self.fps} FPS)")
 
             # --- STATS OUTPUT ---
             if now - last_stats >= 1.0:
-                # print(f"TPS: {tick_count} | FPS: {frame_count}")
+                #print(f"TPS: {tick_count} | FPS: {frame_count}")
                 tick_count = 0
                 frame_count = 0
                 last_stats = now
