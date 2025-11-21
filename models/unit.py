@@ -76,6 +76,11 @@ class Unit(Object):
         
         return False
 
+    def move(self, new_x: int, new_y: int) -> None:
+        """Déplace l'unité vers les coordonnées spécifiées"""
+        self.x = new_x
+        self.y = new_y
+
     def __str__(self) -> str:
         return f"Unit({self.name}, HP: {self.hp}/{self.max_hp}, Pos: ({self.x}, {self.y}))"
     
