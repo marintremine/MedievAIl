@@ -1,18 +1,16 @@
 import time
-import threading
 from pynput import keyboard
-
+from settings import FPS, TICK_RATE, GAME_SPEED
 from models.battle_model import BattleModel
 from views.battle_view import BattleView
 
 
 
 class BattleController:
-    def __init__(self, model : BattleModel, view : BattleView, tick_rate: int = 20, fps: int = 60):
+    def __init__(self, model : BattleModel, view : BattleView):
         self.model = model
         self.view = view
-        self.tick_rate = tick_rate
-        self.fps = fps
+        self.game_speed = GAME_SPEED
 
         self._start_keyboard_listener()
 
@@ -21,6 +19,12 @@ class BattleController:
             try:
                 if key == keyboard.Key.space:
                     self.model.pause()
+                elif key == keyboard.Key.up:
+                    # Augmenter la vitesse
+                    self.game_speed = min(self.game_speed + 0.25, 5.0)
+                elif key == keyboard.Key.down:
+                    # Diminuer la vitesse
+                    self.game_speed = max(self.game_speed - 0.25, 0.25)
             except AttributeError:
                 pass
 
@@ -29,13 +33,13 @@ class BattleController:
         listener.start()
 
     def run(self):
-        tick_interval = 1 / self.tick_rate
-        frame_interval = 1 / self.fps
+        tick_interval = 1 / TICK_RATE
+        frame_interval = 1 / FPS
 
         last_tick = time.time()
         last_frame = time.time()
-
         last_stats = time.time()
+
         tick_count = 0
         frame_count = 0
 
@@ -44,6 +48,7 @@ class BattleController:
 
             # --- LOGIC TICK ---
             if self.model.running and (now - last_tick >= tick_interval):
+                self.model.delta_time = tick_interval * self.game_speed
                 self.model.update()
                 tick_count += 1
                 last_tick = now
@@ -64,6 +69,6 @@ class BattleController:
                 frame_count = 0
                 last_stats = now
 
-            time.sleep(0.001) # Sleep pour éviter l'utilisation à 100% du CPU
+            time.sleep(0.0001) # Sleep pour éviter l'utilisation à 100% du CPU
 
     

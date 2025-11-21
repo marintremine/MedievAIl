@@ -1,0 +1,3 @@
+FPS = 60
+TICK_RATE = 20
+GAME_SPEED = 1.0
