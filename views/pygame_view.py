@@ -1,5 +1,6 @@
 from views.battle_view import BattleView
 from models.battle_model import BattleModel
+from settings import PYGAME_WIN
 import pygame
 import pygame.gfxdraw
 import math
@@ -10,6 +11,7 @@ TODO
 - Raccourcir la fonction de load des sprites
 - Resoudre le probleme de l'axe Z
 - Ajouter archer et cavalier
+- couleur sur les sprites 
 """
 
 switchOrientation = {
@@ -28,7 +30,6 @@ switchOrderConvert = {
     "Wait":"stand",
     "Move":"walk"
 }
-
 
 def assetLoaderPikeman(unitname):
     assetLoaded = {
@@ -83,7 +84,6 @@ def assetLoaderPikeman(unitname):
 
     # -WALK ANIMATION 10 * 5
     for i in range(1, 11):
-        print(i)
         assetLoaded["walk"]["front"].append(pygame.image.load(
             "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert())
         assetLoaded["walk"]["front"][i-1].set_colorkey((255, 0, 255))
@@ -177,12 +177,12 @@ class PygameView(BattleView):
         self.MAP_WIDTH = model.map_width
         self.MAP_DIAG = ((self.MAP_HEIGHT**2 + self.MAP_HEIGHT**2)**0.5)
 
-        self.WINDOW_HEIGHT = 1000
-        self.WINDOW_WIDTH = 1000
+        self.WINDOW_HEIGHT = PYGAME_WIN[1]
+        self.WINDOW_WIDTH = PYGAME_WIN[0]
         self.WINDOW_OFFSET_H = self.WINDOW_HEIGHT / 2
         self.WINDOW_OFFSET_W = self.WINDOW_WIDTH / 2
 
-        self.SCALE = 3
+        self.SCALE = 3 #(self.WINDOW_WIDTH+self.WINDOW_HEIGHT)/(self.MAP_WIDTH+self.MAP_HEIGHT)
 
         #---PYGAME ENV DEFINE---
         pygame.init()
@@ -190,9 +190,8 @@ class PygameView(BattleView):
 
         #---MAP VARIABLES---
         self.MAP_TEXTURE = pygame.image.load('views/assets/grounds/map.png').convert()
-        self.map = pygame.Surface((self.WINDOW_WIDTH*self.SCALE, self.WINDOW_HEIGHT*self.SCALE))
-        self.map_x = 0
-        self.map_y = 0
+        self.map = pygame.Surface((self.MAP_WIDTH*2*self.SCALE, self.MAP_HEIGHT*2*self.SCALE))
+        self.rect = self.map.get_rect(center=(self.WINDOW_OFFSET_W, self.WINDOW_OFFSET_H))
 
         #---Unit asset loading--
         #--PIKEMAN
@@ -218,8 +217,8 @@ class PygameView(BattleView):
 
     def convertCartToIso(self,points):
         """Function to convert cartesian position to isometric position"""
-        iso_x = math.floor(((points[0]-points[1])*self.SCALE)+(self.WINDOW_OFFSET_W-self.MAP_DIAG/4))
-        iso_y = math.floor((((points[0]+points[1])/2)*self.SCALE)+(self.WINDOW_OFFSET_H-self.MAP_DIAG/2))
+        iso_x = math.floor(((points[0]-points[1])+(self.MAP_WIDTH))*self.SCALE)
+        iso_y = math.floor((((points[0]+points[1])/2)+(self.MAP_HEIGHT/2))*self.SCALE)
         #print("Unit cord x:{} y:{} iso cord x:{} y:{}".format(points[0],points[1],iso_x, iso_y))
         return [iso_x, iso_y]
 
@@ -230,7 +229,8 @@ class PygameView(BattleView):
         self.makeMap(0,0)
         self.unit_spritegroup.update()
         self.unit_spritegroup.draw(self.map)
-        self.window.blit(self.map, (0,0))
+        pygame.draw.rect(self.window,(0,255,0),self.rect)
+        self.window.blit(self.map, self.rect)
         pygame.display.flip()
         pygame.time.wait(1)
 
