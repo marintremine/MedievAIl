@@ -1,11 +1,13 @@
+import heapq
 import json
+import math
 
 from models.general import generalFactory
 from models.unit import unitFactory
 from models.unit import *
 from models.order import *
 from models.general import *
-from models.obstacle import *
+from models.obstacle import Obstacle
 import random
 
 
@@ -85,6 +87,8 @@ class BattleModel:
     
     def is_in_map(self, x, y):
         """Vérification si les coordonnées sont dans les limites de la carte"""
+        if self.map_width is None or self.map_height is None:
+            return False
         return 0 <= x < self.map_width and 0 <= y < self.map_height
     
     def is_obstacle_at(self, x, y):
@@ -94,56 +98,63 @@ class BattleModel:
                 return True
         return False
 
-    def shortest_path(self, start:tuple[int, int], end:tuple[int, int])->list[tuple[int, int]]:
-
+    
+    def shortest_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]]:
         """
-        Recherche le plus court chemin entre deux coordonnées sur une grille en utilisant l'algorithme BFS.
-        Il effectue plusieurs vérifications
-        - Si la nouvelle position est dans les limites de la carte
-        - Si elle n'a pas déjà été visitée
-        - S'il n'y a pas d'obstacle à cette position.
-
-        Parameters
-        ----------
-        start_x : int
-            Coordonnée X de départ.
-        start_y : int
-            Coordonnée Y de départ.
-        goal_x : int
-            Coordonnée X d'arrivée.
-        goal_y : int
-            Coordonnée Y d'arrivée.
-
-        Returns
-        -------
-        list[tuple[int, int]]
-            Liste ordonnée des coordonnées constituant le chemin trouvé.
-            Retourne une liste vide si aucun chemin n'existe.
+        Mini pathfinding :
+        - déplace vers les coordonnés en ligne droite
+        - si bloqué : esquive à gauche puis à droite
+        - sinon avance en X ou Y seul
+        - renvoie un tuple avec le prochain pas ou None
         """
 
-        directions = [
-            (0, 1), (0, -1), (1, 0), (-1, 0),
-            (1, 1), (1, -1), (-1, 1), (-1, -1)
-        ]
+        x, y = start
+        tx, ty = end
 
-        start_x, start_y = start
-        end_x, end_y = end
+        # Déjà à destination
+        if (x, y) == (tx, ty):
+            return None   # rien à faire
 
-        visited = set()
-        queue = [(start_x, start_y, [(start_x, start_y)])]
-        visited.add((start_x, start_y))
+        # Direction vers la cible
+        dx = 0
+        dy = 0
 
-        while queue:
-            x, y, path = queue.pop(0)
-            if (x, y) == (end_x, end_y):
-                return path
+        if tx > x: dx = 1
+        elif tx < x: dx = -1
 
-            for dx, dy in directions:
-                nx, ny = x + dx, y + dy
-                if (self.is_in_map(nx, ny) and (nx, ny) not in visited and not self.is_obstacle_at(nx, ny)):
-                    visited.add((nx, ny))
-                    queue.append((nx, ny, path + [(nx, ny)]))
-        return []
+        if ty > y: dy = 1
+        elif ty < y: dy = -1
+
+        # ESSAI 1 : ligne droite
+        nx, ny = x + dx, y + dy
+        if self.is_in_map(nx, ny) and not self.is_obstacle_at(nx, ny):
+            return (nx, ny)
+
+        # ESSAI 2 : esquive à gauche
+        lx, ly = x - dy, y + dx
+        if self.is_in_map(lx, ly) and not self.is_obstacle_at(lx, ly):
+            return (lx, ly)
+
+        # ESSAI 3 : esquive à droite
+        rx, ry = x + dy, y - dx
+        if self.is_in_map(rx, ry) and not self.is_obstacle_at(rx, ry):
+            return (rx, ry)
+
+        # ESSAI 4 : avancer seulement en X si possible
+        if dx != 0:
+            nx2 = x + dx
+            if self.is_in_map(nx2, y) and not self.is_obstacle_at(nx2, y):
+                return (nx2, y)
+
+        # ESSAI 5 : avancer seulement en Y si possible
+        if dy != 0:
+            ny2 = y + dy
+            if self.is_in_map(x, ny2) and not self.is_obstacle_at(x, ny2):
+                return (x, ny2)
+
+        # Aucun mouvement possible
+        return None
+
     
     def get_army(self, general: General) -> list[Unit]:
         """Retourne la liste des unités appartenant au général spécifié."""

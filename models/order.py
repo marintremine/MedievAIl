@@ -15,23 +15,19 @@ class Move(Order):
         self.target_x = x
         self.target_y = y
 
-        # calcul du chemin le plus court vers la cible
+    def action(self) -> None:
 
-        self.path = self.battle_model.shortest_path(
+        path = self.battle_model.shortest_path(
             start=(self.unit.x, self.unit.y),
             end=(self.target_x, self.target_y)
         )
 
-    def action(self) -> None:
-
-        if len(self.path) < 2:
+        if path is None:
             self.unit.action = Wait(self.unit)
             return
          
-        next_x, next_y = self.path[1]
-
-        if self.unit.move(next_x, next_y):
-            self.path.pop(1)  # Remove the step if movement was successful
+        next_x, next_y = path
+        self.unit.move(next_x, next_y)
         
 class Attack(Order) :
     def __init__(self, unit: "Unit", target: "Unit", battle_model) -> None: # pyright: ignore[reportUndefinedVariable]
@@ -50,14 +46,13 @@ class Attack(Order) :
                 start=(self.unit.x, self.unit.y),
                 end=(self.target.x, self.target.y)
             )
-            if len(path) < 2:
+            
+            if path is None:
                 self.unit.action = Wait(self.unit)
                 return
             
-            next_x, next_y = path[1]
-            
-            if self.unit.move(next_x, next_y):
-                pass  # Move successful, continue attacking next tick, we need to recalculate path et check range again
+            next_x, next_y = path
+            self.unit.move(next_x, next_y)
 
 class Wait(Order):
     def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
