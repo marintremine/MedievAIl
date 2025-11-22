@@ -17,8 +17,11 @@ class BattleController:
     def _start_keyboard_listener(self):
         def on_press(key):
             try:
-                if key == keyboard.Key.space:
+                if key == keyboard.KeyCode.from_char('p'):
                     self.model.pause()
+                elif key == keyboard.KeyCode.from_char('s'):
+                    print("Sauvegarde du scénario...")
+                    self.model.save("saved_scenario.json")
                 elif key == keyboard.Key.up:
                     # Augmenter la vitesse
                     self.game_speed = min(self.game_speed + 0.25, 10.0)

@@ -12,7 +12,6 @@ class General:
     def decide(self) -> None:
         pass
 
-
 class Daft(General):
     def __init__(self, battle_model):
         super().__init__("Daft", battle_model)

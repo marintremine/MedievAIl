@@ -7,7 +7,8 @@ class Order:
         self.battle_model = battle_model
 
     def action(self) -> None:
-        pass
+        pass   
+
 
 class Move(Order):
     def __init__(self, unit: "Unit", x: int, y: int, battle_model) -> None: # pyright: ignore[reportUndefinedVariable]
