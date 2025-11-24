@@ -27,7 +27,7 @@ class Unit(Object):
         self.cooldown_timer = 0
         self.move_progress = 0
         self.action = Wait(self)
-        self.direction = (0, 0)
+        self.direction = (0, 1)
         self.bonus_attacks = bonus_attacks
 
     def is_alive(self) -> bool:
