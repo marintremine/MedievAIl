@@ -1,15 +1,13 @@
-import heapq
 import json
-import math
+import os
+from pathlib import Path
+import random
 
-from models.general import generalFactory
-from models.unit import unitFactory
+from models.general import *
 from models.unit import *
 from models.order import *
 from models.general import *
-from models.obstacle import Obstacle
-import random
-
+from models.obstacle import *
 
 class BattleModel:
     def __init__(self)->None:
@@ -30,19 +28,15 @@ class BattleModel:
             data = json.load(f)
             
         # load map
-
-        map_data = data["map"]
-        self.map_width = map_data["width"]
-        self.map_height = map_data["height"]
+        self.map_width = data["map_width"]
+        self.map_height = data["map_height"]
 
         # load generals
-
         self.general_1 = generalFactory(ai1, self)
         self.general_2 = generalFactory(ai2, self)
 
         # load army
-        army_data = data["armies"]
-        for unit_data in army_data["army1"]:
+        for unit_data in data["army1"]:
             unit = unitFactory(
                 unit_type=unit_data["type"],
                 general=self.general_1,
@@ -50,9 +44,16 @@ class BattleModel:
                 y=unit_data["y"],
                 battle_model=self
             )
+            if "hp" in unit_data:
+                unit.hp = unit_data["hp"]
+            if "cooldown_timer" in unit_data:
+                unit.cooldown_timer = unit_data["cooldown_timer"]
+            if "move_progress" in unit_data:
+                unit.move_progress = unit_data["move_progress"]
+
             self.list_objects.append(unit)
 
-        for unit_data in army_data["army2"]:
+        for unit_data in data["army2"]:
             unit = unitFactory(
                 unit_type=unit_data["type"],
                 general=self.general_2,
@@ -60,7 +61,38 @@ class BattleModel:
                 y=unit_data["y"],
                 battle_model=self
             )
+            if "hp" in unit_data:
+                unit.hp = unit_data["hp"]
+            if "cooldown_timer" in unit_data:
+                unit.cooldown_timer = unit_data["cooldown_timer"]
+            if "move_progress" in unit_data:
+                unit.move_progress = unit_data["move_progress"]
+
             self.list_objects.append(unit)
+
+
+    def save(self, scenario_file: str = None) -> None:
+        """Enregistre le scénario."""
+
+        data = self.to_dict()
+        scenarios_dir = Path("scenarios")
+        scenarios_dir.mkdir(parents=True, exist_ok=True)
+
+        if not scenario_file:
+            base, ext = "saved_scenario", ".json"
+        else:
+            base, ext = os.path.splitext(scenario_file)
+            if ext == "":
+                ext = ".json"
+
+        candidate = f"{base}{ext}"
+        counter = 0
+        while (scenarios_dir / candidate).exists():
+            counter += 1
+            candidate = f"{base}_{counter}{ext}"
+
+        with open(scenarios_dir / candidate, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
 
     def update(self) -> None:
         """Met à jour l'état de la bataille à chaque tick."""
@@ -80,9 +112,6 @@ class BattleModel:
     def pause(self)->None:
         """Met en pause ou reprend la simulation de la bataille."""
         self.running = not self.running
-
-    def save(self, scenario_file:str)->None:
-        pass
 
     
     def is_in_map(self, x, y):
@@ -169,3 +198,18 @@ class BattleModel:
             obj for obj in self.list_objects
             if isinstance(obj, Unit) and obj.general != general and obj.is_alive()
         ]
+    
+    def to_dict(self):
+        return {
+            "map_width": self.map_width,
+            "map_height": self.map_height,
+            "army1": [
+                obj.to_dict() for obj in self.list_objects if isinstance(obj, Unit) and obj.general == self.general_1
+            ],
+            "army2": [
+                obj.to_dict() for obj in self.list_objects if isinstance(obj, Unit) and obj.general == self.general_2
+            ],
+            "obstacles": [
+                obj.to_dict() for obj in self.list_objects if isinstance(obj, Obstacle)
+            ],
+        }
