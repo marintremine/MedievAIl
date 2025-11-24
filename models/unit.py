@@ -91,10 +91,8 @@ class Unit(Object):
             "y": self.y,
             "hp": self.hp,
             "cooldown_timer": self.cooldown_timer,
-            "move_progress": self.move_progress,
-            "action": self.action.to_dict() if self.action else None
+            "move_progress": self.move_progress
         }
-    
 
 class Pikeman(Unit):
     def __init__(self, general: "General", x: int, y: int, battle_model): # pyright: ignore[reportUndefinedVariable]

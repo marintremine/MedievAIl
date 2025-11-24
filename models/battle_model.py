@@ -1,13 +1,13 @@
 import json
+import os
+from pathlib import Path
+import random
 
-from models.general import generalFactory
-from models.unit import unitFactory
+from models.general import *
 from models.unit import *
 from models.order import *
 from models.general import *
-from models.obstacle import Obstacle
-import random
-
+from models.obstacle import *
 
 class BattleModel:
     def __init__(self)->None:
@@ -71,10 +71,27 @@ class BattleModel:
             self.list_objects.append(unit)
 
 
-    def save(self, scenario_file:str)->None:
+    def save(self, scenario_file: str = None) -> None:
+        """Enregistre le scénario."""
+
         data = self.to_dict()
-        print(data)
-        with open(scenario_file, "w", encoding="utf-8") as f:
+        scenarios_dir = Path("scenarios")
+        scenarios_dir.mkdir(parents=True, exist_ok=True)
+
+        if not scenario_file:
+            base, ext = "saved_scenario", ".json"
+        else:
+            base, ext = os.path.splitext(scenario_file)
+            if ext == "":
+                ext = ".json"
+
+        candidate = f"{base}{ext}"
+        counter = 0
+        while (scenarios_dir / candidate).exists():
+            counter += 1
+            candidate = f"{base}_{counter}{ext}"
+
+        with open(scenarios_dir / candidate, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
     def update(self) -> None:
