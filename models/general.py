@@ -26,6 +26,9 @@ class BrainDead(General):
         pass
 
 class MoveTestGeneral(General):
+    """
+    Un général qui ordonne à chaque unité de se déplacer vers des coordonnées aléatoires sur la carte si elle est en attente.
+    """
     def __init__(self, battle_model):
         super().__init__("MoveTestGeneral", battle_model)
 
@@ -36,9 +39,12 @@ class MoveTestGeneral(General):
                 new_x = random.randrange(0, self.battle_model.map_width)
                 new_y = random.randrange(0, self.battle_model.map_height)
 
-                unit.action = Move(unit, new_x, new_y, self.battle_model)
+                unit.action = Move(unit, new_x, new_y)
 
 class AttackTestGeneral(General):
+    """
+    Un général qui ordonne à chaque unité d'attaquer une unité ennemie aléatoire si elle est en attente.
+    """
     def __init__(self, battle_model):
         super().__init__("AttackTestGeneral", battle_model)
 
@@ -49,7 +55,7 @@ class AttackTestGeneral(General):
                 if enemy_units:
                     # choose a random enemy unit to attack
                     target = random.choice(enemy_units)
-                    unit.action = Attack(unit, target, self.battle_model)
+                    unit.action = Attack(unit, target)
                 else:
                     unit.action = Wait(unit)
 
