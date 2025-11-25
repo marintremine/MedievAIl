@@ -23,11 +23,10 @@ army2 += [{'type':'pikeman', 'x':map_width-1-i, 'y':map_height-3} for i in range
 
 # Créer le dictionnaire final
 battlefield = {
-    'map': {'width': map_width, 'height': map_height},
-    'armies': {
-        'army1': army1,
-        'army2': army2
-    }
+    'map_width': map_width, 
+    'map_height': map_height,
+    'army1': army1,
+    'army2': army2
 }
 
 # Écrire dans un fichier JSON
