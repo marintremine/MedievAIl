@@ -1,13 +1,13 @@
 import json
+import os
+from pathlib import Path
+import random
 
-from models.general import generalFactory
-from models.unit import unitFactory
+from models.general import *
 from models.unit import *
 from models.order import *
 from models.general import *
 from models.obstacle import *
-import random
-
 
 class BattleModel:
     def __init__(self)->None:
@@ -28,19 +28,15 @@ class BattleModel:
             data = json.load(f)
             
         # load map
-
-        map_data = data["map"]
-        self.map_width = map_data["width"]
-        self.map_height = map_data["height"]
+        self.map_width = data["map_width"]
+        self.map_height = data["map_height"]
 
         # load generals
-
         self.general_1 = generalFactory(ai1, self)
         self.general_2 = generalFactory(ai2, self)
 
         # load army
-        army_data = data["armies"]
-        for unit_data in army_data["army1"]:
+        for unit_data in data["army1"]:
             unit = unitFactory(
                 unit_type=unit_data["type"],
                 general=self.general_1,
@@ -48,9 +44,16 @@ class BattleModel:
                 y=unit_data["y"],
                 battle_model=self
             )
+            if "hp" in unit_data:
+                unit.hp = unit_data["hp"]
+            if "cooldown_timer" in unit_data:
+                unit.cooldown_timer = unit_data["cooldown_timer"]
+            if "move_progress" in unit_data:
+                unit.move_progress = unit_data["move_progress"]
+
             self.list_objects.append(unit)
 
-        for unit_data in army_data["army2"]:
+        for unit_data in data["army2"]:
             unit = unitFactory(
                 unit_type=unit_data["type"],
                 general=self.general_2,
@@ -58,7 +61,38 @@ class BattleModel:
                 y=unit_data["y"],
                 battle_model=self
             )
+            if "hp" in unit_data:
+                unit.hp = unit_data["hp"]
+            if "cooldown_timer" in unit_data:
+                unit.cooldown_timer = unit_data["cooldown_timer"]
+            if "move_progress" in unit_data:
+                unit.move_progress = unit_data["move_progress"]
+
             self.list_objects.append(unit)
+
+
+    def save(self, scenario_file: str = None) -> None:
+        """Enregistre le scénario."""
+
+        data = self.to_dict()
+        scenarios_dir = Path("scenarios")
+        scenarios_dir.mkdir(parents=True, exist_ok=True)
+
+        if not scenario_file:
+            base, ext = "saved_scenario", ".json"
+        else:
+            base, ext = os.path.splitext(scenario_file)
+            if ext == "":
+                ext = ".json"
+
+        candidate = f"{base}{ext}"
+        counter = 0
+        while (scenarios_dir / candidate).exists():
+            counter += 1
+            candidate = f"{base}_{counter}{ext}"
+
+        with open(scenarios_dir / candidate, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)
 
     def update(self) -> None:
         """Met à jour l'état de la bataille à chaque tick."""
@@ -79,12 +113,11 @@ class BattleModel:
         """Met en pause ou reprend la simulation de la bataille."""
         self.running = not self.running
 
-    def save(self, scenario_file:str)->None:
-        pass
-
     
     def is_in_map(self, x, y):
         """Vérification si les coordonnées sont dans les limites de la carte"""
+        if self.map_width is None or self.map_height is None:
+            return False
         return 0 <= x < self.map_width and 0 <= y < self.map_height
     
     def is_obstacle_at(self, x, y):
@@ -94,56 +127,63 @@ class BattleModel:
                 return True
         return False
 
-    def shortest_path(self, start:tuple[int, int], end:tuple[int, int])->list[tuple[int, int]]:
-
+    
+    def shortest_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]]:
         """
-        Recherche le plus court chemin entre deux coordonnées sur une grille en utilisant l'algorithme BFS.
-        Il effectue plusieurs vérifications
-        - Si la nouvelle position est dans les limites de la carte
-        - Si elle n'a pas déjà été visitée
-        - S'il n'y a pas d'obstacle à cette position.
-
-        Parameters
-        ----------
-        start_x : int
-            Coordonnée X de départ.
-        start_y : int
-            Coordonnée Y de départ.
-        goal_x : int
-            Coordonnée X d'arrivée.
-        goal_y : int
-            Coordonnée Y d'arrivée.
-
-        Returns
-        -------
-        list[tuple[int, int]]
-            Liste ordonnée des coordonnées constituant le chemin trouvé.
-            Retourne une liste vide si aucun chemin n'existe.
+        Mini pathfinding :
+        - déplace vers les coordonnés en ligne droite
+        - si bloqué : esquive à gauche puis à droite
+        - sinon avance en X ou Y seul
+        - renvoie un tuple avec le prochain pas ou None
         """
 
-        directions = [
-            (0, 1), (0, -1), (1, 0), (-1, 0),
-            (1, 1), (1, -1), (-1, 1), (-1, -1)
-        ]
+        x, y = start
+        tx, ty = end
 
-        start_x, start_y = start
-        end_x, end_y = end
+        # Déjà à destination
+        if (x, y) == (tx, ty):
+            return None   # rien à faire
 
-        visited = set()
-        queue = [(start_x, start_y, [(start_x, start_y)])]
-        visited.add((start_x, start_y))
+        # Direction vers la cible
+        dx = 0
+        dy = 0
 
-        while queue:
-            x, y, path = queue.pop(0)
-            if (x, y) == (end_x, end_y):
-                return path
+        if tx > x: dx = 1
+        elif tx < x: dx = -1
 
-            for dx, dy in directions:
-                nx, ny = x + dx, y + dy
-                if (self.is_in_map(nx, ny) and (nx, ny) not in visited and not self.is_obstacle_at(nx, ny)):
-                    visited.add((nx, ny))
-                    queue.append((nx, ny, path + [(nx, ny)]))
-        return []
+        if ty > y: dy = 1
+        elif ty < y: dy = -1
+
+        # ESSAI 1 : ligne droite
+        nx, ny = x + dx, y + dy
+        if self.is_in_map(nx, ny) and not self.is_obstacle_at(nx, ny):
+            return (nx, ny)
+
+        # ESSAI 2 : esquive à gauche
+        lx, ly = x - dy, y + dx
+        if self.is_in_map(lx, ly) and not self.is_obstacle_at(lx, ly):
+            return (lx, ly)
+
+        # ESSAI 3 : esquive à droite
+        rx, ry = x + dy, y - dx
+        if self.is_in_map(rx, ry) and not self.is_obstacle_at(rx, ry):
+            return (rx, ry)
+
+        # ESSAI 4 : avancer seulement en X si possible
+        if dx != 0:
+            nx2 = x + dx
+            if self.is_in_map(nx2, y) and not self.is_obstacle_at(nx2, y):
+                return (nx2, y)
+
+        # ESSAI 5 : avancer seulement en Y si possible
+        if dy != 0:
+            ny2 = y + dy
+            if self.is_in_map(x, ny2) and not self.is_obstacle_at(x, ny2):
+                return (x, ny2)
+
+        # Aucun mouvement possible
+        return None
+
     
     def get_army(self, general: General) -> list[Unit]:
         """Retourne la liste des unités appartenant au général spécifié."""
@@ -158,3 +198,18 @@ class BattleModel:
             obj for obj in self.list_objects
             if isinstance(obj, Unit) and obj.general != general and obj.is_alive()
         ]
+    
+    def to_dict(self):
+        return {
+            "map_width": self.map_width,
+            "map_height": self.map_height,
+            "army1": [
+                obj.to_dict() for obj in self.list_objects if isinstance(obj, Unit) and obj.general == self.general_1
+            ],
+            "army2": [
+                obj.to_dict() for obj in self.list_objects if isinstance(obj, Unit) and obj.general == self.general_2
+            ],
+            "obstacles": [
+                obj.to_dict() for obj in self.list_objects if isinstance(obj, Obstacle)
+            ],
+        }

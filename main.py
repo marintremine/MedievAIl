@@ -23,6 +23,8 @@ def main():
     run_parser.add_argument("ai1", type=str, help="Nom du premier AI (general)")
     run_parser.add_argument("ai2", type=str, help="Nom du second AI (general)") 
     run_parser.add_argument("-t", "--terminal", action="store_true", help="Afficher la vue terminal")
+    run_parser.add_argument("-d", "--datafile", type=str, default=None,
+                            help="Chemin du fichier pour écrire les données de la bataille (ou '-' pour stdout)")
 
     args = parser.parse_args()
 
@@ -30,6 +32,8 @@ def main():
         model = BattleModel()
         model.load(args.scenario, args.ai1, args.ai2)
         controller = BattleController(model, None)
+        controller.datafile = args.datafile
+
         if args.terminal:
             view = TerminalView(model, controller)
         else:

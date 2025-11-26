@@ -86,6 +86,15 @@ class Unit(Object):
     def __str__(self) -> str:
         return f"Unit({self.name}, HP: {self.hp}/{self.max_hp}, Pos: ({self.x}, {self.y}))"
     
+    def to_dict(self):
+        return {
+            "type": self.name.lower(),
+            "x": self.x,
+            "y": self.y,
+            "hp": self.hp,
+            "cooldown_timer": self.cooldown_timer,
+            "move_progress": self.move_progress
+        }
 
 class Pikeman(Unit):
     def __init__(self, general: "General", x: int, y: int, battle_model): # pyright: ignore[reportUndefinedVariable]

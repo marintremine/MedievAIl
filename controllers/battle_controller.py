@@ -1,5 +1,6 @@
 import time
 from pynput import keyboard
+import queue
 from settings import FPS, TICK_RATE, GAME_SPEED
 from models.battle_model import BattleModel
 from views.battle_view import BattleView
@@ -11,26 +12,34 @@ class BattleController:
         self.model = model
         self.view = view
         self.game_speed = GAME_SPEED
+        self.datafile = None
 
+        self.actions = queue.Queue()
         self._start_keyboard_listener()
 
     def _start_keyboard_listener(self):
         def on_press(key):
             try:
-                if key == keyboard.Key.space:
-                    self.model.pause()
+                if key == keyboard.KeyCode.from_char('p'):
+                    self.actions.put("pause")
+                elif key == keyboard.KeyCode.from_char('s'):
+                    self.actions.put("save")
                 elif key == keyboard.Key.up:
-                    # Augmenter la vitesse
-                    self.game_speed = min(self.game_speed + 0.25, 10.0)
+                    self.actions.put("speed_up")
                 elif key == keyboard.Key.down:
-                    # Diminuer la vitesse
-                    self.game_speed = max(self.game_speed - 0.25, 0.25)
+                    self.actions.put("speed_down")
             except AttributeError:
                 pass
 
         listener = keyboard.Listener(on_press=on_press)
-        listener.daemon = True
+        listener.daemon = True # Permet au thread de se fermer avec le programme principal
         listener.start()
+
+    def speed_up(self):
+        self.game_speed = min(self.game_speed + 0.25, 10.0)
+
+    def speed_down(self):
+        self.game_speed = max(self.game_speed - 0.25, 0.25)
 
     def run(self):
         tick_interval = 1 / TICK_RATE
@@ -45,6 +54,23 @@ class BattleController:
 
         while True:
             now = time.time()
+
+            while not self.actions.empty():
+                action = self.actions.get()
+                match action:
+                    case "pause":
+                        self.model.pause()
+                        break
+                    case "save":
+                        self.model.save(self.datafile)
+                        break
+                    case "speed_up":
+                        self.speed_up()
+                        break
+                    case "speed_down":
+                        self.speed_down()
+                        break
+
             # --- LOGIC TICK ---
             if self.model.running and (now - last_tick >= tick_interval):
                 self.model.delta_time = tick_interval * self.game_speed

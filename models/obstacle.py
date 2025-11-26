@@ -6,3 +6,10 @@ class Obstacle(Object):
       self.type = type_ 
   def __str__(self):
         return f"Obstacle({self.type}) at ({self.x}, {self.y})"
+  
+  def to_dict(self):
+    return {
+        "type": "obstacle",
+        "x": self.x,
+        "y": self.y,
+    }
