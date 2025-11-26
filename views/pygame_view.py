@@ -5,14 +5,16 @@ import pygame
 import pygame.gfxdraw
 import math
 import re
+import json
 
 """
 TODO
-- Raccourcir la fonction de load des sprites
 - Resoudre le probleme de l'axe Z
 - Ajouter archer et cavalier
 - couleur sur les sprites 
 """
+
+LIST_UNITS = ["Pikeman","Crossbowman"]
 
 switchOrientation = {
     "(1, 1)": "front",
@@ -25,152 +27,163 @@ switchOrientation = {
     "(1, -1)": "right"
 }
 
-switchOrderConvert = {
-    "Attack":"attack",
-    "Wait":"stand",
-    "Move":"walk"
-}
-
-def assetLoaderPikeman(unitname):
+def assetLoader(unitname):
     assetLoaded = {
+        "attack": {"front": [],
+                  "back": [],
+                  "s-west": [],
+                  "n-west": [],
+                  "s-east": [],
+                  "n-east": [],
+                  "left": [],
+                  "right": []
+                   },
+        "die": {"front": [],
+                  "back": [],
+                  "s-west": [],
+                  "n-west": [],
+                  "s-east": [],
+                  "n-east": [],
+                  "left": [],
+                  "right": []
+                },
         "stand": {"front": [],
-                  "back": [],
-                  "s-west": [],
-                  "n-west": [],
-                  "s-east": [],
-                  "n-east": [],
-                  "left": [],
-                  "right": []},
+                 "back": [],
+                 "s-west": [],
+                 "n-west": [],
+                 "s-east": [],
+                 "n-east": [],
+                 "left": [],
+                 "right": []
+                  },
         "walk": {"front": [],
-                  "back": [],
-                  "s-west": [],
-                  "n-west": [],
-                  "s-east": [],
-                  "n-east": [],
-                  "left": [],
-                  "right": []}
+                 "back": [],
+                 "s-west": [],
+                 "n-west": [],
+                 "s-east": [],
+                 "n-east": [],
+                 "left": [],
+                 "right": []
+                 }
     }
-    # raccourcir cette fonction avec un json pour les bitmaps
-    # -STAND ANIMATION 9 * 5
-    for i in range(1, 9):
-        assetLoaded["stand"]["front"].append(pygame.image.load(
-            "views/assets/units/pikeman/Stand Ground/{}stand{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["stand"]["front"][i-1].set_colorkey((255, 0, 255))
-    for i in range(9, 17):
-        assetLoaded["stand"]["s-west"].append(pygame.image.load(
-            "views/assets/units/pikeman/Stand Ground/{}stand{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["stand"]["s-west"][i - 9].set_colorkey((255, 0, 255))
-        assetLoaded["stand"]["s-east"].append(pygame.transform.flip(pygame.image.load(
-            "views/assets/units/pikeman/Stand Ground/{}stand{:003d}.bmp".format(unitname, i)).convert(), True, False))
-        assetLoaded["stand"]["s-east"][i - 9].set_colorkey((255, 0, 255))
-    for i in range(17, 25):
-        assetLoaded["stand"]["left"].append(pygame.image.load(
-            "views/assets/units/pikeman/Stand Ground/{}stand{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["stand"]["left"][i - 17].set_colorkey((255, 0, 255))
-        assetLoaded["stand"]["right"].append(pygame.transform.flip(pygame.image.load(
-            "views/assets/units/pikeman/Stand Ground/{}stand{:003d}.bmp".format(unitname, i)).convert(), True, False))
-        assetLoaded["stand"]["right"][i - 17].set_colorkey((255, 0, 255))
-    for i in range(25, 33):
-        assetLoaded["stand"]["n-west"].append(pygame.image.load(
-            "views/assets/units/pikeman/Stand Ground/{}stand{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["stand"]["n-west"][i - 25].set_colorkey((255, 0, 255))
-        assetLoaded["stand"]["n-east"].append(pygame.transform.flip(pygame.image.load(
-            "views/assets/units/pikeman/Stand Ground/{}stand{:003d}.bmp".format(unitname, i)).convert(), True, False))
-        assetLoaded["stand"]["n-east"][i - 25].set_colorkey((255, 0, 255))
-    for i in range(33, 41):
-        assetLoaded["stand"]["back"].append(pygame.image.load(
-            "views/assets/units/pikeman/Stand Ground/{}stand{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["stand"]["back"][i - 33].set_colorkey((255, 0, 255))
 
-    # -WALK ANIMATION 10 * 5
-    for i in range(1, 11):
-        assetLoaded["walk"]["front"].append(pygame.image.load(
-            "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["walk"]["front"][i-1].set_colorkey((255, 0, 255))
-    for i in range(11, 21):
-        assetLoaded["walk"]["s-west"].append(pygame.image.load(
-            "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["walk"]["s-west"][i - 11].set_colorkey((255, 0, 255))
-        assetLoaded["walk"]["s-east"].append(pygame.transform.flip(pygame.image.load(
-            "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert(), True, False))
-        assetLoaded["walk"]["s-east"][i - 11].set_colorkey((255, 0, 255))
-    for i in range(21, 31):
-        assetLoaded["walk"]["left"].append(pygame.image.load(
-            "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["walk"]["left"][i - 21].set_colorkey((255, 0, 255))
-        assetLoaded["walk"]["right"].append(pygame.transform.flip(pygame.image.load(
-            "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert(), True, False))
-        assetLoaded["walk"]["right"][i - 21].set_colorkey((255, 0, 255))
-    for i in range(31, 41):
-        assetLoaded["walk"]["n-west"].append(pygame.image.load(
-            "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["walk"]["n-west"][i - 31].set_colorkey((255, 0, 255))
-        assetLoaded["walk"]["n-east"].append(pygame.transform.flip(pygame.image.load(
-            "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert(), True, False))
-        assetLoaded["walk"]["n-east"][i - 31].set_colorkey((255, 0, 255))
-    for i in range(41, 51):
-        assetLoaded["walk"]["back"].append(pygame.image.load(
-            "views/assets/units/pikeman/walk/{}walk{:003d}.bmp".format(unitname, i)).convert())
-        assetLoaded["walk"]["back"][i - 41].set_colorkey((255, 0, 255))
-    # -FIGHT ANIMATION 10 * 5
-    # -DIE ANIMATION 10 * 5
+    with open("views/assets/units/{}/{}.json".format(unitname,unitname),"r", encoding="utf-8") as file:
+        unit_json_map = json.load(file)
+
+    for anim in assetLoaded:
+        print(anim)
+        path = "views/assets/units/{}/{}/{}{}".format(unitname,anim, unitname,anim)
+
+        for i in range(unit_json_map[anim]["side"]["front"]["start"],unit_json_map[anim]["side"]["front"]["end"]):
+            assetLoaded[anim]["front"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["front"][i-unit_json_map[anim]["side"]["front"]["start"]].set_colorkey((255, 0, 255))
+            print("{}{:003d}.bmp".format(path,i))
+
+        for i in range(unit_json_map[anim]["side"]["s-west"]["start"],unit_json_map[anim]["side"]["s-west"]["end"]):
+            assetLoaded[anim]["s-west"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["s-west"][i - unit_json_map[anim]["side"]["s-west"]["start"]].set_colorkey((255, 0, 255))
+
+            assetLoaded[anim]["s-east"].append(pygame.transform.flip(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert(), True, False))
+            assetLoaded[anim]["s-east"][i - unit_json_map[anim]["side"]["s-west"]["start"]].set_colorkey((255, 0, 255))
+            print("{}{:003d}.bmp".format(path, i))
+        for i in range(unit_json_map[anim]["side"]["left"]["start"],unit_json_map[anim]["side"]["left"]["end"]):
+            assetLoaded[anim]["left"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["left"][i - unit_json_map[anim]["side"]["left"]["start"]].set_colorkey((255, 0, 255))
+
+            assetLoaded[anim]["right"].append(pygame.transform.flip(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert(), True, False))
+            assetLoaded[anim]["right"][i - unit_json_map[anim]["side"]["left"]["start"]].set_colorkey((255, 0, 255))
+            print("{}{:003d}.bmp".format(path, i))
+        for i in range(unit_json_map[anim]["side"]["n-west"]["start"],unit_json_map[anim]["side"]["n-west"]["end"]):
+            assetLoaded[anim]["n-west"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["n-west"][i - unit_json_map[anim]["side"]["n-west"]["start"]].set_colorkey((255, 0, 255))
+
+            assetLoaded[anim]["n-east"].append(pygame.transform.flip(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert(), True, False))
+            assetLoaded[anim]["n-east"][i - unit_json_map[anim]["side"]["n-west"]["start"]].set_colorkey((255, 0, 255))
+            print("{}{:003d}.bmp".format(path, i))
+        for i in range(unit_json_map[anim]["side"]["back"]["start"],unit_json_map[anim]["side"]["back"]["end"]):
+            assetLoaded[anim]["back"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["back"][i - unit_json_map[anim]["side"]["back"]["start"]].set_colorkey((255, 0, 255))
+            print("{}{:003d}.bmp".format(path, i))
+    #exit()
     return assetLoaded
 
+
 class unit_model(pygame.sprite.Sprite):
-    def __init__(self,unitData,pygameSim):
+    def __init__(self,unitData,pygameSim,color):
         super().__init__()
         self.unitData = unitData
         self.x = unitData.x
         self.y = unitData.y
+        self.color = color
         self.name = unitData.name
-        self.action = switchOrderConvert[re.findall("[A-z]{3,}",str(unitData.action))[2]]
-        self.TEXTURE = pygameSim.ASSETS_PIKEMAN
+        self.action = unitData.currentAction
+        self.TEXTURE = pygameSim.ASSETS[self.name]
         self.pygameSim = pygameSim
         self.image = None
         self.rec = None
         self.direction = self.unitData.direction
         self.animation = "stand"
         self.animationKey = 0
-        self.animationKeyMax = len(self.TEXTURE["stand"][switchOrientation[str(self.direction)]]) -1  #get animation max from TEXTURE
+        self.animationKeyMax = len(self.TEXTURE["stand"][switchOrientation[str(self.direction)]]) -1
         self.is_alive = True
-        """
-        for u in switchOrientation.keys():
-            print("Side : {} {}".format(u,len(self.TEXTURE["stand"][switchOrientation[str(self.direction)]])))
-        """
+        self.displayText = self.pygameSim.font.render(str(self.unitData.general.name), False, color)
 
     def update (self):
         self.x = self.unitData.x
         self.y = self.unitData.y
         self.direction = self.unitData.direction
 
+        # Play the dying animation
         if self.is_alive != self.unitData.is_alive():
             self.is_alive = False
-            self.animation = "dying"
-            self.animationKeyMax = self.TEXTURE[self.action][switchOrientation[str(self.direction)]]
-            self.animationKey = 1
+            self.animation = "die"
+            self.animationKeyMax = len(self.TEXTURE[self.animation][switchOrientation[str(self.direction)]])-1
+            self.animationKey = 0
 
-        if switchOrderConvert[re.findall("[A-z]{3,}",str(self.unitData.action))[2]] != self.action and self.is_alive == True:
-            self.action = switchOrderConvert[re.findall("[A-z]{3,}",str(self.unitData.action))[2]]
-            self.animation = self.action
-            self.animationKey = 1
-            self.animationKeyMax = len(self.TEXTURE[self.action][switchOrientation[str(self.direction)]])-1
-        elif self.animation == "dying":
-            if self.animationKey < self.animationKeyMax: self.animationKey += 0.1
-        else:
-            if self.animationKey > self.animationKeyMax:
+        # Play or actuate the actual animation
+        if self.pygameSim.model.running == True:
+            if self.unitData.currentAction != self.action and self.is_alive == True:
+                self.action = self.unitData.currentAction
+                self.animation = self.action
                 self.animationKey = 0
-            else:
-                self.animationKey += 0.1
+                self.animationKeyMax = len(self.TEXTURE[self.action][switchOrientation[str(self.direction)]])-1
 
+            elif self.animation == "die":
+                if self.animationKey < self.animationKeyMax: self.animationKey += 0.1
+            else:
+                if self.animationKey > self.animationKeyMax:
+                    self.animationKey = 0
+                else:
+                    self.animationKey += 0.1
+
+        #Create the textured polygon for the map
         try:
             self.image = self.TEXTURE[self.animation][switchOrientation[str(self.direction)]][math.floor(self.animationKey)]
+            self.image = pygame.transform.scale(
+                self.image,
+            ((self.image.get_width()/self.pygameSim.SCALE)*self.pygameSim.ZOOM,
+                 (self.image.get_height()/self.pygameSim.SCALE)*self.pygameSim.ZOOM)
+            )
         except IndexError:
-            print("Index error : Side : {} Key : {:d}/{:d}".format(self.direction,math.floor(self.animationKey),self.animationKeyMax))
+            print("Index error : Side : {} Key : {:f}/{:d} troup type : {}".format(self.direction,self.animationKey,self.animationKeyMax,self.name))
+
+        self.image.blit(self.displayText,((self.image.get_width()-self.displayText.get_width())/2,self.image.get_height()-self.displayText.get_height()))
         self.rect = self.image.get_rect(midbottom=self.pygameSim.convertCartToIso((self.x, self.y)))
 
 class PygameView(BattleView):
     def __init__(self, model : BattleModel, controller):
         super().__init__(model, controller)
+
+        self.model = model
+        self.controller = controller
 
         #---MAP & WINDOW CONST---
         self.MAP_HEIGHT = model.map_height
@@ -182,32 +195,45 @@ class PygameView(BattleView):
         self.WINDOW_OFFSET_H = self.WINDOW_HEIGHT / 2
         self.WINDOW_OFFSET_W = self.WINDOW_WIDTH / 2
 
-        self.SCALE = 3 #(self.WINDOW_WIDTH+self.WINDOW_HEIGHT)/(self.MAP_WIDTH+self.MAP_HEIGHT)
+        self.SCALE = 2
+        self.ZOOM = (self.WINDOW_WIDTH+self.WINDOW_HEIGHT)/(self.MAP_WIDTH+self.MAP_HEIGHT)
 
         #---PYGAME ENV DEFINE---
         pygame.init()
-        self.window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))
+        pygame.font.init()
+        self.font = pygame.font.SysFont('Calibri', 10)
+        self.window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT),pygame.HWACCEL)
 
         #---MAP VARIABLES---
         self.MAP_TEXTURE = pygame.image.load('views/assets/grounds/map.png').convert()
-        self.map = pygame.Surface((self.MAP_WIDTH*2*self.SCALE, self.MAP_HEIGHT*2*self.SCALE))
-        self.rect = self.map.get_rect(center=(self.WINDOW_OFFSET_W, self.WINDOW_OFFSET_H))
-
+        self.map = None
+        self.rect = None
+        self.mapX = 0
+        self.mapY = 0
         #---Unit asset loading--
-        #--PIKEMAN
-        self.ASSETS_PIKEMAN = assetLoaderPikeman('Pikeman')
+        self.ASSETS = {}
+        for u in LIST_UNITS:
+            self.ASSETS[u] = assetLoader(u)
+
         self.object_list = []
         self.unit_spritegroup = pygame.sprite.Group()
-        for unit in self.model.list_objects:
-            tmp = unit_model(unit,self)
+
+        # --- initialise army 1 units
+        for unit in self.model.get_army(self.model.general_1):
+            tmp = unit_model(unit,self,pygame.color.Color(0,0,255))
             self.object_list.append(tmp)
             self.unit_spritegroup.add(tmp)
 
-
-
+        # --- initialise army 2 units
+        for unit in self.model.get_army(self.model.general_2):
+            tmp = unit_model(unit,self,pygame.color.Color(255,0,0))
+            self.object_list.append(tmp)
+            self.unit_spritegroup.add(tmp)
 
     def makeMap(self,pos_x,pos_y):
         """MAP constructor"""
+        self.map = pygame.Surface((self.MAP_WIDTH * 2 * self.SCALE * self.ZOOM, self.MAP_HEIGHT * 2 * self.SCALE * self.ZOOM))
+        self.rect = self.map.get_rect(center=(self.WINDOW_OFFSET_W+self.mapX, self.WINDOW_OFFSET_H+self.mapY))
         self.map.fill((0,0,0))
         points = [self.convertCartToIso((pos_x, pos_y)),
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y)),
@@ -217,24 +243,43 @@ class PygameView(BattleView):
 
     def convertCartToIso(self,points):
         """Function to convert cartesian position to isometric position"""
-        iso_x = math.floor(((points[0]-points[1])+(self.MAP_WIDTH))*self.SCALE)
-        iso_y = math.floor((((points[0]+points[1])/2)+(self.MAP_HEIGHT/2))*self.SCALE)
+        iso_x = math.floor(((points[0]-points[1])+(self.MAP_WIDTH))*self.SCALE*self.ZOOM)
+        iso_y = math.floor((((points[0]+points[1])/2)+(self.MAP_HEIGHT/2))*self.SCALE*self.ZOOM)
         #print("Unit cord x:{} y:{} iso cord x:{} y:{}".format(points[0],points[1],iso_x, iso_y))
         return [iso_x, iso_y]
 
     def render(self):
         self.getInput()
         self.window.fill((0,0,0))
-        self.map.fill((0,0,0))
         self.makeMap(0,0)
         self.unit_spritegroup.update()
         self.unit_spritegroup.draw(self.map)
-        pygame.draw.rect(self.window,(0,255,0),self.rect)
         self.window.blit(self.map, self.rect)
+        self.window.blit(self.font.render("Running : {} | Speed : {:.2f}x".format(self.model.running,self.controller.game_speed), False, (255,255,255)),(0,0))
         pygame.display.flip()
         pygame.time.wait(1)
 
     def getInput(self):
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_KP_PLUS:
+                    self.ZOOM +=0.5
+                elif event.key == pygame.K_KP_MINUS:
+                    if self.ZOOM > 0.5:
+                        self.ZOOM -= 0.5
+                elif event.key == pygame.K_F11:
+                    pygame.display.toggle_fullscreen()
+
+        key = pygame.key.get_pressed()
+        if key[pygame.K_KP8]:
+            self.mapY += 10
+        elif key[pygame.K_KP2]:
+            self.mapY -= 10
+        elif key[pygame.K_KP4]:
+            self.mapX += 10
+        elif key[pygame.K_KP6]:
+            self.mapX -= 10

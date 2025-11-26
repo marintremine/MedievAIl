@@ -11,7 +11,7 @@
         "y": 10
       },
       {
-        "type": "knight",
+        "type": "pikeman",
         "x": 20,
         "y": 15
       },
@@ -23,12 +23,12 @@
     ],
     "army2": [
       {
-        "type": "crossbowman",
+        "type": "pikeman",
         "x": 100,
         "y": 90
       },
       {
-        "type": "knight",
+        "type": "pikeman",
         "x": 90,
         "y": 80
       },
