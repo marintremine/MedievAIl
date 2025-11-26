@@ -4,17 +4,15 @@ from settings import PYGAME_WIN
 import pygame
 import pygame.gfxdraw
 import math
-import re
 import json
 
 """
 TODO
 - Resoudre le probleme de l'axe Z
-- Ajouter archer et cavalier
-- couleur sur les sprites 
+- Ajouter minimap
 """
 
-LIST_UNITS = ["Pikeman","Crossbowman"]
+LIST_UNITS = ["Pikeman","Crossbowman","Knight"]
 
 switchOrientation = {
     "(1, 1)": "front",
@@ -71,14 +69,12 @@ def assetLoader(unitname):
         unit_json_map = json.load(file)
 
     for anim in assetLoaded:
-        print(anim)
         path = "views/assets/units/{}/{}/{}{}".format(unitname,anim, unitname,anim)
 
         for i in range(unit_json_map[anim]["side"]["front"]["start"],unit_json_map[anim]["side"]["front"]["end"]):
             assetLoaded[anim]["front"].append(pygame.image.load(
                 "{}{:003d}.bmp".format(path,i)).convert())
             assetLoaded[anim]["front"][i-unit_json_map[anim]["side"]["front"]["start"]].set_colorkey((255, 0, 255))
-            print("{}{:003d}.bmp".format(path,i))
 
         for i in range(unit_json_map[anim]["side"]["s-west"]["start"],unit_json_map[anim]["side"]["s-west"]["end"]):
             assetLoaded[anim]["s-west"].append(pygame.image.load(
@@ -88,7 +84,6 @@ def assetLoader(unitname):
             assetLoaded[anim]["s-east"].append(pygame.transform.flip(pygame.image.load(
                 "{}{:003d}.bmp".format(path,i)).convert(), True, False))
             assetLoaded[anim]["s-east"][i - unit_json_map[anim]["side"]["s-west"]["start"]].set_colorkey((255, 0, 255))
-            print("{}{:003d}.bmp".format(path, i))
         for i in range(unit_json_map[anim]["side"]["left"]["start"],unit_json_map[anim]["side"]["left"]["end"]):
             assetLoaded[anim]["left"].append(pygame.image.load(
                 "{}{:003d}.bmp".format(path,i)).convert())
@@ -97,7 +92,6 @@ def assetLoader(unitname):
             assetLoaded[anim]["right"].append(pygame.transform.flip(pygame.image.load(
                 "{}{:003d}.bmp".format(path,i)).convert(), True, False))
             assetLoaded[anim]["right"][i - unit_json_map[anim]["side"]["left"]["start"]].set_colorkey((255, 0, 255))
-            print("{}{:003d}.bmp".format(path, i))
         for i in range(unit_json_map[anim]["side"]["n-west"]["start"],unit_json_map[anim]["side"]["n-west"]["end"]):
             assetLoaded[anim]["n-west"].append(pygame.image.load(
                 "{}{:003d}.bmp".format(path,i)).convert())
@@ -106,13 +100,10 @@ def assetLoader(unitname):
             assetLoaded[anim]["n-east"].append(pygame.transform.flip(pygame.image.load(
                 "{}{:003d}.bmp".format(path,i)).convert(), True, False))
             assetLoaded[anim]["n-east"][i - unit_json_map[anim]["side"]["n-west"]["start"]].set_colorkey((255, 0, 255))
-            print("{}{:003d}.bmp".format(path, i))
         for i in range(unit_json_map[anim]["side"]["back"]["start"],unit_json_map[anim]["side"]["back"]["end"]):
             assetLoaded[anim]["back"].append(pygame.image.load(
                 "{}{:003d}.bmp".format(path,i)).convert())
             assetLoaded[anim]["back"][i - unit_json_map[anim]["side"]["back"]["start"]].set_colorkey((255, 0, 255))
-            print("{}{:003d}.bmp".format(path, i))
-    #exit()
     return assetLoaded
 
 
@@ -172,8 +163,13 @@ class unit_model(pygame.sprite.Sprite):
             ((self.image.get_width()/self.pygameSim.SCALE)*self.pygameSim.ZOOM,
                  (self.image.get_height()/self.pygameSim.SCALE)*self.pygameSim.ZOOM)
             )
+            textTmp = pygame.PixelArray(self.image)
+            pygame.PixelArray.replace(textTmp, (0, 21, 130), self.color, 0.15)
+            self.image = textTmp.surface
+            del textTmp
         except IndexError:
-            print("Index error : Side : {} Key : {:f}/{:d} troup type : {}".format(self.direction,self.animationKey,self.animationKeyMax,self.name))
+            #print("Index error : Side : {} Key : {:f}/{:d} troup type : {}".format(self.direction,self.animationKey,self.animationKeyMax,self.name))
+            pass
 
         self.image.blit(self.displayText,((self.image.get_width()-self.displayText.get_width())/2,self.image.get_height()-self.displayText.get_height()))
         self.rect = self.image.get_rect(midbottom=self.pygameSim.convertCartToIso((self.x, self.y)))
@@ -201,7 +197,11 @@ class PygameView(BattleView):
         #---PYGAME ENV DEFINE---
         pygame.init()
         pygame.font.init()
-        self.font = pygame.font.SysFont('Calibri', 10)
+        pygame.display.set_caption("MedievAIl")
+        pygame.display.set_icon(pygame.image.load("views/assets/icons/game.png"))
+        pygame.mouse.set_cursor(pygame.cursors.Cursor((0,0),pygame.image.load("views/assets/cursors/default32x32.cur")))
+
+        self.font = pygame.font.SysFont('Calibri', 20)
         self.window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT),pygame.HWACCEL)
 
         #---MAP VARIABLES---
@@ -250,12 +250,27 @@ class PygameView(BattleView):
 
     def render(self):
         self.getInput()
+
+        #--- Render MAP & UNITS
         self.window.fill((0,0,0))
         self.makeMap(0,0)
         self.unit_spritegroup.update()
         self.unit_spritegroup.draw(self.map)
         self.window.blit(self.map, self.rect)
-        self.window.blit(self.font.render("Running : {} | Speed : {:.2f}x".format(self.model.running,self.controller.game_speed), False, (255,255,255)),(0,0))
+
+        #--- Render UI
+        textTmp = "{} | {}".format(self.model.general_1.name, self.model.general_2.name)
+        self.window.blit(self.font.render(textTmp,
+                             False, (255, 255, 255)), ((self.window.get_width()/2)-self.font.size(textTmp)[0]/2, 0))
+
+        self.window.blit(self.font.render("Running : {} | Speed : {:.2f}x".format(self.model.running,self.controller.game_speed),
+                                    False, (255,255,255)),(0,0))
+
+        self.window.blit(self.font.render("ZOOM : {:.2f}x".format(self.ZOOM),
+                                  False, (255,255,255)),
+                                    (self.window.get_width()-self.font.size("ZOOM : 0.00x")[0],0))
+        self.window.blit(self.font.render("space : PAUSE | +/- : ZOOM | ↑↓ : SPEED | ←↑↓→ : MOVE | ESC : QUIT | F11 : TOGGLE WINDOW",
+                             False, (255, 255, 255)), (0,self.window.get_height()-self.font.get_height()))
         pygame.display.flip()
         pygame.time.wait(1)
 

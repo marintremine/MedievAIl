@@ -151,7 +151,8 @@ class Crossbowman(Unit):
         """Attaque avec gestion de la précision"""
         if not self.is_alive() or not target.is_alive() or not self.in_range(target):
             return False
-        
+
+        self.currentAction = "attack"
         # Décrémenter le cooldown
         if self.cooldown_timer > 0:
             self.cooldown_timer -= self.battle_model.delta_time
