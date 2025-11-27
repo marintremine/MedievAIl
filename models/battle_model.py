@@ -21,6 +21,7 @@ class BattleModel:
         self.map_height = None
         self.delta_time = 0.0
         self.list_objects = []
+        self.winner = None
 
 
     def load(self, path:str, ai1:str, ai2:str)->None:
@@ -123,6 +124,9 @@ class BattleModel:
 
     def update(self) -> None:
         """Met à jour l'état de la bataille à chaque tick."""
+
+
+
         # Generals decide in random order
         generals = [g for g in (self.general_1, self.general_2) if g is not None]
         random.shuffle(generals)
@@ -135,6 +139,17 @@ class BattleModel:
         for unit in units:
             unit.action.action()
 
+        # Check for end of battle
+        army1_alive = any(isinstance(obj, Unit) and obj.general == self.general_1 and obj.is_alive() for obj in self.list_objects)
+        army2_alive = any(isinstance(obj, Unit) and obj.general == self.general_2 and obj.is_alive() for obj in self.list_objects)
+        if not army1_alive or not army2_alive:
+            self.running = False
+            if army1_alive and not army2_alive:
+                self.winner = self.general_1
+            elif army2_alive and not army1_alive:
+                self.winner = self.general_2
+            else:
+                self.winner = None  # Draw or both armies eliminated
 
     def pause(self)->None:
         """Met en pause ou reprend la simulation de la bataille."""

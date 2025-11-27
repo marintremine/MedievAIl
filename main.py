@@ -1,13 +1,14 @@
 
 import argparse
 import sys
+from pathlib import Path
 
 from controllers.battle_controller import BattleController
 from controllers.live_server import start_flask_debug_server
 from models.battle_model import BattleModel
 from views.pygame_view import PygameView
 from views.terminal_view import TerminalView
-
+from tourney import Tournament
 
 
 def main():
@@ -26,6 +27,18 @@ def main():
     run_parser.add_argument("-t", "--terminal", action="store_true", help="Afficher la vue terminal")
     run_parser.add_argument("-d", "--datafile", type=str, default=None,
                             help="Chemin du fichier pour écrire les données de la bataille (ou '-' pour stdout)")
+    
+    # ---- TOURNEY ----
+    tourney_parser = subparsers.add_parser("tourney", help="Lancer un tournoi entre plusieurs IA")
+    tourney_parser.add_argument("-G", "--generals", nargs='+', required=True,
+                                help="Liste des IA (généraux) à inclure dans le tournoi")
+    tourney_parser.add_argument("-S", "--scenarios", nargs='+', required=True,
+                                help="Liste des scénarios à exécuter (chemins)")
+    tourney_parser.add_argument("-N", "--num", type=int, default=10,
+                                help="Nombre de batailles par paire (défaut: 10)")
+    tourney_parser.add_argument("-d", "--datafile", type=str, default=None,
+                                help="Chemin du fichier pour écrire les résultats (ou '-' pour stdout)")
+
 
     args = parser.parse_args()
 
@@ -42,8 +55,13 @@ def main():
         controller.view = view
 
         start_flask_debug_server(model)
-
         controller.run()
+    elif args.command == "tourney":
+        print("Generals:", args.generals)
+        print("Scenarios:", args.scenarios)
+        # print("Number of battles per pair:", args.num)
+        tournament = Tournament(args.generals, args.scenarios)
+        tournament.run()
     else:
         parser.print_help()
         sys.exit(1)

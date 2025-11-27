@@ -87,7 +87,7 @@ class BattleController:
 
             # --- RENDER FRAME ---
 
-            if now - last_frame >= frame_interval:
+            if self.view and now - last_frame >= frame_interval:
                 self.view.render()
                 frame_count += 1
                 last_frame = now
@@ -99,6 +99,9 @@ class BattleController:
                 tick_count = 0
                 frame_count = 0
                 last_stats = now
+
+            if self.model.winner:
+                break
 
             time.sleep(0.0001) # Sleep pour éviter l'utilisation à 100% du CPU
 
