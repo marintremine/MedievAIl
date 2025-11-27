@@ -25,9 +25,13 @@ class BattleController:
                 elif key == keyboard.KeyCode.from_char('s'):
                     self.actions.put("save")
                 elif key == keyboard.Key.up:
-                    self.actions.put("speed_up")
+                    self.actions.put("move_up")
                 elif key == keyboard.Key.down:
-                    self.actions.put("speed_down")
+                    self.actions.put("move_down")
+                elif key == keyboard.Key.left:
+                    self.actions.put("move_left")
+                elif key == keyboard.Key.right:
+                    self.actions.put("move_right")
                 elif key == keyboard.Key.esc:
                     self.actions.put("exit")
 
@@ -73,6 +77,18 @@ class BattleController:
                             break
                         case "speed_down":
                             self.speed_down()
+                            break
+                        case "move_up":
+                            self.view.move_view(0, -1)
+                            break
+                        case "move_down":
+                            self.view.move_view(0, 1)
+                            break
+                        case "move_left":
+                            self.view.move_view(-1, 0)
+                            break
+                        case "move_right":
+                            self.view.move_view(1, 0)
                             break
                         case "exit":
                             return

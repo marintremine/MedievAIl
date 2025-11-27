@@ -12,6 +12,8 @@ class TerminalView(BattleView):
         super().__init__(model, controller)
         self._init_curses()
         self._init_colors()
+        self.offset_x = 0
+        self.offset_y = 0
 
     def _init_curses(self):
         """Initialise les paramètres de curses."""
@@ -44,6 +46,12 @@ class TerminalView(BattleView):
         self._draw_map()
         self._draw_units()
         self._draw_info()
+
+        # Afficher les infos de l'unité sélectionnée
+        distance_threshold = 5
+        for unit in self.model.list_objects:
+            self._draw_unit_info(unit, start_y=self.model.map_height + distance_threshold)
+            distance_threshold += 6
         self.stdscr.refresh()
 
         
@@ -55,7 +63,9 @@ class TerminalView(BattleView):
         max_y, max_x = self.stdscr.getmaxyx()
         for y in range(min(self.model.map_height, max_y)):
             for x in range(min(self.model.map_width, max_x)):
-                if y == max_y - 1 and x == max_x - 1:
+                map_x = x + self.offset_x
+                map_y = y + self.offset_y
+                if map_y >= self.model.map_height or map_x >= self.model.map_width:
                     continue
                 try:
                     self.stdscr.addch(y, x, '.', curses.color_pair(3))
@@ -63,24 +73,23 @@ class TerminalView(BattleView):
                     pass
 
     def _draw_units(self):
-        """Dessine les unités sur la carte."""
         max_y, max_x = self.stdscr.getmaxyx()
         for obj in self.model.list_objects:
             if isinstance(obj, Unit) and not obj.is_alive():
                 continue
 
-            if 0 <= obj.y < max_y and 0 <= obj.x < max_x:
-                if obj.y == max_y - 1 and obj.x == max_x - 1:
-                    continue
-                
+            screen_x = obj.x - self.offset_x
+            screen_y = obj.y - self.offset_y
+
+            if 0 <= screen_y < max_y and 0 <= screen_x < max_x:
                 symbol = self._get_unit_symbol(obj)
                 color_pair = self._get_unit_color(obj)
-                
                 try:
-                    self.stdscr.addch(obj.y, obj.x, symbol, 
+                    self.stdscr.addch(screen_y, screen_x, symbol,
                                     curses.color_pair(color_pair) | curses.A_BOLD)
                 except curses.error:
                     pass
+
 
     def _draw_info(self):
         """Affiche les informations de statut en bas de l'écran."""
@@ -94,6 +103,24 @@ class TerminalView(BattleView):
             self.stdscr.addstr(status_y, 0, info_line[:max_x - 1])
         except curses.error:
             pass
+
+    def _draw_unit_info(self, unit, start_y):
+        """Affiche les informations détaillées d'une unité spécifique."""
+        max_y, max_x = self.stdscr.getmaxyx()
+        info_lines = [
+            f"Unité: {unit.name}",
+            f"HP: {unit.hp}/{unit.max_hp}",
+            f"Position: ({unit.x}, {unit.y})",
+            f"Action: {unit.currentAction}",
+            f"Cooldown: {unit.cooldown_timer}/{unit.cooldown}"
+        ]
+        for i, line in enumerate(info_lines):
+            y = start_y + i
+            if y < max_y:
+                try:
+                    self.stdscr.addstr(y, 0, line[:max_x - 1])
+                except curses.error:
+                    pass
 
     def _get_unit_symbol(self, unit):
         """Définit un symbole simple pour représenter les unités."""
@@ -121,3 +148,8 @@ class TerminalView(BattleView):
             curses.endwin()          # ferme curses proprement
         except:
             pass
+
+    def move_view(self, dx, dy):
+        """Déplace la caméra sur la carte."""
+        self.offset_x = max(0, min(self.offset_x + dx, self.model.map_width - 1))
+        self.offset_y = max(0, min(self.offset_y + dy, self.model.map_height - 1))
