@@ -149,6 +149,8 @@ class unit_model(pygame.sprite.Sprite):
 
             elif self.animation == "die":
                 if self.animationKey < self.animationKeyMax: self.animationKey += 0.1
+                else:
+                    self.action = "dead"
             else:
                 if self.animationKey > self.animationKeyMax:
                     self.animationKey = 0
@@ -156,22 +158,25 @@ class unit_model(pygame.sprite.Sprite):
                     self.animationKey += 0.1
 
         #Create the textured polygon for the map
-        try:
-            self.image = self.TEXTURE[self.animation][switchOrientation[str(self.direction)]][math.floor(self.animationKey)]
-            self.image = pygame.transform.scale(
-                self.image,
-            ((self.image.get_width()/self.pygameSim.SCALE)*self.pygameSim.ZOOM,
-                 (self.image.get_height()/self.pygameSim.SCALE)*self.pygameSim.ZOOM)
-            )
-            textTmp = pygame.PixelArray(self.image)
-            pygame.PixelArray.replace(textTmp, (0, 21, 130), self.color, 0.15)
-            self.image = textTmp.surface
-            del textTmp
-        except IndexError:
-            #print("Index error : Side : {} Key : {:f}/{:d} troup type : {}".format(self.direction,self.animationKey,self.animationKeyMax,self.name))
-            pass
-
-        self.image.blit(self.displayText,((self.image.get_width()-self.displayText.get_width())/2,self.image.get_height()-self.displayText.get_height()))
+        if self.action != "dead":
+            try:
+                self.image = self.TEXTURE[self.animation][switchOrientation[str(self.direction)]][math.floor(self.animationKey)]
+                self.image = pygame.transform.scale(
+                    self.image,
+                ((self.image.get_width()/self.pygameSim.SCALE),
+                     (self.image.get_height()/self.pygameSim.SCALE))
+                )
+                textTmp = pygame.PixelArray(self.image)
+                pygame.PixelArray.replace(textTmp, (0, 21, 130), self.color, 0.15)
+                self.image = textTmp.surface
+                del textTmp
+            except IndexError:
+                #print("Index error : Side : {} Key : {:f}/{:d} troup type : {}".format(self.direction,self.animationKey,self.animationKeyMax,self.name))
+                pass
+            if self.is_alive:
+                pass#self.image.blit(self.displayText,((self.image.get_width()-self.displayText.get_width())/2,self.image.get_height()-self.displayText.get_height()))
+        else:
+             self.image.set_alpha(0)
         self.rect = self.image.get_rect(midbottom=self.pygameSim.convertCartToIso((self.x, self.y)))
 
 class PygameView(BattleView):
@@ -192,7 +197,7 @@ class PygameView(BattleView):
         self.WINDOW_OFFSET_W = self.WINDOW_WIDTH / 2
 
         self.SCALE = 2
-        self.ZOOM = (self.WINDOW_WIDTH+self.WINDOW_HEIGHT)/(self.MAP_WIDTH+self.MAP_HEIGHT)
+        self.ZOOM = 1 #((self.WINDOW_WIDTH+self.WINDOW_HEIGHT)/(self.MAP_WIDTH+self.MAP_HEIGHT))-self.SCALE
 
         #---PYGAME ENV DEFINE---
         pygame.init()
@@ -202,7 +207,7 @@ class PygameView(BattleView):
         pygame.mouse.set_cursor(pygame.cursors.Cursor((0,0),pygame.image.load("views/assets/cursors/default32x32.cur")))
 
         self.font = pygame.font.SysFont('Calibri', 20)
-        self.window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT),pygame.HWACCEL)
+        self.window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT),pygame.HWSURFACE | pygame.DOUBLEBUF)
 
         #---MAP VARIABLES---
         self.MAP_TEXTURE = pygame.image.load('views/assets/grounds/map.png').convert()
@@ -232,19 +237,19 @@ class PygameView(BattleView):
 
     def makeMap(self,pos_x,pos_y):
         """MAP constructor"""
-        self.map = pygame.Surface((self.MAP_WIDTH * 2 * self.SCALE * self.ZOOM, self.MAP_HEIGHT * 2 * self.SCALE * self.ZOOM))
-        self.rect = self.map.get_rect(center=(self.WINDOW_OFFSET_W+self.mapX, self.WINDOW_OFFSET_H+self.mapY))
+        self.map = pygame.Surface((self.MAP_WIDTH * 2 * self.SCALE, self.MAP_HEIGHT * 2 * self.SCALE))
         self.map.fill((0,0,0))
         points = [self.convertCartToIso((pos_x, pos_y)),
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y)),
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y+self.MAP_HEIGHT)),
               self.convertCartToIso((pos_x, pos_y+self.MAP_HEIGHT))]
         pygame.gfxdraw.textured_polygon(self.map, points, self.MAP_TEXTURE, 0, 0)
+        #pygame.draw.polygon(self.map, (255,0,255), points, 1)
 
     def convertCartToIso(self,points):
         """Function to convert cartesian position to isometric position"""
-        iso_x = math.floor(((points[0]-points[1])+(self.MAP_WIDTH))*self.SCALE*self.ZOOM)
-        iso_y = math.floor((((points[0]+points[1])/2)+(self.MAP_HEIGHT/2))*self.SCALE*self.ZOOM)
+        iso_x = math.floor(((points[0]-points[1])+(self.MAP_WIDTH))*self.SCALE)
+        iso_y = math.floor((((points[0]+points[1])/2)+(self.MAP_HEIGHT/2))*self.SCALE)
         #print("Unit cord x:{} y:{} iso cord x:{} y:{}".format(points[0],points[1],iso_x, iso_y))
         return [iso_x, iso_y]
 
@@ -256,6 +261,8 @@ class PygameView(BattleView):
         self.makeMap(0,0)
         self.unit_spritegroup.update()
         self.unit_spritegroup.draw(self.map)
+        self.map = pygame.transform.smoothscale_by(self.map,self.ZOOM)
+        self.rect = self.map.get_rect(center=(self.WINDOW_OFFSET_W + self.mapX, self.WINDOW_OFFSET_H + self.mapY))
         self.window.blit(self.map, self.rect)
 
         #--- Render UI
@@ -271,6 +278,7 @@ class PygameView(BattleView):
                                     (self.window.get_width()-self.font.size("ZOOM : 0.00x")[0],0))
         self.window.blit(self.font.render("space : PAUSE | +/- : ZOOM | ↑↓ : SPEED | ←↑↓→ : MOVE | ESC : QUIT | F11 : TOGGLE WINDOW",
                              False, (255, 255, 255)), (0,self.window.get_height()-self.font.get_height()))
+
         pygame.display.flip()
         pygame.time.wait(1)
 
