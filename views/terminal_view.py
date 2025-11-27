@@ -1,19 +1,31 @@
 import curses
 import sys
-import termios
+import io
 
 from time import time
 from views.battle_view import BattleView
 from models.battle_model import BattleModel
 from models.unit import *
 
+# Modes de vues
+VIEW_BATTLE = 0
+VIEW_ARMY_INFO = 1
+VIEW_MESSAGE = 2
+
 class TerminalView(BattleView):
     def __init__(self, model, controller):
         super().__init__(model, controller)
         self._init_curses()
         self._init_colors()
+
         self.offset_x = 0
         self.offset_y = 0
+        self.view_mode = VIEW_BATTLE
+
+        self._stdout_buffer = io.StringIO()
+        self._original_stdout = sys.stdout
+        sys.stdout = self._stdout_buffer
+
 
     def _init_curses(self):
         """Initialise les paramètres de curses."""
@@ -40,17 +52,20 @@ class TerminalView(BattleView):
             self.model.general_2: 2
         }
     
-    def render(self) -> None:
-        """Affiche l'ensemble de la vue en mode terminal."""
+    def render(self):
+        """Rendu principal de la vue terminal."""
         self.stdscr.erase()
-        self._draw_map()
-        self._draw_units()
-        self._draw_info()
 
-        self.stdscr.refresh()
+        if self.view_mode == VIEW_BATTLE:
+            self._draw_map()
+            self._draw_units()
+            self._draw_info()
+        elif self.view_mode == VIEW_ARMY_INFO:
+            self._draw_army_infos()
+        elif self.view_mode == VIEW_MESSAGE:
+            text = self._stdout_buffer.getvalue()
+            self._draw_standard_output(text, 0)
 
-        
-        # Rafraîchir l'écran une seule fois à la fin
         self.stdscr.refresh()
     
     def _draw_map(self):
@@ -68,6 +83,7 @@ class TerminalView(BattleView):
                     pass
 
     def _draw_units(self):
+        """Dessine les unités sur la carte."""
         max_y, max_x = self.stdscr.getmaxyx()
         for obj in self.model.list_objects:
             if isinstance(obj, Unit) and not obj.is_alive():
@@ -84,7 +100,6 @@ class TerminalView(BattleView):
                                     curses.color_pair(color_pair) | curses.A_BOLD)
                 except curses.error:
                     pass
-
 
     def _draw_info(self):
         """Affiche les informations de statut en bas de l'écran."""
@@ -117,6 +132,48 @@ class TerminalView(BattleView):
                 except curses.error:
                     pass
 
+    def _draw_army_infos(self):
+        """Affiche les informations des armées."""
+        max_y, max_x = self.stdscr.getmaxyx()
+        start_y = 0
+
+        armies = [
+            (self.model.get_army(self.model.general_1), self.model.general_1, "Armée 1"),
+            (self.model.get_army(self.model.general_2), self.model.general_2, "Armée 2")
+        ]
+
+        for army, general, army_name in armies:
+            header = f"{army_name} (Général: {general.name})"
+            try:
+                self.stdscr.addstr(start_y, 0, header[:max_x - 1], curses.A_UNDERLINE)
+            except curses.error:
+                pass
+            start_y += 1
+
+            for unit in army:
+                if start_y >= max_y:
+                    break
+                unit_info = f"- {unit.name} | HP: {unit.hp}/{unit.max_hp} | Pos: ({unit.x},{unit.y})"
+                try:
+                    self.stdscr.addstr(start_y, 0, unit_info[:max_x - 1])
+                except curses.error:
+                    pass
+                start_y += 1
+
+            start_y += 1  # Ligne vide entre les armées
+
+    def _draw_standard_output(self, text, start_y):
+        """Affiche du texte standard à l'écran."""
+        max_y, max_x = self.stdscr.getmaxyx()
+        lines = text.splitlines()
+        for i, line in enumerate(lines):
+            y = start_y + i
+            if y < max_y:
+                try:
+                    self.stdscr.addstr(y, 0, line[:max_x - 1])
+                except curses.error:
+                    pass
+
     def _get_unit_symbol(self, unit):
         """Définit un symbole simple pour représenter les unités."""
         if isinstance(unit, Knight):
@@ -136,6 +193,7 @@ class TerminalView(BattleView):
     def cleanup(self):
         """Restaure les paramètres du terminal pour éviter les codes d'échappement."""
         try:
+            sys.stdout = self._original_stdout
             curses.curs_set(1)       # réaffiche le curseur
             curses.nocbreak()        # désactive le mode cbreak
             self.stdscr.keypad(False)
@@ -148,3 +206,9 @@ class TerminalView(BattleView):
         """Déplace la caméra sur la carte."""
         self.offset_x = max(0, min(self.offset_x + dx, self.model.map_width - 1))
         self.offset_y = max(0, min(self.offset_y + dy, self.model.map_height - 1))
+
+    def next_view_mode(self):
+        self.view_mode = (self.view_mode + 1) % 3
+
+    def prev_view_mode(self):
+        self.view_mode = (self.view_mode - 1) % 3

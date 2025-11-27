@@ -36,6 +36,10 @@ class BattleController:
                     self.actions.put("speed_up")
                 elif key == keyboard.KeyCode.from_char('-'):
                     self.actions.put("speed_down")
+                elif key == keyboard.Key.f1:
+                    self.actions.put("next_view_mode")
+                elif key == keyboard.Key.f2:
+                    self.actions.put("prev_view_mode")
                 elif key == keyboard.Key.esc:
                     self.actions.put("exit")
 
@@ -93,6 +97,12 @@ class BattleController:
                             break
                         case "move_right":
                             self.view.move_view(1, 0)
+                            break
+                        case "next_view_mode":
+                            self.view.next_view_mode()
+                            break
+                        case "prev_view_mode":
+                            self.view.prev_view_mode()
                             break
                         case "exit":
                             return
