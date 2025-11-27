@@ -1,7 +1,7 @@
 from __future__ import annotations
 import random
 
-from models.order import Attack, Move, Wait
+from models.order import Attack, Move, Wait, Defense
 from models.unit import Unit
 
 class General:
@@ -22,11 +22,16 @@ class Daft(General):
         pass
 
 class BrainDead(General):
+    """
+    Un général qui ne donne aucun ordre, toute l'armée est en mode Defense donc les unités attaquent les ennemis dans leur portée.
+    """
     def __init__(self, battle_model):
         super().__init__("BrainDead", battle_model)
 
     def decide(self) -> None:
-        pass
+        for unit in self.battle_model.get_army(self):
+            enemies_unit = self.battle_model.get_enemy_army(self)
+            unit.action = Defense(unit, enemies_unit)
 
 class MoveTestGeneral(General):
     """

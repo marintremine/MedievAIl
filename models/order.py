@@ -62,3 +62,15 @@ class Wait(Order):
 
     def action(self) -> None:
         pass
+
+class Defense(Order):
+    def __init__(self, unit: "Unit", enemy_units) -> None: # pyright: ignore[reportUndefinedVariable]
+        super().__init__(unit)
+        #self.unit.direction = (0, 1)
+        self.enemy_units = enemy_units
+        self.unit.currentAction = "stand"
+
+    def action(self) -> None:
+        for enemy in self.enemy_units:
+            if self.unit.in_range(enemy):
+                self.unit.attack_target(enemy)
