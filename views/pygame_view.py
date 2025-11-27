@@ -218,7 +218,7 @@ class PygameView(BattleView):
 
         #---GUI---
 
-        self.commandText = self.font.render(" P : PAUSE | S : SAVE | +/- : ZOOM | ↑↓ : SPEED | ←↑↓→ : MOVE | ESC : QUIT | F11 : TOGGLE WINDOW",False, (255, 255, 255))
+        self.commandText = self.font.render(" P : PAUSE/PLAY | +/-/MOUSE WHEEL : ZOOM | ↑↓ : SPEED | ZQSD : MOVE | ESC : QUIT | F10 : FULLSCREEN | F11 : SAVE",False, (255, 255, 255))
         self.generalNameText = self.font.render("{} | {}".format(self.model.general_1.name, self.model.general_2.name),False, (255, 255, 255))
 
         #---Unit asset loading--
@@ -299,22 +299,31 @@ class PygameView(BattleView):
                 pygame.quit()
                 exit()
             elif event.type == pygame.KEYDOWN:
-
                 if event.key == pygame.K_KP_PLUS:
-                    self.ZOOM +=0.5
+                    self.zoomIn()
                 elif event.key == pygame.K_KP_MINUS:
-                    if self.ZOOM > 0.5:
-                        self.ZOOM -= 0.5
-                elif event.key == pygame.K_F11:
+                    self.zoomOut()
+                elif event.key == pygame.K_F10:
                     pygame.display.toggle_fullscreen()
+            elif event.type == pygame.MOUSEWHEEL:
+                if event.y == 1:
+                    self.zoomIn()
+                elif event.y == -1:
+                    self.zoomOut()
 
         key = pygame.key.get_pressed()
-        if key[pygame.K_KP8]:
+        if key[pygame.K_z]:
             self.mapY += 10
-        elif key[pygame.K_KP2]:
+        elif key[pygame.K_s]:
             self.mapY -= 10
-        elif key[pygame.K_KP4]:
+        elif key[pygame.K_q]:
             self.mapX += 10
-        elif key[pygame.K_KP6]:
+        elif key[pygame.K_d]:
             self.mapX -= 10
 
+    def zoomIn(self):
+        self.ZOOM += 0.5
+
+    def zoomOut(self):
+        if self.ZOOM > 0.5:
+            self.ZOOM -= 0.5
