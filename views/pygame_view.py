@@ -8,7 +8,6 @@ import json
 
 """
 TODO
-- Resoudre le probleme de l'axe Z
 - Ajouter minimap
 """
 
@@ -163,7 +162,7 @@ class unit_model(pygame.sprite.Sprite):
                 self.image = self.TEXTURE[self.animation][switchOrientation[str(self.direction)]][math.floor(self.animationKey)]
                 self.image = pygame.transform.scale(
                     self.image,
-                ((self.image.get_width()/self.pygameSim.SCALE),
+                    ((self.image.get_width()/self.pygameSim.SCALE),
                      (self.image.get_height()/self.pygameSim.SCALE))
                 )
                 textTmp = pygame.PixelArray(self.image)
@@ -174,9 +173,10 @@ class unit_model(pygame.sprite.Sprite):
                 #print("Index error : Side : {} Key : {:f}/{:d} troup type : {}".format(self.direction,self.animationKey,self.animationKeyMax,self.name))
                 pass
             if self.is_alive:
-                pass#self.image.blit(self.displayText,((self.image.get_width()-self.displayText.get_width())/2,self.image.get_height()-self.displayText.get_height()))
+                pass #self.image.blit(self.displayText,((self.image.get_width()-self.displayText.get_width())/2,self.image.get_height()-self.displayText.get_height()))
+
         else:
-             self.image.set_alpha(0)
+            self.image.set_alpha(0)
         self.rect = self.image.get_rect(midbottom=self.pygameSim.convertCartToIso((self.x, self.y)))
 
 class PygameView(BattleView):
@@ -197,7 +197,7 @@ class PygameView(BattleView):
         self.WINDOW_OFFSET_W = self.WINDOW_WIDTH / 2
 
         self.SCALE = 2
-        self.ZOOM = 1 #((self.WINDOW_WIDTH+self.WINDOW_HEIGHT)/(self.MAP_WIDTH+self.MAP_HEIGHT))-self.SCALE
+        self.ZOOM = 1
 
         #---PYGAME ENV DEFINE---
         pygame.init()
@@ -215,6 +215,12 @@ class PygameView(BattleView):
         self.rect = None
         self.mapX = 0
         self.mapY = 0
+
+        #---GUI---
+
+        self.commandText = self.font.render(" P : PAUSE/PLAY | +/-/MOUSE WHEEL : ZOOM | ↑↓ : SPEED | ZQSD : MOVE | ESC : QUIT | F10 : FULLSCREEN | F11 : SAVE",False, (255, 255, 255))
+        self.generalNameText = self.font.render("{} | {}".format(self.model.general_1.name, self.model.general_2.name),False, (255, 255, 255))
+
         #---Unit asset loading--
         self.ASSETS = {}
         for u in LIST_UNITS:
@@ -227,13 +233,11 @@ class PygameView(BattleView):
         for unit in self.model.get_army(self.model.general_1):
             tmp = unit_model(unit,self,pygame.color.Color(0,0,255))
             self.object_list.append(tmp)
-            self.unit_spritegroup.add(tmp)
 
         # --- initialise army 2 units
         for unit in self.model.get_army(self.model.general_2):
             tmp = unit_model(unit,self,pygame.color.Color(255,0,0))
             self.object_list.append(tmp)
-            self.unit_spritegroup.add(tmp)
 
     def makeMap(self,pos_x,pos_y):
         """MAP constructor"""
@@ -244,7 +248,6 @@ class PygameView(BattleView):
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y+self.MAP_HEIGHT)),
               self.convertCartToIso((pos_x, pos_y+self.MAP_HEIGHT))]
         pygame.gfxdraw.textured_polygon(self.map, points, self.MAP_TEXTURE, 0, 0)
-        #pygame.draw.polygon(self.map, (255,0,255), points, 1)
 
     def convertCartToIso(self,points):
         """Function to convert cartesian position to isometric position"""
@@ -253,22 +256,30 @@ class PygameView(BattleView):
         #print("Unit cord x:{} y:{} iso cord x:{} y:{}".format(points[0],points[1],iso_x, iso_y))
         return [iso_x, iso_y]
 
+    def sortingUnits(self,word):
+        return word.x*word.y
+
+    def updateSpriteGroup(self):
+        self.object_list.sort(key=self.sortingUnits)
+        for unit in self.object_list:
+            self.unit_spritegroup.add(unit)
+
     def render(self):
         self.getInput()
 
         #--- Render MAP & UNITS
         self.window.fill((0,0,0))
         self.makeMap(0,0)
+        self.updateSpriteGroup()
         self.unit_spritegroup.update()
         self.unit_spritegroup.draw(self.map)
         self.map = pygame.transform.smoothscale_by(self.map,self.ZOOM)
-        self.rect = self.map.get_rect(center=(self.WINDOW_OFFSET_W + self.mapX, self.WINDOW_OFFSET_H + self.mapY))
+        self.rect = self.map.get_rect(center=(self.window.get_width()/2 + self.mapX, self.window.get_height()/2 + self.mapY))
         self.window.blit(self.map, self.rect)
 
         #--- Render UI
-        textTmp = "{} | {}".format(self.model.general_1.name, self.model.general_2.name)
-        self.window.blit(self.font.render(textTmp,
-                             False, (255, 255, 255)), ((self.window.get_width()/2)-self.font.size(textTmp)[0]/2, 0))
+
+        self.window.blit(self.generalNameText, ((self.window.get_width()/2)-self.generalNameText.get_width()/2, 0))
 
         self.window.blit(self.font.render("Running : {} | Speed : {:.2f}x".format(self.model.running,self.controller.game_speed),
                                     False, (255,255,255)),(0,0))
@@ -276,10 +287,10 @@ class PygameView(BattleView):
         self.window.blit(self.font.render("ZOOM : {:.2f}x".format(self.ZOOM),
                                   False, (255,255,255)),
                                     (self.window.get_width()-self.font.size("ZOOM : 0.00x")[0],0))
-        self.window.blit(self.font.render("space : PAUSE | +/- : ZOOM | ↑↓ : SPEED | ←↑↓→ : MOVE | ESC : QUIT | F11 : TOGGLE WINDOW",
-                             False, (255, 255, 255)), (0,self.window.get_height()-self.font.get_height()))
+        self.window.blit(self.commandText, (0,self.window.get_height()-self.font.get_height()))
 
         pygame.display.flip()
+        self.unit_spritegroup.empty()
         pygame.time.wait(1)
 
     def getInput(self):
@@ -288,21 +299,31 @@ class PygameView(BattleView):
                 pygame.quit()
                 exit()
             elif event.type == pygame.KEYDOWN:
-
                 if event.key == pygame.K_KP_PLUS:
-                    self.ZOOM +=0.5
+                    self.zoomIn()
                 elif event.key == pygame.K_KP_MINUS:
-                    if self.ZOOM > 0.5:
-                        self.ZOOM -= 0.5
-                elif event.key == pygame.K_F11:
+                    self.zoomOut()
+                elif event.key == pygame.K_F10:
                     pygame.display.toggle_fullscreen()
+            elif event.type == pygame.MOUSEWHEEL:
+                if event.y == 1:
+                    self.zoomIn()
+                elif event.y == -1:
+                    self.zoomOut()
 
         key = pygame.key.get_pressed()
-        if key[pygame.K_KP8]:
+        if key[pygame.K_z]:
             self.mapY += 10
-        elif key[pygame.K_KP2]:
+        elif key[pygame.K_s]:
             self.mapY -= 10
-        elif key[pygame.K_KP4]:
+        elif key[pygame.K_q]:
             self.mapX += 10
-        elif key[pygame.K_KP6]:
+        elif key[pygame.K_d]:
             self.mapX -= 10
+
+    def zoomIn(self):
+        self.ZOOM += 0.5
+
+    def zoomOut(self):
+        if self.ZOOM > 0.5:
+            self.ZOOM -= 0.5
