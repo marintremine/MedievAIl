@@ -102,4 +102,5 @@ class BattleController:
 
                 time.sleep(0.0001) # Sleep pour éviter l'utilisation à 100% du CPU
         finally:
+            # Nettoyage terminal à la fin de la boucle
             self.view.cleanup()
