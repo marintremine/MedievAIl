@@ -32,6 +32,10 @@ class BattleController:
                     self.actions.put("move_left")
                 elif key == keyboard.Key.right:
                     self.actions.put("move_right")
+                elif key == keyboard.KeyCode.from_char('+'):
+                    self.actions.put("speed_up")
+                elif key == keyboard.KeyCode.from_char('-'):
+                    self.actions.put("speed_down")
                 elif key == keyboard.Key.esc:
                     self.actions.put("exit")
 
