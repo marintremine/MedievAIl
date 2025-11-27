@@ -64,6 +64,10 @@ class BattleController:
                     case "save":
                         self.model.save(self.datafile)
                         break
+                    case "snapshot":
+                        self.model.running = False
+                        self.model.snapshot_html()
+                        break
                     case "speed_up":
                         self.speed_up()
                         break

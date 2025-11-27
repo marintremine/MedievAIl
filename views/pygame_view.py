@@ -248,6 +248,7 @@ class PygameView(BattleView):
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y+self.MAP_HEIGHT)),
               self.convertCartToIso((pos_x, pos_y+self.MAP_HEIGHT))]
         pygame.gfxdraw.textured_polygon(self.map, points, self.MAP_TEXTURE, 0, 0)
+        #pygame.draw.polygon(self.map, (255,0,255), points, 1)
 
     def convertCartToIso(self,points):
         """Function to convert cartesian position to isometric position"""

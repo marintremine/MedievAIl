@@ -3,6 +3,7 @@ import argparse
 import sys
 
 from controllers.battle_controller import BattleController
+from controllers.live_server import start_flask_debug_server
 from models.battle_model import BattleModel
 from views.pygame_view import PygameView
 from views.terminal_view import TerminalView
@@ -39,6 +40,9 @@ def main():
         else:
             view = PygameView(model, controller)
         controller.view = view
+
+        start_flask_debug_server(model)
+
         controller.run()
     else:
         parser.print_help()
