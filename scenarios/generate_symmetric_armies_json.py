@@ -2,7 +2,7 @@ import json
 
 # Paramètres de la map
 map_width = 50
-map_height = 50
+map_height = 30
 
 # Paramètres des unités
 num_crossbow = 50
