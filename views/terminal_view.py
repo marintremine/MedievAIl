@@ -106,13 +106,10 @@ class TerminalView(BattleView):
             return self.general_colors[unit.general]
         return 3
     
-    def __del__(self):
-        """Nettoyer proprement curses à la destruction de la vue."""
-        try:
-            curses.curs_set(1)  # Réafficher le curseur
-            curses.nocbreak()
-            self.stdscr.keypad(False)
-            curses.echo()
-            curses.endwin()
-        except:
-            pass
+    def cleanup(self):
+        """Restaure les paramètres du terminal."""
+        curses.curs_set(1)
+        curses.nocbreak()
+        self.stdscr.keypad(False)
+        curses.echo()
+        curses.endwin()

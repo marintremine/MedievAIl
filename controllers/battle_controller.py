@@ -28,6 +28,9 @@ class BattleController:
                     self.actions.put("speed_up")
                 elif key == keyboard.Key.down:
                     self.actions.put("speed_down")
+                elif key == keyboard.Key.esc:
+                    self.actions.put("exit")
+
             except AttributeError:
                 pass
 
@@ -52,48 +55,51 @@ class BattleController:
         tick_count = 0
         frame_count = 0
 
-        while True:
-            now = time.time()
+        try:
+            while True:
+                now = time.time()
 
-            while not self.actions.empty():
-                action = self.actions.get()
-                match action:
-                    case "pause":
-                        self.model.pause()
-                        break
-                    case "save":
-                        self.model.save(self.datafile)
-                        break
-                    case "speed_up":
-                        self.speed_up()
-                        break
-                    case "speed_down":
-                        self.speed_down()
-                        break
+                while not self.actions.empty():
+                    action = self.actions.get()
+                    match action:
+                        case "pause":
+                            self.model.pause()
+                            break
+                        case "save":
+                            self.model.save(self.datafile)
+                            break
+                        case "speed_up":
+                            self.speed_up()
+                            break
+                        case "speed_down":
+                            self.speed_down()
+                            break
+                        case "exit":
+                            return
 
-            # --- LOGIC TICK ---
-            if self.model.running and (now - last_tick >= tick_interval):
-                self.model.delta_time = tick_interval * self.game_speed
-                self.model.update()
-                tick_count += 1
-                last_tick = now
-                #print(f"Tick executed ({tick_count}/{self.tick_rate} TPS)")
+                # --- LOGIC TICK ---
+                if self.model.running and (now - last_tick >= tick_interval):
+                    self.model.delta_time = tick_interval * self.game_speed
+                    self.model.update()
+                    tick_count += 1
+                    last_tick = now
+                    #print(f"Tick executed ({tick_count}/{self.tick_rate} TPS)")
 
-            # --- RENDER FRAME ---
+                # --- RENDER FRAME ---
 
-            if now - last_frame >= frame_interval:
-                self.view.render()
-                frame_count += 1
-                last_frame = now
-                #print(f"Frame rendered ({frame_count}/{self.fps} FPS)")
+                if now - last_frame >= frame_interval:
+                    self.view.render()
+                    frame_count += 1
+                    last_frame = now
+                    #print(f"Frame rendered ({frame_count}/{self.fps} FPS)")
 
-            # --- STATS OUTPUT ---
-            if now - last_stats >= 1.0:
-                #print(f"TPS: {tick_count} | FPS: {frame_count}")
-                tick_count = 0
-                frame_count = 0
-                last_stats = now
+                # --- STATS OUTPUT ---
+                if now - last_stats >= 1.0:
+                    #print(f"TPS: {tick_count} | FPS: {frame_count}")
+                    tick_count = 0
+                    frame_count = 0
+                    last_stats = now
 
-            time.sleep(0.0001) # Sleep pour éviter l'utilisation à 100% du CPU
-
-    
+                time.sleep(0.0001) # Sleep pour éviter l'utilisation à 100% du CPU
+        finally:
+            self.view.cleanup()
