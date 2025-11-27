@@ -47,11 +47,6 @@ class TerminalView(BattleView):
         self._draw_units()
         self._draw_info()
 
-        # Afficher les infos de l'unité sélectionnée
-        distance_threshold = 5
-        for unit in self.model.list_objects:
-            self._draw_unit_info(unit, start_y=self.model.map_height + distance_threshold)
-            distance_threshold += 6
         self.stdscr.refresh()
 
         
