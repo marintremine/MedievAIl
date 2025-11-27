@@ -288,7 +288,7 @@ class PygameView(BattleView):
                                   False, (255,255,255)),
                                     (self.window.get_width()-self.font.size("ZOOM : 0.00x")[0],0))
         self.window.blit(self.commandText, (0,self.window.get_height()-self.font.get_height()))
-        
+
         pygame.display.flip()
         self.unit_spritegroup.empty()
         pygame.time.wait(1)
