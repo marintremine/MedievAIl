@@ -51,7 +51,8 @@ class Unit(Object):
         # Effectuer l'attaque
         damage = self.attack - target.armor
         pierce_damage = self.attack - target.pierce_armor
-        total_damage = max(damage, pierce_damage, 0)
+        bonus = self.bonus_attacks.get(type(target), 0)
+        total_damage = max(damage, pierce_damage, 0) + bonus
         target.hp -= total_damage
         
         # Réinitialiser le cooldown
@@ -111,7 +112,7 @@ class Pikeman(Unit):
             cooldown=3,
             x=x,
             y=y,
-            bonus_attacks={},
+            bonus_attacks={Knight: 22},
             battle_model=battle_model   
         )
 
@@ -125,7 +126,7 @@ class Knight(Unit):
             attack=10,
             armor=2,
             pierce_armor=2,
-            range_=10,
+            range_=0,
             line_of_sight=4,
             speed=1.35,
             cooldown=1.8,
@@ -171,7 +172,8 @@ class Crossbowman(Unit):
         if random.random() <= self.accuracy:
             damage = self.attack - target.armor
             pierce_damage = self.attack - target.pierce_armor
-            total_damage = max(damage, pierce_damage, 0)
+            bonus = self.bonus_attacks.get(type(target), 0)
+            total_damage = max(damage, pierce_damage, 0) + bonus
             target.hp -= total_damage
         
         # Réinitialiser le cooldown même si raté
