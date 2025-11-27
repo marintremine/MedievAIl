@@ -1,9 +1,28 @@
 {
-  "width": 10,
-  "height": 10,
-  "units": [
-    {"type": "Pikeman", "player": "A", "x": 0, "y": 0},
-    {"type": "Pikeman", "player": "B", "x": 9, "y": 8},
-    {"type": "Pikeman", "player": "B", "x": 9, "y": 9}
+  "map_width": 20,
+  "map_height": 15,
+  "army1": [
+    {
+      "type": "crossbowman",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "knight",
+      "x": 1,
+      "y": 0
+    },
+    {
+      "type": "pikeman",
+      "x": 2,
+      "y": 0
+    }
+  ],
+  "army2": [
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    }
   ]
 }

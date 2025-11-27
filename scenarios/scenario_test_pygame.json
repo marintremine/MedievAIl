@@ -1,0 +1,28 @@
+{
+  "map_width": 100,
+  "map_height": 100,
+  "army1": [
+    {
+      "type": "crossbowman",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 15,
+      "y": 10
+    },
+    {
+      "type": "pikeman",
+      "x": 20,
+      "y": 10
+    }
+  ],
+  "army2": [
+    {
+      "type": "crossbowman",
+      "x": 90,
+      "y": 90
+    }
+  ]
+}
