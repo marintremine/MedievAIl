@@ -27,6 +27,7 @@ class Unit(Object):
         self.cooldown_timer = 0
         self.move_progress = 0
         self.action = Wait(self)
+        self.currentAction = "stand"
         self.direction = (0, 1)
         self.bonus_attacks = bonus_attacks
 
@@ -40,7 +41,8 @@ class Unit(Object):
     def attack_target(self, target: "Unit") -> bool:
         if not self.is_alive() or not target.is_alive() or not self.in_range(target):
             return False
-  
+
+        self.currentAction = "attack"
         # Décrémenter le cooldown à chaque tick
         if self.cooldown_timer > 0:
             self.cooldown_timer -= 1 * self.battle_model.delta_time
@@ -60,7 +62,7 @@ class Unit(Object):
         """Déplace l'unité vers les coordonnées spécifiées"""
         if not self.is_alive() or not self.battle_model.is_in_map(new_x, new_y) or self.battle_model.is_obstacle_at(new_x, new_y):
             return False
-        
+        self.currentAction = "walk"
         # Calcul direction
         dx = new_x - self.x
         dy = new_y - self.y
@@ -123,7 +125,7 @@ class Knight(Unit):
             attack=10,
             armor=2,
             pierce_armor=2,
-            range_=0,
+            range_=10,
             line_of_sight=4,
             speed=1.35,
             cooldown=1.8,
@@ -158,7 +160,8 @@ class Crossbowman(Unit):
         """Attaque avec gestion de la précision"""
         if not self.is_alive() or not target.is_alive() or not self.in_range(target):
             return False
-        
+
+        self.currentAction = "attack"
         # Décrémenter le cooldown
         if self.cooldown_timer > 0:
             self.cooldown_timer -= self.battle_model.delta_time

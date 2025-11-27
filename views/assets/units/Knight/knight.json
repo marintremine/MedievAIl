@@ -1,0 +1,42 @@
+{
+  "attack": {
+    "number_image":10,
+    "side":{
+      "front":  {"start": 1,"end": 11},
+      "s-west": {"start": 11,"end": 21},
+      "left":   {"start": 21,"end": 31},
+      "n-west": {"start": 31,"end": 41},
+      "back":   {"start": 41,"end": 51}
+    }
+  },
+  "die": {
+    "number_image":10,
+    "side":{
+      "front":  {"start": 1,"end": 11},
+      "s-west": {"start": 11,"end": 21},
+      "left":   {"start": 21,"end": 31},
+      "n-west": {"start": 31,"end": 41},
+      "back":   {"start": 41,"end": 51}
+    }
+  },
+  "stand": {
+    "number_image":10,
+    "side":{
+      "front":  {"start": 1,"end": 11},
+      "s-west": {"start": 11,"end": 21},
+      "left":   {"start": 21,"end": 31},
+      "n-west": {"start": 31,"end": 41},
+      "back":   {"start": 41,"end": 51}
+    }
+  },
+  "walk": {
+    "number_image":10,
+    "side":{
+      "front":  {"start": 1,"end": 11},
+      "s-west": {"start": 11,"end": 21},
+      "left":   {"start": 21,"end": 31},
+      "n-west": {"start": 31,"end": 41},
+      "back":   {"start": 41,"end": 51}
+    }
+  }
+}

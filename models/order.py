@@ -57,7 +57,8 @@ class Attack(Order) :
 class Wait(Order):
     def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
-        self.unit.direction = (0, 1)
+        #self.unit.direction = (0, 1)
+        self.unit.currentAction = "stand"
 
     def action(self) -> None:
         pass
