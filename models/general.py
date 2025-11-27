@@ -12,6 +12,9 @@ class General:
     def decide(self) -> None:
         pass
 
+    def __str__(self) -> str:
+        return f"{self.name}"
+
 class Daft(General):
     def __init__(self, battle_model):
         super().__init__("Daft", battle_model)
@@ -58,6 +61,7 @@ class AttackTestGeneral(General):
                     unit.action = Attack(unit, target)
                 else:
                     unit.action = Wait(unit)
+
 
 
 def generalFactory(general_type: str, battle_model) -> General:

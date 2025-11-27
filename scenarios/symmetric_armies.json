@@ -1,6 +1,6 @@
 {
-  "map_width": 300,
-  "map_height": 300,
+  "map_width": 50,
+  "map_height": 30,
   "army1": [
     {
       "type": "crossbowman",
@@ -756,753 +756,753 @@
   "army2": [
     {
       "type": "crossbowman",
-      "x": 299,
-      "y": 299
+      "x": 49,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 298,
-      "y": 299
+      "x": 48,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 297,
-      "y": 299
+      "x": 47,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 296,
-      "y": 299
+      "x": 46,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 295,
-      "y": 299
+      "x": 45,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 294,
-      "y": 299
+      "x": 44,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 293,
-      "y": 299
+      "x": 43,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 292,
-      "y": 299
+      "x": 42,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 291,
-      "y": 299
+      "x": 41,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 290,
-      "y": 299
+      "x": 40,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 289,
-      "y": 299
+      "x": 39,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 288,
-      "y": 299
+      "x": 38,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 287,
-      "y": 299
+      "x": 37,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 286,
-      "y": 299
+      "x": 36,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 285,
-      "y": 299
+      "x": 35,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 284,
-      "y": 299
+      "x": 34,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 283,
-      "y": 299
+      "x": 33,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 282,
-      "y": 299
+      "x": 32,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 281,
-      "y": 299
+      "x": 31,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 280,
-      "y": 299
+      "x": 30,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 279,
-      "y": 299
+      "x": 29,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 278,
-      "y": 299
+      "x": 28,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 277,
-      "y": 299
+      "x": 27,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 276,
-      "y": 299
+      "x": 26,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 275,
-      "y": 299
+      "x": 25,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 274,
-      "y": 299
+      "x": 24,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 273,
-      "y": 299
+      "x": 23,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 272,
-      "y": 299
+      "x": 22,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 271,
-      "y": 299
+      "x": 21,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 270,
-      "y": 299
+      "x": 20,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 269,
-      "y": 299
+      "x": 19,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 268,
-      "y": 299
+      "x": 18,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 267,
-      "y": 299
+      "x": 17,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 266,
-      "y": 299
+      "x": 16,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 265,
-      "y": 299
+      "x": 15,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 264,
-      "y": 299
+      "x": 14,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 263,
-      "y": 299
+      "x": 13,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 262,
-      "y": 299
+      "x": 12,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 261,
-      "y": 299
+      "x": 11,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 260,
-      "y": 299
+      "x": 10,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 259,
-      "y": 299
+      "x": 9,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 258,
-      "y": 299
+      "x": 8,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 257,
-      "y": 299
+      "x": 7,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 256,
-      "y": 299
+      "x": 6,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 255,
-      "y": 299
+      "x": 5,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 254,
-      "y": 299
+      "x": 4,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 253,
-      "y": 299
+      "x": 3,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 252,
-      "y": 299
+      "x": 2,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 251,
-      "y": 299
+      "x": 1,
+      "y": 29
     },
     {
       "type": "crossbowman",
-      "x": 250,
-      "y": 299
+      "x": 0,
+      "y": 29
     },
     {
       "type": "knight",
-      "x": 299,
-      "y": 298
+      "x": 49,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 298,
-      "y": 298
+      "x": 48,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 297,
-      "y": 298
+      "x": 47,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 296,
-      "y": 298
+      "x": 46,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 295,
-      "y": 298
+      "x": 45,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 294,
-      "y": 298
+      "x": 44,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 293,
-      "y": 298
+      "x": 43,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 292,
-      "y": 298
+      "x": 42,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 291,
-      "y": 298
+      "x": 41,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 290,
-      "y": 298
+      "x": 40,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 289,
-      "y": 298
+      "x": 39,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 288,
-      "y": 298
+      "x": 38,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 287,
-      "y": 298
+      "x": 37,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 286,
-      "y": 298
+      "x": 36,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 285,
-      "y": 298
+      "x": 35,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 284,
-      "y": 298
+      "x": 34,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 283,
-      "y": 298
+      "x": 33,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 282,
-      "y": 298
+      "x": 32,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 281,
-      "y": 298
+      "x": 31,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 280,
-      "y": 298
+      "x": 30,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 279,
-      "y": 298
+      "x": 29,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 278,
-      "y": 298
+      "x": 28,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 277,
-      "y": 298
+      "x": 27,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 276,
-      "y": 298
+      "x": 26,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 275,
-      "y": 298
+      "x": 25,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 274,
-      "y": 298
+      "x": 24,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 273,
-      "y": 298
+      "x": 23,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 272,
-      "y": 298
+      "x": 22,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 271,
-      "y": 298
+      "x": 21,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 270,
-      "y": 298
+      "x": 20,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 269,
-      "y": 298
+      "x": 19,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 268,
-      "y": 298
+      "x": 18,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 267,
-      "y": 298
+      "x": 17,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 266,
-      "y": 298
+      "x": 16,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 265,
-      "y": 298
+      "x": 15,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 264,
-      "y": 298
+      "x": 14,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 263,
-      "y": 298
+      "x": 13,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 262,
-      "y": 298
+      "x": 12,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 261,
-      "y": 298
+      "x": 11,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 260,
-      "y": 298
+      "x": 10,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 259,
-      "y": 298
+      "x": 9,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 258,
-      "y": 298
+      "x": 8,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 257,
-      "y": 298
+      "x": 7,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 256,
-      "y": 298
+      "x": 6,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 255,
-      "y": 298
+      "x": 5,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 254,
-      "y": 298
+      "x": 4,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 253,
-      "y": 298
+      "x": 3,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 252,
-      "y": 298
+      "x": 2,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 251,
-      "y": 298
+      "x": 1,
+      "y": 28
     },
     {
       "type": "knight",
-      "x": 250,
-      "y": 298
+      "x": 0,
+      "y": 28
     },
     {
       "type": "pikeman",
-      "x": 299,
-      "y": 297
+      "x": 49,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 298,
-      "y": 297
+      "x": 48,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 297,
-      "y": 297
+      "x": 47,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 296,
-      "y": 297
+      "x": 46,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 295,
-      "y": 297
+      "x": 45,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 294,
-      "y": 297
+      "x": 44,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 293,
-      "y": 297
+      "x": 43,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 292,
-      "y": 297
+      "x": 42,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 291,
-      "y": 297
+      "x": 41,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 290,
-      "y": 297
+      "x": 40,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 289,
-      "y": 297
+      "x": 39,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 288,
-      "y": 297
+      "x": 38,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 287,
-      "y": 297
+      "x": 37,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 286,
-      "y": 297
+      "x": 36,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 285,
-      "y": 297
+      "x": 35,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 284,
-      "y": 297
+      "x": 34,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 283,
-      "y": 297
+      "x": 33,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 282,
-      "y": 297
+      "x": 32,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 281,
-      "y": 297
+      "x": 31,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 280,
-      "y": 297
+      "x": 30,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 279,
-      "y": 297
+      "x": 29,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 278,
-      "y": 297
+      "x": 28,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 277,
-      "y": 297
+      "x": 27,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 276,
-      "y": 297
+      "x": 26,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 275,
-      "y": 297
+      "x": 25,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 274,
-      "y": 297
+      "x": 24,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 273,
-      "y": 297
+      "x": 23,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 272,
-      "y": 297
+      "x": 22,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 271,
-      "y": 297
+      "x": 21,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 270,
-      "y": 297
+      "x": 20,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 269,
-      "y": 297
+      "x": 19,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 268,
-      "y": 297
+      "x": 18,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 267,
-      "y": 297
+      "x": 17,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 266,
-      "y": 297
+      "x": 16,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 265,
-      "y": 297
+      "x": 15,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 264,
-      "y": 297
+      "x": 14,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 263,
-      "y": 297
+      "x": 13,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 262,
-      "y": 297
+      "x": 12,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 261,
-      "y": 297
+      "x": 11,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 260,
-      "y": 297
+      "x": 10,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 259,
-      "y": 297
+      "x": 9,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 258,
-      "y": 297
+      "x": 8,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 257,
-      "y": 297
+      "x": 7,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 256,
-      "y": 297
+      "x": 6,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 255,
-      "y": 297
+      "x": 5,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 254,
-      "y": 297
+      "x": 4,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 253,
-      "y": 297
+      "x": 3,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 252,
-      "y": 297
+      "x": 2,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 251,
-      "y": 297
+      "x": 1,
+      "y": 27
     },
     {
       "type": "pikeman",
-      "x": 250,
-      "y": 297
+      "x": 0,
+      "y": 27
     }
   ]
 }
