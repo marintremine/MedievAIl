@@ -30,8 +30,7 @@ class BrainDead(General):
 
     def decide(self) -> None:
         for unit in self.battle_model.get_army(self):
-            enemies_unit = self.battle_model.get_enemy_army(self)
-            unit.action = Defense(unit, enemies_unit)
+            unit.action = Defense(unit)
 
 class MoveTestGeneral(General):
     """
