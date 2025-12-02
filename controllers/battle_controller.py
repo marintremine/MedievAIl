@@ -1,10 +1,9 @@
 import time
 from pynput import keyboard
 import queue
-from settings import FPS, TICK_RATE, GAME_SPEED
+from settings import FPS, TICK_RATE, GAME_SPEED, MAX_TICK
 from models.battle_model import BattleModel
 from views.battle_view import BattleView
-
 
 
 class BattleController:
@@ -56,7 +55,19 @@ class BattleController:
     def speed_down(self):
         self.game_speed = max(self.game_speed - 0.25, 0.25)
 
+
+    def run_fast(self):
+        self.model.running = True
+        tick_count = 0
+        while tick_count < MAX_TICK and self.model.winner is None:
+            self.model.delta_time = 1
+            self.model.update()
+            tick_count += 1
+        return self.model.winner
+
+
     def run(self):
+        tick_count = 0
         tick_interval = 1 / TICK_RATE
         frame_interval = 1 / FPS
 
@@ -64,11 +75,11 @@ class BattleController:
         last_frame = time.time()
         last_stats = time.time()
 
-        tick_count = 0
-        frame_count = 0
+        tick_stats = 0
+        frame_stats = 0
 
         try:
-            while True:
+            while tick_count < MAX_TICK and self.model.winner is None:
                 now = time.time()
 
                 while not self.actions.empty():
@@ -116,6 +127,7 @@ class BattleController:
                     self.model.delta_time = tick_interval * self.game_speed
                     self.model.update()
                     tick_count += 1
+                    tick_stats += 1
                     last_tick = now
                     #print(f"Tick executed ({tick_count}/{self.tick_rate} TPS)")
 
@@ -123,18 +135,20 @@ class BattleController:
 
                 if self.view and now - last_frame >= frame_interval:
                     self.view.render()
-                    frame_count += 1
+                    frame_stats += 1
                     last_frame = now
-                    #print(f"Frame rendered ({frame_count}/{self.fps} FPS)")
+                    #print(f"Frame rendered ({frame_stats}/{self.fps} FPS)")
 
                 # --- STATS OUTPUT ---
                 if now - last_stats >= 1.0:
-                    #print(f"TPS: {tick_count} | FPS: {frame_count}")
-                    tick_count = 0
-                    frame_count = 0
+                    #print(f"TPS: {tick_stats} | FPS: {frame_stats}")
+                    tick_stats = 0
+                    frame_stats = 0
                     last_stats = now
 
                 time.sleep(0.0001) # Sleep pour éviter l'utilisation à 100% du CPU
         finally:
             # Nettoyage terminal à la fin de la boucle
             self.view.cleanup()
+
+        return self.model.winner

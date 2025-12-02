@@ -1,0 +1,1 @@
+python main.py tourney -G movetest attacktest aegis braindead -S scenarios/scenario_test.json scenarios/symmetric_armies.json

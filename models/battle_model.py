@@ -24,6 +24,16 @@ class BattleModel:
         self.winner = None
 
 
+    def reset(self)->None:
+        """Réinitialise le modèle de bataille."""
+        self.general_1 = None
+        self.general_2 = None
+        self.running = False
+        self.map_width = None
+        self.map_height = None
+        self.list_objects = []
+        self.winner = None
+
     def load(self, path:str, ai1:str, ai2:str)->None:
         """Charge le scénario de bataille à partir d'un fichier JSON et initialise les généraux et leurs armées."""
         # load json
@@ -38,6 +48,7 @@ class BattleModel:
         # load generals
         self.general_1 = generalFactory(ai1, self)
         self.general_2 = generalFactory(ai2, self)
+
 
         # load army
         for unit_data in data["army1"]:

@@ -2,13 +2,11 @@ from controllers.battle_controller import BattleController
 from models.battle_model import BattleModel
 from views.terminal_view import TerminalView
 
-
-DEFAULT_MAX_TICKS = 5000
-
 class Tournament:
     def __init__(self, generals, scenarios):
         self.generals = generals
         self.scenarios = scenarios
+        self.number_of_rounds = 1
         self.results = {gen: 0 for gen in generals} 
 
     def run(self):
@@ -22,14 +20,15 @@ class Tournament:
                 for j in range(i + 1, len(self.generals)):
                     gen1 = self.generals[i]
                     gen2 = self.generals[j]
-                    print(f"Running battles between {gen1} and {gen2} on scenario {scenario_path}")
-                    model.load(scenario_path, gen1, gen2)
-                    controller.run()
-                    if model.winner != None:
-                        winner = model.winner
-                        print(f"Winner: {winner}")
-                        # self.results[winner] += 1
-
+                    for round_num in range(self.number_of_rounds):
+                        model.reset()
+                        model.load(scenario_path, gen1, gen2)
+                        print(f"Battle n°{round_num + 1}/{self.number_of_rounds} between {gen1} and {gen2} on scenario {scenario_path}")
+                        winner = controller.run()
+                        if winner:
+                            print(f"Winner: {winner}")
+                        else:
+                            print("Draw")
 
         print("Tournament completed.")
         print("Results:")

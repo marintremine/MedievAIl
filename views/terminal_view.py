@@ -193,7 +193,7 @@ class TerminalView(BattleView):
     def cleanup(self):
         """Restaure les paramètres du terminal pour éviter les codes d'échappement."""
         try:
-            sys.stdout = self._original_stdout
+            # sys.stdout = self._original_stdout
             curses.curs_set(1)       # réaffiche le curseur
             curses.nocbreak()        # désactive le mode cbreak
             self.stdscr.keypad(False)
