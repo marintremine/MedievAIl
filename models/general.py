@@ -21,6 +21,14 @@ class General:
             default=None
         )
 
+    def sort_army(self, army):
+        dict_army = {}
+        for unit in army:
+            if type(unit).__name__ not in dict_army:
+                dict_army[type(unit).__name__] = []
+            dict_army[type(unit).__name__].append(unit)
+        return dict_army
+
     def manhattan(self, a, b):
         """
         Renvoie la manhattan
