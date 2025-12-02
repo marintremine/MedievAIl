@@ -37,6 +37,10 @@ class Unit(Object):
     def in_range(self, target: "Unit") -> bool:
         distance = abs(self.x - target.x) + abs(self.y - target.y)
         return distance <= self.range
+    
+    def in_sight(self, target: "Unit") -> bool:
+        distance = abs(self.x - target.x) + abs(self.y - target.y)
+        return distance <= self.line_of_sight
 
     def attack_target(self, target: "Unit") -> bool:
         if not self.is_alive() or not target.is_alive() or not self.in_range(target):

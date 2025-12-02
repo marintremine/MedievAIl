@@ -29,8 +29,28 @@ class BrainDead(General):
         super().__init__("BrainDead", battle_model)
 
     def decide(self) -> None:
-        for unit in self.battle_model.get_army(self):
-            unit.action = Defense(unit)
+        enemy_army = self.battle_model.get_enemy_army(self)
+        friendly_army = self.battle_model.get_army(self)
+
+        for unit in friendly_army:
+            if not unit.is_alive():
+                continue
+
+            if isinstance(unit.action, Attack):
+                continue
+
+            target = None
+            for enemy in enemy_army:
+                if enemy.is_alive() and unit.in_sight(enemy):
+                    target = enemy
+                    break
+
+            if target is not None:
+                unit.action = Attack(unit, target)
+                continue
+
+            if not isinstance(unit.action, Wait):
+                unit.action = Wait(unit)
 
 class MoveTestGeneral(General):
     """
@@ -66,6 +86,9 @@ class AttackTestGeneral(General):
                 else:
                     unit.action = Wait(unit)
 
+class IAValentin(General):
+    def __init__(self, battle_model):
+        super().__init__("AttackTestGeneral", battle_model)
 
 
 def generalFactory(general_type: str, battle_model) -> General:
