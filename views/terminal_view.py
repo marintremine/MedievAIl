@@ -1,95 +1,179 @@
+import curses
+import sys
+import io
+
 from time import time
 from views.battle_view import BattleView
 from models.battle_model import BattleModel
 from models.unit import *
-import curses
+
+# Modes de vues
+VIEW_BATTLE = 0
+VIEW_ARMY_INFO = 1
+VIEW_MESSAGE = 2
 
 class TerminalView(BattleView):
     def __init__(self, model, controller):
         super().__init__(model, controller)
+        self._init_curses()
+        self._init_colors()
+
+        self.offset_x = 0
+        self.offset_y = 0
+        self.view_mode = VIEW_BATTLE
+
+        self._stdout_buffer = io.StringIO()
+        self._original_stdout = sys.stdout
+        sys.stdout = self._stdout_buffer
+
+
+    def _init_curses(self):
+        """Initialise les paramètres de curses."""
         self.stdscr = curses.initscr()
         curses.noecho()
         curses.cbreak()
-        curses.curs_set(0) # Masquer le curseur
+        curses.curs_set(0)  # Masquer le curseur
         self.stdscr.keypad(True)
-        self.stdscr.nodelay(True) # Non-bloquant pour les inputs
-        
-        # Initialiser les couleurs
+        self.stdscr.nodelay(True)  # Non-bloquant pour les inputs
+
+    def _init_colors(self):
+        """Initialise les paires de couleurs pour l'affichage."""
         curses.start_color()
         curses.use_default_colors()
         
         # Définir les paires de couleurs
-        curses.init_pair(1, curses.COLOR_RED, -1) # Général 1
-        curses.init_pair(2, curses.COLOR_BLUE, -1) # Général 2
-        curses.init_pair(3, curses.COLOR_WHITE, -1) # Terrain
+        curses.init_pair(1, curses.COLOR_RED, -1)  # Général 1
+        curses.init_pair(2, curses.COLOR_BLUE, -1)  # Général 2
+        curses.init_pair(3, curses.COLOR_WHITE, -1)  # Terrain
         
         # Mapper les généraux aux couleurs
         self.general_colors = {
             self.model.general_1: 1,
             self.model.general_2: 2
         }
-        
-        # Cache pour éviter les redessins inutiles
-        self.last_state = None
     
-    def render(self) -> None:
-        """Affiche la carte, les unités et obstacles en mode texte."""
-        
-        # Récupérer les dimensions
-        max_y, max_x = self.stdscr.getmaxyx()
-        
-        # Effacer seulement ce qui a changé au lieu de tout clear()
-        # Ou utiliser erase() qui est plus rapide que clear()
+    def render(self):
+        """Rendu principal de la vue terminal."""
         self.stdscr.erase()
-        
-        # Afficher la carte (terrain)
+
+        if self.view_mode == VIEW_BATTLE:
+            self._draw_map()
+            self._draw_units()
+            self._draw_info()
+        elif self.view_mode == VIEW_ARMY_INFO:
+            self._draw_army_infos()
+        elif self.view_mode == VIEW_MESSAGE:
+            text = self._stdout_buffer.getvalue()
+            self._draw_standard_output(text, 0)
+
+        self.stdscr.refresh()
+    
+    def _draw_map(self):
+        """Dessine la carte de base (terrain)."""
+        max_y, max_x = self.stdscr.getmaxyx()
         for y in range(min(self.model.map_height, max_y)):
             for x in range(min(self.model.map_width, max_x)):
-                if y == max_y - 1 and x == max_x - 1:
+                map_x = x + self.offset_x
+                map_y = y + self.offset_y
+                if map_y >= self.model.map_height or map_x >= self.model.map_width:
                     continue
                 try:
                     self.stdscr.addch(y, x, '.', curses.color_pair(3))
                 except curses.error:
                     pass
-        
-        # Afficher les unités avec leur couleur
+
+    def _draw_units(self):
+        """Dessine les unités sur la carte."""
+        max_y, max_x = self.stdscr.getmaxyx()
         for obj in self.model.list_objects:
             if isinstance(obj, Unit) and not obj.is_alive():
                 continue
 
-            if 0 <= obj.y < max_y and 0 <= obj.x < max_x:
-                if obj.y == max_y - 1 and obj.x == max_x - 1:
-                    continue
-                
+            screen_x = obj.x - self.offset_x
+            screen_y = obj.y - self.offset_y
+
+            if 0 <= screen_y < max_y and 0 <= screen_x < max_x:
                 symbol = self._get_unit_symbol(obj)
                 color_pair = self._get_unit_color(obj)
-                
                 try:
-                    self.stdscr.addch(obj.y, obj.x, symbol, 
+                    self.stdscr.addch(screen_y, screen_x, symbol,
                                     curses.color_pair(color_pair) | curses.A_BOLD)
                 except curses.error:
                     pass
 
-
-        # --- Affichage des infos système / debug ---
+    def _draw_info(self):
+        """Affiche les informations de statut en bas de l'écran."""
+        max_y, max_x = self.stdscr.getmaxyx()
         status_y = min(self.model.map_height + 1, max_y - 1)
-
         time_str = f"Temps : {time():.1f}s"
         running_str = "RUNNING" if self.model.running else "PAUSED"
         speed_str = f"Speed: {self.controller.game_speed}x"
-
         info_line = f"{time_str}   |   État : {running_str}   |   {speed_str}"
-
         try:
             self.stdscr.addstr(status_y, 0, info_line[:max_x - 1])
         except curses.error:
             pass
 
-        
-        # Rafraîchir l'écran une seule fois à la fin
-        self.stdscr.refresh()
-    
-    
+    def _draw_unit_info(self, unit, start_y):
+        """Affiche les informations détaillées d'une unité spécifique."""
+        max_y, max_x = self.stdscr.getmaxyx()
+        info_lines = [
+            f"Unité: {unit.name}",
+            f"HP: {unit.hp}/{unit.max_hp}",
+            f"Position: ({unit.x}, {unit.y})",
+            f"Action: {unit.currentAction}",
+            f"Cooldown: {unit.cooldown_timer}/{unit.cooldown}"
+        ]
+        for i, line in enumerate(info_lines):
+            y = start_y + i
+            if y < max_y:
+                try:
+                    self.stdscr.addstr(y, 0, line[:max_x - 1])
+                except curses.error:
+                    pass
+
+    def _draw_army_infos(self):
+        """Affiche les informations des armées."""
+        max_y, max_x = self.stdscr.getmaxyx()
+        start_y = 0
+
+        armies = [
+            (self.model.get_army(self.model.general_1), self.model.general_1, "Armée 1"),
+            (self.model.get_army(self.model.general_2), self.model.general_2, "Armée 2")
+        ]
+
+        for army, general, army_name in armies:
+            header = f"{army_name} (Général: {general.name})"
+            try:
+                self.stdscr.addstr(start_y, 0, header[:max_x - 1], curses.A_UNDERLINE)
+            except curses.error:
+                pass
+            start_y += 1
+
+            for unit in army:
+                if start_y >= max_y:
+                    break
+                unit_info = f"- {unit.name} | HP: {unit.hp}/{unit.max_hp} | Pos: ({unit.x},{unit.y})"
+                try:
+                    self.stdscr.addstr(start_y, 0, unit_info[:max_x - 1])
+                except curses.error:
+                    pass
+                start_y += 1
+
+            start_y += 1  # Ligne vide entre les armées
+
+    def _draw_standard_output(self, text, start_y):
+        """Affiche du texte standard à l'écran."""
+        max_y, max_x = self.stdscr.getmaxyx()
+        lines = text.splitlines()
+        for i, line in enumerate(lines):
+            y = start_y + i
+            if y < max_y:
+                try:
+                    self.stdscr.addstr(y, 0, line[:max_x - 1])
+                except curses.error:
+                    pass
+
     def _get_unit_symbol(self, unit):
         """Définit un symbole simple pour représenter les unités."""
         if isinstance(unit, Knight):
@@ -106,13 +190,25 @@ class TerminalView(BattleView):
             return self.general_colors[unit.general]
         return 3
     
-    def __del__(self):
-        """Nettoyer proprement curses à la destruction de la vue."""
+    def cleanup(self):
+        """Restaure les paramètres du terminal pour éviter les codes d'échappement."""
         try:
-            curses.curs_set(1)  # Réafficher le curseur
-            curses.nocbreak()
+            sys.stdout = self._original_stdout
+            curses.curs_set(1)       # réaffiche le curseur
+            curses.nocbreak()        # désactive le mode cbreak
             self.stdscr.keypad(False)
-            curses.echo()
-            curses.endwin()
+            curses.echo()            # réactive l'écho des touches
+            curses.endwin()          # ferme curses proprement
         except:
             pass
+
+    def move_view(self, dx, dy):
+        """Déplace la caméra sur la carte."""
+        self.offset_x = max(0, min(self.offset_x + dx, self.model.map_width - 1))
+        self.offset_y = max(0, min(self.offset_y + dy, self.model.map_height - 1))
+
+    def next_view_mode(self):
+        self.view_mode = (self.view_mode + 1) % 3
+
+    def prev_view_mode(self):
+        self.view_mode = (self.view_mode - 1) % 3

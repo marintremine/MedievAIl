@@ -10,3 +10,6 @@ class BattleView:
 
     def getInput(self):
         pass
+
+    def cleanup(self):
+        pass
