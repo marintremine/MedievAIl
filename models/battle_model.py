@@ -2,6 +2,9 @@ import json
 import os
 from pathlib import Path
 import random
+from datetime import datetime
+from utils import render_snapshot
+import webbrowser
 
 from models.general import *
 from models.unit import *
@@ -93,6 +96,30 @@ class BattleModel:
 
         with open(scenarios_dir / candidate, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
+
+    def snapshot_html(self, filename=None):
+        """
+        Génère un snapshot HTML basé sur self.to_dict()
+        et ouvre le fichier dans le navigateur.
+        """
+        html_content = render_snapshot(self)
+
+        snapshots_dir = os.path.join(os.getcwd(), "snapshots")
+        os.makedirs(snapshots_dir, exist_ok=True)
+
+        if filename is None:
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            filename = os.path.join(snapshots_dir, f"battle_snapshot_{timestamp}.html")
+
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(html_content)
+
+        try:
+            webbrowser.open("file://" + filename)
+        except Exception:
+            pass
+        
+
 
     def update(self) -> None:
         """Met à jour l'état de la bataille à chaque tick."""

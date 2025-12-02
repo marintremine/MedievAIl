@@ -22,7 +22,7 @@ class BattleController:
             try:
                 if key == keyboard.KeyCode.from_char('p'):
                     self.actions.put("pause")
-                elif key == keyboard.KeyCode.from_char('s'):
+                elif key == keyboard.Key.f11:
                     self.actions.put("save")
                 elif key == keyboard.Key.up:
                     self.actions.put("move_up")
@@ -79,6 +79,10 @@ class BattleController:
                             break
                         case "save":
                             self.model.save(self.datafile)
+                            break
+                        case "snapshot":
+                            self.model.running = False
+                            self.model.snapshot_html()
                             break
                         case "speed_up":
                             self.speed_up()
