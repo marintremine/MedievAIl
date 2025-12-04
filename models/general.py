@@ -173,17 +173,23 @@ class AttackTestGeneral(General):
 class IAValentin(General):
     def __init__(self, battle_model):
         super().__init__("IAValentin", battle_model)
+        self.retreat_steps = 0
+        self.max_retreat = 3
 
     def weakest_targets(self, enemies):
+        """Cherche les cibles faibles (<=30% HP) parmi les ennemis donnés."""
         return [e for e in enemies if e.is_alive() and e.hp <= e.max_hp * 0.3]
     
     def is_weak(self, unit):
+        """Vérifie si une unité est faible (<=30% HP)."""
         return unit.is_alive() and unit.hp <= unit.max_hp * 0.3
     
     def is_close(self, unit, enemy, threshold=3):
+        """Vérifie si une unité est proche d'un ennemi selon un seuil donné."""
         return self.manhattan(unit, enemy) <= threshold
 
     def get_best_target(self, unit, enemies):
+        """Détermine la meilleure cible ennemie en fonction de divers critères."""
         best_target = None
         best_score = None
         enemies_in_sight = [e for e in enemies if unit.in_sight(e)]
@@ -228,23 +234,48 @@ class IAValentin(General):
 
     def find_safest_retreat(self, unit, enemy):
         """
-        Trouve une case pour s'éloigner de l'ennemi le plus dangereux.
-        Utilise les cases adjacentes libres.
+        Trouve une case simple pour reculer sans se coincer.
+        Explore 8 directions autour de l’unité.
         """
         best_cell = None
-        best_dist = None
+        best_score = None
 
-        for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
-            nx, ny = unit.x + dx, unit.y + dy
+        directions = [
+            (-1, 0), (1, 0), (0, -1), (0, 1),   # cardinales
+            (-1, -1), (-1, 1), (1, -1), (1, 1) # diagonales
+        ]
 
-            dist = abs(nx - enemy.x) + abs(ny - enemy.y)
-            if best_dist is None or dist > best_dist:
-                best_dist = dist
+        for dx, dy in directions:
+            nx = unit.x + dx
+            ny = unit.y + dy
+
+            # garder dans la map
+            if not (0 <= nx < self.battle_model.map_width):
+                continue
+            if not (0 <= ny < self.battle_model.map_height):
+                continue
+
+            # score = distance à l'ennemi + distance au bord
+            dist_enemy = abs(nx - enemy.x) + abs(ny - enemy.y)
+
+            # distance minimale au bord
+            dist_border = min(
+                nx, ny,
+                self.battle_model.map_width - nx - 1,
+                self.battle_model.map_height - ny - 1
+            )
+
+            score = dist_enemy + dist_border * 0.4  # léger bonus anti-bord
+
+            if best_score is None or score > best_score:
+                best_score = score
                 best_cell = (nx, ny)
 
+        # aucune bonne case trouvée → ne bouge pas
         return best_cell
 
     def decide(self):
+        """Prend des décisions pour chaque unité alliée en fonction de la situation."""
         enemies = self.battle_model.get_enemy_army(self)
         allies = self.battle_model.get_army(self)
 
@@ -278,8 +309,6 @@ class IAValentin(General):
 
             # --- Cas général : on attaque ---
             unit.action = Attack(unit, target)
-
-             
 
 def generalFactory(general_type: str, battle_model) -> General:
     general_classes = {
