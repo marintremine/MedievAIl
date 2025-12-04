@@ -110,7 +110,7 @@ class Aegis(General):
                 best_enemy = enemy
                 print(best_score)
         return best_enemy
-
+    
     def decide(self) -> None:
         enemies = self.battle_model.get_enemy_army(self)
         if not enemies:
@@ -177,11 +177,16 @@ class IAValentin(General):
     def get_best_target(self, unit, enemies):
         best_target = None
         best_score = None
+        enemies_in_sight = [e for e in enemies if unit.in_sight(e)]
+
         for e in enemies:
             score = -(self.manhattan(unit, e))
 
             if unit.name == "Crossbowman" and e.name in ["Knight", "Pikeman"]:
-                score += 2
+                if e in enemies_in_sight:
+                    score += 5
+                else:
+                    score += 2
             if unit.name == "Knight" and e.name == "Crossbowman":
                 score += 3
             if unit.name == "Pikeman" and e.name == "Knight":
