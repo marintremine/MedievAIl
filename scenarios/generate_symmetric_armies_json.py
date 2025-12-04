@@ -5,9 +5,9 @@ map_width = 300
 map_height = 300
 
 # Paramètres des unités
-num_crossbow = 200
-num_knight = 200
-num_pikeman = 200
+num_crossbow = 20
+num_knight = 20
+num_pikeman = 0
 
 # Générer armée 1
 army1 = []
