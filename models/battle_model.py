@@ -154,14 +154,6 @@ class BattleModel:
                 return True
         return False
     
-    def is_unit_at(self, x, y):
-        """Vérification de si une unité se trouve à la position (x, y)"""
-        for obj in self.list_objects:
-            if isinstance(obj, Unit) and obj.x == x and obj.y == y and obj.is_alive():
-                return True
-        return False
-
-    
     def shortest_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]]:
         """
         Mini pathfinding :
@@ -190,29 +182,29 @@ class BattleModel:
 
         # ESSAI 1 : ligne droite
         nx, ny = x + dx, y + dy
-        if self.is_in_map(nx, ny) and not self.is_obstacle_at(nx, ny) and not self.is_unit_at(nx, ny):
+        if self.is_in_map(nx, ny) and not self.is_obstacle_at(nx, ny):
             return (nx, ny)
 
         # ESSAI 2 : esquive à gauche
         lx, ly = x - dy, y + dx
-        if self.is_in_map(lx, ly) and not self.is_obstacle_at(lx, ly) and not self.is_unit_at(lx, ly):
+        if self.is_in_map(lx, ly) and not self.is_obstacle_at(lx, ly):
             return (lx, ly)
 
         # ESSAI 3 : esquive à droite
         rx, ry = x + dy, y - dx
-        if self.is_in_map(rx, ry) and not self.is_obstacle_at(rx, ry) and not self.is_unit_at(rx, ry):
+        if self.is_in_map(rx, ry) and not self.is_obstacle_at(rx, ry):
             return (rx, ry)
 
         # ESSAI 4 : avancer seulement en X si possible
         if dx != 0:
             nx2 = x + dx
-            if self.is_in_map(nx2, y) and not self.is_obstacle_at(nx2, y) and not self.is_unit_at(nx2, y):
+            if self.is_in_map(nx2, y) and not self.is_obstacle_at(nx2, y):
                 return (nx2, y)
 
         # ESSAI 5 : avancer seulement en Y si possible
         if dy != 0:
             ny2 = y + dy
-            if self.is_in_map(x, ny2) and not self.is_obstacle_at(x, ny2) and not self.is_unit_at(x, ny2):
+            if self.is_in_map(x, ny2) and not self.is_obstacle_at(x, ny2):
                 return (x, ny2)
 
         # Aucun mouvement possible
