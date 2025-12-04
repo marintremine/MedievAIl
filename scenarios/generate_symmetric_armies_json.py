@@ -1,13 +1,13 @@
 import json
 
 # Paramètres de la map
-map_width = 300
-map_height = 300
+map_width = 120
+map_height = 120
 
 # Paramètres des unités
-num_crossbow = 20
-num_knight = 20
-num_pikeman = 0
+num_crossbow = 80
+num_knight = 80
+num_pikeman = 80
 
 # Générer armée 1
 army1 = []
