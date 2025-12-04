@@ -16,7 +16,7 @@ class BattleModel:
     def __init__(self)->None:
         self.general_1 = None
         self.general_2 = None
-        self.running = False
+        self.running = True
         self.map_width = None
         self.map_height = None
         self.delta_time = 0.0
@@ -55,6 +55,17 @@ class BattleModel:
                 unit.move_progress = unit_data["move_progress"]
 
             self.list_objects.append(unit)
+            # Load obstacles (if any)
+            for obs_data in data.get("obstacles", []):
+            # Create the unit obstacle and then make the ifs
+                obstacle = ObstacleFactory(
+                    obs_type=obs_data.get("type", "obstacle"),
+                    x=obs_data["x"],
+                    y=obs_data["y"],
+                    battle_model=self,
+                    )
+                self.list_objects.append(obstacle)
+
 
         for unit_data in data["army2"]:
             unit = unitFactory(
