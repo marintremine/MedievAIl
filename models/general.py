@@ -218,6 +218,23 @@ class IAValentin(General):
         self.retreat_steps = 0
         self.max_retreat = 3
 
+    def get_flanking_position(self, unit, target):
+        """Calcule une position de flanc autour de la cible."""
+        dx = target.x - unit.x
+        dy = target.y - unit.y
+
+        if abs(dx) > abs(dy):
+            flank_x = target.x
+            flank_y = target.y + (1 if dy >= 0 else -1)
+        else:
+            flank_x = target.x + (1 if dx >= 0 else -1)
+            flank_y = target.y
+
+        if self.battle_model.in_map(flank_x, flank_y):
+            return (flank_x, flank_y)
+        return None
+
+
     def get_best_target(self, unit, enemies):
         """Détermine la meilleure cible ennemie en fonction de divers critères."""
         best_target = None
@@ -278,6 +295,13 @@ class IAValentin(General):
             if not target:
                 unit.action = Wait(unit)
                 continue
+
+            # Si trop proche d’un ennemi dangereux
+            if unit.name == "Knight" and target.name == "Pikeman" and self.manhattan(unit, target) <= 3:
+                flank = self.get_flanking_position(unit, target)
+                if flank:
+                    unit.action = Move(unit, *flank)
+                    continue
 
             unit.action = Attack(unit, target)
 

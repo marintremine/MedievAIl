@@ -239,3 +239,7 @@ class BattleModel:
                 obj.to_dict() for obj in self.list_objects if isinstance(obj, Obstacle)
             ],
         }
+
+    def in_map(self, x: int, y: int) -> bool:
+        """Vérifie si les coordonnées (x, y) sont dans les limites de la carte."""
+        return 0 <= x < self.map_width and 0 <= y < self.map_height
