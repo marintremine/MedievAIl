@@ -1,5 +1,5 @@
 import time
-from pynput import keyboard
+from pynput import keyboard, mouse
 import queue
 from settings import FPS, TICK_RATE, GAME_SPEED
 from models.battle_model import BattleModel
@@ -45,10 +45,20 @@ class BattleController:
 
             except AttributeError:
                 pass
+        
+        def on_scroll(x, y, dx, dy):
+            if dy > 0:
+                self.actions.put("scroll_up")
+            elif dy < 0:
+                self.actions.put("scroll_down")
 
         listener = keyboard.Listener(on_press=on_press)
         listener.daemon = True # Permet au thread de se fermer avec le programme principal
         listener.start()
+
+        mouse_listener = mouse.Listener(on_scroll=on_scroll)
+        mouse_listener.daemon = True
+        mouse_listener.start()
 
     def speed_up(self):
         self.game_speed = min(self.game_speed + 0.25, 10.0)
@@ -101,6 +111,12 @@ class BattleController:
                             break
                         case "move_right":
                             self.view.move_view(1, 0)
+                            break
+                        case "scroll_up":
+                            self.view.scroll_up()
+                            break
+                        case "scroll_down":
+                            self.view.scroll_down()
                             break
                         case "next_view_mode":
                             self.view.next_view_mode()
