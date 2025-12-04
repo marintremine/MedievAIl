@@ -229,23 +229,35 @@ class TerminalView(BattleView):
         self.view_mode = (self.view_mode - 1) % 3
 
     def move_view(self, dx, dy):
-        """Déplace la caméra sur la carte pour la vue active."""
+        """Déplace la caméra sur la carte pour la vue battle."""
+        if self.view_mode != VIEW_BATTLE:
+            return
+        
         offset = self.view_offsets[self.view_mode]
         offset[0] = max(0, min(offset[0] + dx, self.model.map_width - 1))
         offset[1] = max(0, min(offset[1] + dy, self.model.map_height - 1))
 
     def move_view_fast(self, dx, dy):
-        """Déplace rapidement la caméra sur la carte pour la vue active."""
+        """Déplace rapidement la caméra sur la carte pour la vue battle."""
+        if self.view_mode != VIEW_BATTLE:
+            return
+        
         offset = self.view_offsets[self.view_mode]
         offset[0] = max(0, min(offset[0] + dx * 5, self.model.map_width - 1))
         offset[1] = max(0, min(offset[1] + dy * 5, self.model.map_height - 1))
 
     def scroll_up(self):
-        """Scroll pour la vue active."""
+        """Scroll pour la vue info armée."""
+        if self.view_mode != VIEW_ARMY_INFO:
+            return
+        
         offset = self.view_offsets[self.view_mode]
         offset[1] = max(0, offset[1] - 1)
 
     def scroll_down(self):
-        """Scroll pour la vue active."""
+        """Scroll pour la vue info armée."""
+        if self.view_mode != VIEW_ARMY_INFO:
+            return
+        
         offset = self.view_offsets[self.view_mode]
         offset[1] = min(self.model.map_height - 1, offset[1] + 1)
