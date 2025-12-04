@@ -34,10 +34,41 @@ class General:
         return f"{self.name}"
 
 class Daft(General):
+    """
+    Major DAFT :
+    - Toutes les unités attaquent systématiquement l’ennemi vivant le plus proche
+    - Elles n'attendent pas d'avoir un ennemi en vue : elles se déplacent si nécessaire
+    - Aucun calcul stratégique : pure agression
+    """
+
     def __init__(self, battle_model):
         super().__init__("Daft", battle_model)
+
     def decide(self) -> None:
-        pass
+        enemy_army = self.battle_model.get_enemy_army(self)
+        friendly_army = self.battle_model.get_army(self)
+
+        if not enemy_army:
+            return
+
+        for unit in friendly_army:
+            if not unit.is_alive():
+                continue
+
+            # On ne remplace pas un ordre d'attaque déjà en cours
+            if isinstance(unit.action, Attack):
+                continue
+
+            # Trouver l'ennemi vivant le plus proche
+            target = self.get_closest_enemy(unit, enemy_army)
+
+            if target is None:
+                unit.action = Wait(unit)
+                continue
+
+            # Toujours attaquer le plus proche (même s'il faut bouger pour l'atteindre)
+            unit.action = Attack(unit, target)
+
 
 class BrainDead(General):
     """
@@ -232,48 +263,6 @@ class IAValentin(General):
 
         return best_target
 
-    def find_safest_retreat(self, unit, enemy):
-        """
-        Trouve une case simple pour reculer sans se coincer.
-        Explore 8 directions autour de l’unité.
-        """
-        best_cell = None
-        best_score = None
-
-        directions = [
-            (-1, 0), (1, 0), (0, -1), (0, 1),   # cardinales
-            (-1, -1), (-1, 1), (1, -1), (1, 1) # diagonales
-        ]
-
-        for dx, dy in directions:
-            nx = unit.x + dx
-            ny = unit.y + dy
-
-            # garder dans la map
-            if not (0 <= nx < self.battle_model.map_width):
-                continue
-            if not (0 <= ny < self.battle_model.map_height):
-                continue
-
-            # score = distance à l'ennemi + distance au bord
-            dist_enemy = abs(nx - enemy.x) + abs(ny - enemy.y)
-
-            # distance minimale au bord
-            dist_border = min(
-                nx, ny,
-                self.battle_model.map_width - nx - 1,
-                self.battle_model.map_height - ny - 1
-            )
-
-            score = dist_enemy + dist_border * 0.4  # léger bonus anti-bord
-
-            if best_score is None or score > best_score:
-                best_score = score
-                best_cell = (nx, ny)
-
-        # aucune bonne case trouvée → ne bouge pas
-        return best_cell
-
     def decide(self):
         """Prend des décisions pour chaque unité alliée en fonction de la situation."""
         enemies = self.battle_model.get_enemy_army(self)
@@ -291,23 +280,6 @@ class IAValentin(General):
                 unit.action = Wait(unit)
                 continue
 
-            # Crossbowmen se replient si un Knight est trop proche
-            if unit.name == "Crossbowman" and self.is_close(unit, target, threshold=3):
-                cell = self.find_safest_retreat(unit, target)
-                if cell:
-                    unit.action = Move(unit, *cell)
-                    continue
-
-            # Knight évite les Piquiers sauf s'ils sont faibles
-            if unit.name == "Knight" and target.name == "Pikeman":
-                if not self.is_weak(target):
-                    # éviter l'engagement frontal
-                    cell = self.find_safest_retreat(unit, target)
-                    if cell:
-                        unit.action = Move(unit, *cell)
-                        continue
-
-            # --- Cas général : on attaque ---
             unit.action = Attack(unit, target)
 
 def generalFactory(general_type: str, battle_model) -> General:
