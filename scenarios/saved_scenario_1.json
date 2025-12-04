@@ -4,662 +4,646 @@
     "army1": [
         {
             "type": "crossbowman",
-            "x": 0,
-            "y": 0,
+            "x": 89,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 1,
-            "y": 0,
+            "x": 90,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 2,
-            "y": 0,
+            "x": 91,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 3,
-            "y": 0,
+            "x": 92,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 4,
-            "y": 0,
+            "x": 93,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 5,
-            "y": 0,
+            "x": 94,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 6,
-            "y": 0,
+            "x": 95,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 7,
-            "y": 0,
+            "x": 96,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 8,
-            "y": 0,
+            "x": 97,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 9,
-            "y": 0,
+            "x": 98,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 10,
-            "y": 0,
+            "x": 99,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 11,
-            "y": 0,
+            "x": 100,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 12,
-            "y": 0,
+            "x": 101,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 13,
-            "y": 0,
+            "x": 102,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 14,
-            "y": 0,
+            "x": 103,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 15,
-            "y": 0,
+            "x": 104,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 16,
-            "y": 0,
+            "x": 105,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 17,
-            "y": 0,
+            "x": 106,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 18,
-            "y": 0,
+            "x": 107,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 19,
-            "y": 0,
+            "x": 108,
+            "y": 89,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "knight",
-            "x": 0,
-            "y": 1,
+            "x": 125,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 1,
-            "y": 1,
+            "x": 126,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 2,
-            "y": 1,
+            "x": 127,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 3,
-            "y": 1,
+            "x": 128,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 4,
-            "y": 1,
+            "x": 129,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 5,
-            "y": 1,
+            "x": 130,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 6,
-            "y": 1,
+            "x": 131,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 7,
-            "y": 1,
+            "x": 132,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 8,
-            "y": 1,
+            "x": 133,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 9,
-            "y": 1,
+            "x": 134,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 10,
-            "y": 1,
+            "x": 135,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 11,
-            "y": 1,
+            "x": 136,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 12,
-            "y": 1,
+            "x": 137,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 13,
-            "y": 1,
+            "x": 138,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 14,
-            "y": 1,
+            "x": 139,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 15,
-            "y": 1,
+            "x": 140,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 16,
-            "y": 1,
+            "x": 141,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 17,
-            "y": 1,
+            "x": 142,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 18,
-            "y": 1,
+            "x": 143,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 19,
-            "y": 1,
+            "x": 144,
+            "y": 126,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         }
     ],
     "army2": [
         {
             "type": "crossbowman",
-            "x": 299,
-            "y": 299,
+            "x": 210,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 298,
-            "y": 299,
+            "x": 209,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 297,
-            "y": 299,
+            "x": 208,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 296,
-            "y": 299,
+            "x": 207,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 295,
-            "y": 299,
+            "x": 206,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 294,
-            "y": 299,
+            "x": 205,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 293,
-            "y": 299,
+            "x": 204,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 292,
-            "y": 299,
+            "x": 203,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 291,
-            "y": 299,
+            "x": 202,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 290,
-            "y": 299,
+            "x": 201,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 289,
-            "y": 299,
+            "x": 200,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 288,
-            "y": 299,
+            "x": 199,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 287,
-            "y": 299,
+            "x": 198,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 286,
-            "y": 299,
+            "x": 197,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 285,
-            "y": 299,
+            "x": 196,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 284,
-            "y": 299,
+            "x": 195,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 283,
-            "y": 299,
+            "x": 194,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 282,
-            "y": 299,
+            "x": 193,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 281,
-            "y": 299,
+            "x": 192,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "crossbowman",
-            "x": 280,
-            "y": 299,
+            "x": 191,
+            "y": 210,
             "hp": 35,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.35200000000000076
         },
         {
             "type": "knight",
-            "x": 299,
-            "y": 298,
+            "x": 174,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 298,
-            "y": 298,
+            "x": 173,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 297,
-            "y": 298,
+            "x": 172,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 296,
-            "y": 298,
+            "x": 171,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 295,
-            "y": 298,
+            "x": 170,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 294,
-            "y": 298,
+            "x": 169,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 293,
-            "y": 298,
+            "x": 168,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 292,
-            "y": 298,
+            "x": 167,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 291,
-            "y": 298,
+            "x": 166,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 290,
-            "y": 298,
+            "x": 165,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 289,
-            "y": 298,
+            "x": 164,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 288,
-            "y": 298,
+            "x": 163,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 287,
-            "y": 298,
+            "x": 162,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 286,
-            "y": 298,
+            "x": 161,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 285,
-            "y": 298,
+            "x": 160,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 284,
-            "y": 298,
+            "x": 159,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 283,
-            "y": 298,
+            "x": 158,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 282,
-            "y": 298,
+            "x": 157,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 281,
-            "y": 298,
+            "x": 156,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         },
         {
             "type": "knight",
-            "x": 280,
-            "y": 298,
+            "x": 155,
+            "y": 173,
             "hp": 100,
             "cooldown_timer": 0,
-            "move_progress": 0
+            "move_progress": 0.6512500000000252
         }
     ],
-    "obstacles": [
-        {
-      "type": "obstacle",
-      "x": 3,
-      "y": 5
-    },
-    {
-      "type": "obstacle",
-      "x": 4,
-      "y": 5
-    },
-    {
-      "type": "obstacle",
-      "x": 7,
-      "y": 2
-    }
-    ]
+    "obstacles": []
 }
