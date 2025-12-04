@@ -2,7 +2,7 @@ from __future__ import annotations
 import random
 
 from models.order import Attack, Move, Wait, Defense
-from models.unit import Unit
+from models.unit import *
 
 class General:
     def __init__(self, name: str, battle_model) -> None: # pyright: ignore[reportUndefinedVariable]
@@ -168,7 +168,87 @@ class AttackTestGeneral(General):
                 else:
                     unit.action = Wait(unit)
 
+class MomoIA(General):
+    def __init__(self, battle_model):
+        super().__init__("MomoIA", battle_model)
+        self.posx_last_pike = 0
+        self.posy_last_pike = 0
+        
+    def is_anyone_there(self, px, py, ux, uy, R):
+        dx = ux - px
+        dy = uy - py
+        distance = (dx*dx + dy*dy)**0.5
+        return distance <= R
+    
+    def dist_ht_2(self, x1, y1, x2, y2):
+        distance = ((x2 - x1)**2 + (y2 - y1)**2)**0.5
+        return distance >= 2
 
+
+    def decide(self):
+        enemy_units = self.battle_model.get_enemy_army(self)
+        if not enemy_units:
+            return
+        n = len(enemy_units)
+        avg_x = sum(u.x for u in enemy_units) / n
+        avg_y = sum(u.y for u in enemy_units) / n
+        for unit in self.battle_model.get_army(self):
+            dx = avg_x - unit.x
+            dy = avg_y- unit.y
+            distance = (dx*dx + dy*dy) ** 0.5
+            if distance == 0:
+                distance = 1
+            new_x = unit.x+dx / distance
+            new_y = unit.y+dy / distance
+            nearest = min(enemy_units, key=lambda e: (e.x - unit.x)**2 + (e.y - unit.y)**2)
+            dist2 = (nearest.x - unit.x)**2 + (nearest.y - unit.y)**2
+
+            #Pikeman
+            if isinstance(unit, Pikeman):
+                self.posx_last_pike = unit.x
+                self.posy_last_pike = unit.y
+                if abs(avg_x-unit.x) <=3 and abs(avg_y -unit.y) <= 3:
+                    unit.action = Attack(unit, nearest)
+                    # if dist2 <= 4: 
+                    #     unit.action = Attack(unit, nearest)
+                else :
+                    for u in enemy_units :
+                        anyone = self.is_anyone_there(avg_x, avg_y, u.x , u.y, 2)
+                    if not anyone :
+                        unit.action = Attack(unit, nearest)
+                    else :
+                        unit.action = Move(unit, new_x, new_y)
+
+            # Knights
+            if isinstance(unit, Knight):
+                if self.posx_last_pike != 0 and self.posy_last_pike != 0:
+                    if self.dist_ht_2(unit.x, unit.y, self.posx_last_pike, self.posy_last_pike):
+                        Wait(unit)
+                        
+                if abs(avg_x-unit.x) <= 3 and abs(avg_y-unit.y) <= 3:
+                    unit.action = Attack(unit, nearest)
+                else:
+                    for u in enemy_units:
+                        anyone = self.is_anyone_there(avg_x, avg_y, u.x, u.y, 2)
+                    if not anyone:
+                        unit.action = Attack(unit, nearest)
+                    else:
+                        unit.action = Move(unit, new_x, new_y)
+
+            #Crossbowman
+            if isinstance(unit, Crossbowman):
+                if abs(avg_x-unit.x) <=3 and abs(avg_y -unit.y) <= 3:
+                    unit.action = Attack(unit, nearest)
+                    # if dist2 <= 4: 
+                    #     unit.action = Attack(unit, nearest)
+                else :
+                    for u in enemy_units :
+                        anyone = self.is_anyone_there(avg_x, avg_y, u.x , u.y, 2)
+                    if not anyone :
+                        unit.action = Attack(unit, nearest)
+                    else :
+                        unit.action = Move(unit, new_x, new_y)
+            anyone = False
 
 
 class RPSGeneral(General):
@@ -279,6 +359,7 @@ def generalFactory(general_type: str, battle_model) -> General:
         "aegis": Aegis,
         "movetest": MoveTestGeneral,
         "attacktest": AttackTestGeneral,
+        "momoia": MomoIA
         "rps": RPSGeneral,
     }
     key = general_type.lower()
@@ -286,3 +367,5 @@ def generalFactory(general_type: str, battle_model) -> General:
         return general_classes[key](battle_model)
     else:
         raise ValueError(f"Unknown general type: {key}")
+
+
