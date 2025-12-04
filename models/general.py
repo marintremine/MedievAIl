@@ -2,7 +2,7 @@ from __future__ import annotations
 import random
 
 from models.order import Attack, Move, Wait, Defense
-from models.unit import Unit
+from models.unit import Object, Unit
 
 class General:
     def __init__(self, name: str, battle_model) -> None: # pyright: ignore[reportUndefinedVariable]
@@ -22,10 +22,10 @@ class General:
         )
 
     def manhattan(self, a, b):
-        """
-        Renvoie la manhattan
-        """
-        return abs(a.x - b.x) + abs(a.y - b.y)
+        ax, ay = a.x, a.y
+        bx, by = (b if isinstance(b, tuple) else (b.x, b.y))
+        return abs(ax - bx) + abs(ay - by)
+
 
     def decide(self) -> None:
         pass
@@ -172,8 +172,44 @@ class AttackTestGeneral(General):
 
 class IAValentin(General):
     def __init__(self, battle_model):
-        super().__init__("AttackTestGeneral", battle_model)
+        super().__init__("IAValentin", battle_model)
 
+    def get_best_target(self, unit, enemies):
+        best_target = None
+        best_score = None
+        for e in enemies:
+            score = -(self.manhattan(unit, e))
+
+            if unit.name == "Crossbowman" and e.name in ["Knight", "Pikeman"]:
+                score += 2
+            if unit.name == "Knight" and e.name == "Crossbowman":
+                score += 3
+            if unit.name == "Pikeman" and e.name == "Knight":
+                score += 3
+
+            if best_score is None or score > best_score:
+                best_score = score
+                best_target = e
+        return best_target
+
+    def decide(self):
+        enemies = self.battle_model.get_enemy_army(self)
+        allies = self.battle_model.get_army(self)
+
+        if not enemies:
+            return
+
+        for unit in allies:
+            if not isinstance(unit.action, Wait):
+                continue
+
+            target = self.get_best_target(unit, enemies)
+            if not target:
+                unit.action = Wait(unit)
+                continue
+
+            unit.action = Attack(unit, target)
+             
 
 def generalFactory(general_type: str, battle_model) -> General:
     general_classes = {
@@ -181,7 +217,8 @@ def generalFactory(general_type: str, battle_model) -> General:
         "braindead": BrainDead,
         "aegis": Aegis,
         "movetest": MoveTestGeneral,
-        "attacktest": AttackTestGeneral
+        "attacktest": AttackTestGeneral,
+        "iaval": IAValentin
     }
     key = general_type.lower()
     if key in general_classes:
