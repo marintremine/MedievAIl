@@ -133,8 +133,9 @@ class TerminalView(BattleView):
                     pass
 
     def _draw_army_infos(self):
-        """Affiche les informations des armées."""
+        """Affiche les informations des armées côte à côte."""
         max_y, max_x = self.stdscr.getmaxyx()
+        start_x = 0
         start_y = 0
 
         armies = [
@@ -145,7 +146,8 @@ class TerminalView(BattleView):
         for army, general, army_name in armies:
             header = f"{army_name} (Général: {general.name})"
             try:
-                self.stdscr.addstr(start_y, 0, header[:max_x - 1], curses.A_UNDERLINE)
+                # On veut les deux armées côte à côte
+                self.stdscr.addstr(start_y, start_x, header[:max_x - 1], curses.color_pair(self.general_colors[general]) | curses.A_BOLD)
             except curses.error:
                 pass
             start_y += 1
@@ -155,12 +157,13 @@ class TerminalView(BattleView):
                     break
                 unit_info = f"- {unit.name} | HP: {unit.hp}/{unit.max_hp} | Pos: ({unit.x},{unit.y})"
                 try:
-                    self.stdscr.addstr(start_y, 0, unit_info[:max_x - 1])
+                    self.stdscr.addstr(start_y, start_x, unit_info[:max_x - 1])
                 except curses.error:
                     pass
                 start_y += 1
 
-            start_y += 1  # Ligne vide entre les armées
+            start_y = 0  # Réinitialiser Y pour la prochaine armée
+            start_x += max_x // 2  # Déplacer à droite pour la prochaine armée
 
     def _draw_standard_output(self, text, start_y):
         """Affiche du texte standard à l'écran."""
