@@ -174,28 +174,75 @@ class IAValentin(General):
     def __init__(self, battle_model):
         super().__init__("IAValentin", battle_model)
 
+    def weakest_targets(self, enemies):
+        return [e for e in enemies if e.is_alive() and e.hp <= e.max_hp * 0.3]
+    
+    def is_weak(self, unit):
+        return unit.is_alive() and unit.hp <= unit.max_hp * 0.3
+    
+    def is_close(self, unit, enemy, threshold=3):
+        return self.manhattan(unit, enemy) <= threshold
+
     def get_best_target(self, unit, enemies):
         best_target = None
         best_score = None
         enemies_in_sight = [e for e in enemies if unit.in_sight(e)]
+        weak = self.weakest_targets(enemies)
 
         for e in enemies:
-            score = -(self.manhattan(unit, e))
+            score = -(self.manhattan(unit, e))  # base = proximité
 
-            if unit.name == "Crossbowman" and e.name in ["Knight", "Pikeman"]:
-                if e in enemies_in_sight:
+            # Bonus si ennemi en vue
+            if e in enemies_in_sight:
+                score += 2
+
+            # Priorité aux unités faibles
+            if e in weak:
+                score += 4
+
+            # --- Bonus / Malus selon matchup ---
+            if unit.name == "Crossbowman":
+                if e.name == "Knight":  # bonne cible
                     score += 5
-                else:
-                    score += 2
-            if unit.name == "Knight" and e.name == "Crossbowman":
-                score += 3
-            if unit.name == "Pikeman" and e.name == "Knight":
-                score += 3
+                if e.name == "Pikeman":
+                    score += 3
+                # Malus si trop proche (danger)
+                if self.manhattan(unit, e) <= 3:
+                    score -= 6
+
+            if unit.name == "Knight":
+                if e.name == "Crossbowman":
+                    score += 5
+                if e.name == "Pikeman":
+                    score -= 4  # éviter les piquiers !
+
+            if unit.name == "Pikeman":
+                if e.name == "Knight":
+                    score += 5
 
             if best_score is None or score > best_score:
                 best_score = score
                 best_target = e
+
         return best_target
+
+    def find_safest_retreat(self, unit, enemy):
+        """
+        Trouve une case pour s'éloigner de l'ennemi le plus dangereux.
+        Utilise les cases adjacentes libres.
+        """
+        best_cell = None
+        best_dist = None
+
+        for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+            nx, ny = unit.x + dx, unit.y + dy
+
+            dist = abs(nx - enemy.x) + abs(ny - enemy.y)
+            if best_dist is None or dist > best_dist:
+                best_dist = dist
+                best_cell = (nx, ny)
+
+        return best_cell
 
     def decide(self):
         enemies = self.battle_model.get_enemy_army(self)
@@ -213,7 +260,25 @@ class IAValentin(General):
                 unit.action = Wait(unit)
                 continue
 
+            # Crossbowmen se replient si un Knight est trop proche
+            if unit.name == "Crossbowman" and self.is_close(unit, target, threshold=3):
+                cell = self.find_safest_retreat(unit, target)
+                if cell:
+                    unit.action = Move(unit, *cell)
+                    continue
+
+            # Knight évite les Piquiers sauf s'ils sont faibles
+            if unit.name == "Knight" and target.name == "Pikeman":
+                if not self.is_weak(target):
+                    # éviter l'engagement frontal
+                    cell = self.find_safest_retreat(unit, target)
+                    if cell:
+                        unit.action = Move(unit, *cell)
+                        continue
+
+            # --- Cas général : on attaque ---
             unit.action = Attack(unit, target)
+
              
 
 def generalFactory(general_type: str, battle_model) -> General:
