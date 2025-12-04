@@ -25,7 +25,18 @@ class General:
         ax, ay = a.x, a.y
         bx, by = (b if isinstance(b, tuple) else (b.x, b.y))
         return abs(ax - bx) + abs(ay - by)
-
+    
+    def weakest_targets(self, enemies):
+        """Cherche les cibles faibles (<=30% HP) parmi les ennemis donnés."""
+        return [e for e in enemies if e.is_alive() and e.hp <= e.max_hp * 0.3]
+    
+    def is_weak(self, unit):
+        """Vérifie si une unité est faible (<=30% HP)."""
+        return unit.is_alive() and unit.hp <= unit.max_hp * 0.3
+    
+    def is_close(self, unit, enemy, threshold=3):
+        """Vérifie si une unité est proche d'un ennemi selon un seuil donné."""
+        return self.manhattan(unit, enemy) <= threshold
 
     def decide(self) -> None:
         pass
@@ -206,18 +217,6 @@ class IAValentin(General):
         super().__init__("IAValentin", battle_model)
         self.retreat_steps = 0
         self.max_retreat = 3
-
-    def weakest_targets(self, enemies):
-        """Cherche les cibles faibles (<=30% HP) parmi les ennemis donnés."""
-        return [e for e in enemies if e.is_alive() and e.hp <= e.max_hp * 0.3]
-    
-    def is_weak(self, unit):
-        """Vérifie si une unité est faible (<=30% HP)."""
-        return unit.is_alive() and unit.hp <= unit.max_hp * 0.3
-    
-    def is_close(self, unit, enemy, threshold=3):
-        """Vérifie si une unité est proche d'un ennemi selon un seuil donné."""
-        return self.manhattan(unit, enemy) <= threshold
 
     def get_best_target(self, unit, enemies):
         """Détermine la meilleure cible ennemie en fonction de divers critères."""
