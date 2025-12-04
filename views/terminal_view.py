@@ -157,7 +157,8 @@ class TerminalView(BattleView):
 
         for army, general, army_name in armies:
             # Construire les lignes de l'armée (header + unités)
-            header = f"{army_name} (Général: {general.name})"
+            taille_armee = len(army)
+            header = f"{army_name} (Général: {general.name} - Taille de l'armée: {taille_armee})"
             lines = [header] + [
                 f"- {unit.name} | HP: {unit.hp}/{unit.max_hp} | Pos: ({unit.x},{unit.y})"
                 for unit in army
@@ -232,6 +233,12 @@ class TerminalView(BattleView):
         offset = self.view_offsets[self.view_mode]
         offset[0] = max(0, min(offset[0] + dx, self.model.map_width - 1))
         offset[1] = max(0, min(offset[1] + dy, self.model.map_height - 1))
+
+    def move_view_fast(self, dx, dy):
+        """Déplace rapidement la caméra sur la carte pour la vue active."""
+        offset = self.view_offsets[self.view_mode]
+        offset[0] = max(0, min(offset[0] + dx * 5, self.model.map_width - 1))
+        offset[1] = max(0, min(offset[1] + dy * 5, self.model.map_height - 1))
 
     def scroll_up(self):
         """Scroll pour la vue active."""

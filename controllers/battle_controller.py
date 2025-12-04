@@ -1,5 +1,6 @@
 import time
-from pynput import keyboard, mouse
+import pynput.keyboard as kb
+import pynput.mouse as ms
 import queue
 from settings import FPS, TICK_RATE, GAME_SPEED
 from models.battle_model import BattleModel
@@ -15,50 +16,67 @@ class BattleController:
         self.datafile = None
 
         self.actions = queue.Queue()
-        self._start_keyboard_listener()
+        self._start_input_listeners()
 
-    def _start_keyboard_listener(self):
+    def _start_input_listeners(self):
+        # Ensemble des touches actuellement pressées
+        self._pressed_keys = set()
+
         def on_press(key):
+            self._pressed_keys.add(key)
+            move_fast = kb.Key.shift in self._pressed_keys
+
             try:
-                if key == keyboard.KeyCode.from_char('p'):
+                # Pause / save / exit / view modes
+                if key == kb.KeyCode.from_char('p'):
                     self.actions.put("pause")
-                elif key == keyboard.Key.f11:
+                elif key == kb.Key.f11:
                     self.actions.put("save")
-                elif key == keyboard.Key.up:
-                    self.actions.put("move_up")
-                elif key == keyboard.Key.down:
-                    self.actions.put("move_down")
-                elif key == keyboard.Key.left:
-                    self.actions.put("move_left")
-                elif key == keyboard.Key.right:
-                    self.actions.put("move_right")
-                elif key == keyboard.KeyCode.from_char('+'):
-                    self.actions.put("speed_up")
-                elif key == keyboard.KeyCode.from_char('-'):
-                    self.actions.put("speed_down")
-                elif key == keyboard.Key.f1:
+                elif key == kb.Key.f1:
                     self.actions.put("next_view_mode")
-                elif key == keyboard.Key.f2:
+                elif key == kb.Key.f2:
                     self.actions.put("prev_view_mode")
-                elif key == keyboard.Key.esc:
+                elif key == kb.Key.esc:
                     self.actions.put("exit")
+
+                # Déplacement
+                elif key in [kb.Key.up, kb.KeyCode.from_char('z')]:
+                    self.actions.put("move_up_fast" if move_fast else "move_up")
+                elif key in [kb.Key.down, kb.KeyCode.from_char('s')]:
+                    self.actions.put("move_down_fast" if move_fast else "move_down")
+                elif key in [kb.Key.left, kb.KeyCode.from_char('q')]:
+                    self.actions.put("move_left_fast" if move_fast else "move_left")
+                elif key in [kb.Key.right, kb.KeyCode.from_char('d')]:
+                    self.actions.put("move_right_fast" if move_fast else "move_right")
+
+                # Vitesse du jeu
+                elif key == kb.KeyCode.from_char('+'):
+                    self.actions.put("speed_up")
+                elif key == kb.KeyCode.from_char('-'):
+                    self.actions.put("speed_down")
 
             except AttributeError:
                 pass
-        
+
+        def on_release(key):
+            if key in self._pressed_keys:
+                self._pressed_keys.remove(key)
+
         def on_scroll(x, y, dx, dy):
             if dy > 0:
                 self.actions.put("scroll_up")
             elif dy < 0:
                 self.actions.put("scroll_down")
 
-        listener = keyboard.Listener(on_press=on_press)
-        listener.daemon = True # Permet au thread de se fermer avec le programme principal
-        listener.start()
+        # Listeners
+        kb_listener = kb.Listener(on_press=on_press, on_release=on_release)
+        kb_listener.daemon = True
+        kb_listener.start()
 
-        mouse_listener = mouse.Listener(on_scroll=on_scroll)
-        mouse_listener.daemon = True
-        mouse_listener.start()
+        ms_listener = ms.Listener(on_scroll=on_scroll)
+        ms_listener.daemon = True
+        ms_listener.start()
+
 
     def speed_up(self):
         self.game_speed = min(self.game_speed + 0.25, 10.0)
@@ -111,6 +129,18 @@ class BattleController:
                             break
                         case "move_right":
                             self.view.move_view(1, 0)
+                            break
+                        case "move_up_fast":
+                            self.view.move_view_fast(0, -1)
+                            break
+                        case "move_down_fast":
+                            self.view.move_view_fast(0, 1)
+                            break
+                        case "move_left_fast":
+                            self.view.move_view_fast(-1, 0)
+                            break
+                        case "move_right_fast":
+                            self.view.move_view_fast(1, 0)
                             break
                         case "scroll_up":
                             self.view.scroll_up()
