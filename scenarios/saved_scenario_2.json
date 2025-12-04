@@ -2405,5 +2405,21 @@
             "move_progress": 0
         }
     ],
-    "obstacles": []
+    "obstacles": [
+        {
+      "type": "obstacle",
+      "x": 3,
+      "y": 5
+    },
+    {
+      "type": "obstacle",
+      "x": 4,
+      "y": 5
+    },
+    {
+      "type": "obstacle",
+      "x": 7,
+      "y": 2
+    }
+    ]
 }
