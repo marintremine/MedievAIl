@@ -9,6 +9,14 @@ class General:
         self.name = name
         self.battle_model = battle_model
 
+        cls = type(self)
+        if not hasattr(cls, "_counter"):
+            cls._counter = 0
+
+        cls._counter += 1
+        self.instance_id = cls._counter
+        
+
     def get_closest_enemy(self, unit, enemy_list):
         """
         Trouve l'ennemi le plus proche dans une liste donnée en utilisant la distance de Manhattan
@@ -31,7 +39,7 @@ class General:
         pass
 
     def __str__(self) -> str:
-        return f"{self.name}"
+        return f"{self.name}#{self.instance_id}"
 
 class Daft(General):
     def __init__(self, battle_model):
@@ -104,7 +112,6 @@ class Aegis(General):
             if best_score is None or score > best_score:
                 best_score = score
                 best_enemy = enemy
-                print(best_score)
         return best_enemy
 
     def decide(self) -> None:
