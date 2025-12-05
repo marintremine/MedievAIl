@@ -20,17 +20,19 @@ def start_flask_debug_server(model, port=5000):
 
     @app.route("/")
     def index():
-        return render_template("index.html", model=model)
+        return render_template("live_debug.html", model=model)
 
-    @app.route("/state")
-    def state():
-        return render_template("state.html", model=model)
+    @app.route("/snapshot")
+    def snapshot():
+        return render_template("snapshot.html", model=model)
 
     def run():
         app.run(port=port, debug=False, use_reloader=False, threaded=True)
 
     thread = threading.Thread(target=run, daemon=True)
     thread.start()
+
+    print(f"Live debug server started at http://localhost:{port}")
 
     return thread
 
