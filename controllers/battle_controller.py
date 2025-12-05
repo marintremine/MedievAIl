@@ -37,7 +37,7 @@ class BattleController:
                     self.actions.put("prev_view_mode")
                 elif key == kb.Key.esc:
                     self.actions.put("exit")
-                elif key == keyboard.Key.tab:
+                elif key == kb.Key.tab:
                     self.actions.put("snapshot")
 
                 # Déplacement
@@ -132,40 +132,52 @@ class BattleController:
                             self.speed_down()
                             break
                         case "move_up":
-                            self.view.move_view_up()
+                            for view in self.view_list:
+                                view.move_view_up()
                             break
                         case "move_down":
-                            self.view.move_view_down()
+                            for view in self.view_list:
+                                view.move_view_down()
                             break
                         case "move_left":
-                            self.view.move_view_left()
+                            for view in self.view_list:
+                                view.move_view_left()
                             break
                         case "move_right":
-                            self.view.move_view_right()
+                            for view in self.view_list:
+                                view.move_view_right()
                             break
                         case "move_up_fast":
-                            self.view.move_view_up_fast()
+                            for view in self.view_list:
+                                view.move_view_up_fast()
                             break
                         case "move_down_fast":
-                            self.view.move_view_down_fast()
+                            for view in self.view_list:
+                                view.move_view_down_fast()
                             break
                         case "move_left_fast":
-                            self.view.move_view_left_fast()
+                            for view in self.view_list:
+                                view.move_view_left_fast()
                             break
                         case "move_right_fast":
-                            self.view.move_view_right_fast()
+                            for view in self.view_list:
+                                view.move_view_right_fast()
                             break
                         case "scroll_up":
-                            self.view.scroll_up()
+                            for view in self.view_list:
+                                view.scroll_up()
                             break
                         case "scroll_down":
-                            self.view.scroll_down()
+                            for view in self.view_list:
+                                view.scroll_down()
                             break
                         case "next_view_mode":
-                            self.view.next_view_mode()
+                            for view in self.view_list:
+                                view.next_view_mode()
                             break
                         case "prev_view_mode":
-                            self.view.prev_view_mode()
+                            for view in self.view_list:
+                                view.prev_view_mode()
                             break
                         case "exit":
                             return

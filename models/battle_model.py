@@ -26,7 +26,6 @@ class BattleModel:
         """Réinitialise le modèle de bataille."""
         self.general_1 = None
         self.general_2 = None
-        self.running = False
         self.map_width = None
         self.map_height = None
         self.list_objects = []
@@ -142,14 +141,10 @@ class BattleModel:
         # Check for end of battle
         army1_alive = any(isinstance(obj, Unit) and obj.general == self.general_1 and obj.is_alive() for obj in self.list_objects)
         army2_alive = any(isinstance(obj, Unit) and obj.general == self.general_2 and obj.is_alive() for obj in self.list_objects)
-        if not army1_alive or not army2_alive:
-            self.running = False
-            if army1_alive and not army2_alive:
-                self.winner = self.general_1
-            elif army2_alive and not army1_alive:
-                self.winner = self.general_2
-            else:
-                self.winner = None  # Draw or both armies eliminated
+        if army1_alive and not army2_alive:
+            self.winner = self.general_1
+        if army2_alive and not army1_alive:
+            self.winner = self.general_2
 
     def pause(self)->None:
         """Met en pause ou reprend la simulation de la bataille."""
