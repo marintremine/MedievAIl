@@ -10,3 +10,24 @@ class BattleView:
 
     def getInput(self):
         pass
+
+    def cleanup(self):
+        pass
+
+    def move_view(self, x, y):
+        pass
+
+    def move_view_fast(self, x, y):
+        pass
+
+    def scroll_up(self):
+        pass
+
+    def scroll_down(self):
+        pass
+
+    def next_view_mode(self):
+        pass
+
+    def prev_view_mode(self):
+        pass
