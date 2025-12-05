@@ -56,6 +56,22 @@ class BattleController:
                 elif key == kb.KeyCode.from_char('-'):
                     self.actions.put("speed_down")
 
+                # Déplacement
+                elif key in [kb.Key.up, kb.KeyCode.from_char('z')]:
+                    self.actions.put("move_up_fast" if move_fast else "move_up")
+                elif key in [kb.Key.down, kb.KeyCode.from_char('s')]:
+                    self.actions.put("move_down_fast" if move_fast else "move_down")
+                elif key in [kb.Key.left, kb.KeyCode.from_char('q')]:
+                    self.actions.put("move_left_fast" if move_fast else "move_left")
+                elif key in [kb.Key.right, kb.KeyCode.from_char('d')]:
+                    self.actions.put("move_right_fast" if move_fast else "move_right")
+
+                # Vitesse du jeu
+                elif key == kb.KeyCode.from_char('+'):
+                    self.actions.put("speed_up")
+                elif key == kb.KeyCode.from_char('-'):
+                    self.actions.put("speed_down")
+
             except AttributeError:
                 pass
 
@@ -170,6 +186,24 @@ class BattleController:
                         case "scroll_down":
                             for view in self.view_list:
                                 view.scroll_down()
+                            break
+                        case "move_up_fast":
+                            self.view.move_view_fast(0, -1)
+                            break
+                        case "move_down_fast":
+                            self.view.move_view_fast(0, 1)
+                            break
+                        case "move_left_fast":
+                            self.view.move_view_fast(-1, 0)
+                            break
+                        case "move_right_fast":
+                            self.view.move_view_fast(1, 0)
+                            break
+                        case "scroll_up":
+                            self.view.scroll_up()
+                            break
+                        case "scroll_down":
+                            self.view.scroll_down()
                             break
                         case "next_view_mode":
                             for view in self.view_list:
