@@ -6,10 +6,6 @@ import pygame.gfxdraw
 import math
 import json
 
-"""
-TODO
-- Ajouter minimap
-"""
 MINIMAP_SIZE = (300, 300)
 LIST_UNITS = ["Pikeman","Crossbowman","Knight"]
 
@@ -105,6 +101,7 @@ def assetLoader(unitname):
             assetLoaded[anim]["back"][i - unit_json_map[anim]["side"]["back"]["start"]].set_colorkey((255, 0, 255))
     return assetLoaded
 
+
 class miniMap(pygame.sprite.Sprite):
     def __init__(self,pygamesSim):
         super().__init__()
@@ -120,6 +117,7 @@ class miniMap(pygame.sprite.Sprite):
         self.scaleMap_y = MINIMAP_SIZE[0]/(self.pygamesSim.MAP_WIDTH*self.pygamesSim.SCALE)
 
     def update(self):
+        """Update the minimap"""
         self.image.fill((69, 69, 69))
         self.rect = self.image.get_rect(topright=(self.pygamesSim.window.get_width()-1,0))
         self.makeMap(-self.pygamesSim.mapX,-self.pygamesSim.mapY)
@@ -136,6 +134,8 @@ class miniMap(pygame.sprite.Sprite):
         windowX = self.pygamesSim.window.get_width()
         windowY = self.pygamesSim.window.get_height()
 
+        #Create the map surface on the minimap
+
         tmpSurf = pygame.Surface((self.pygamesSim.MAP_WIDTH * 2 * self.scaleMap_x, self.pygamesSim.MAP_HEIGHT  * self.scaleMap_y)).convert_alpha()
         tmpSurf.fill((0,0,0,0))
 
@@ -147,9 +147,13 @@ class miniMap(pygame.sprite.Sprite):
         pygame.draw.polygon(tmpSurf,(0,255,0), points)
         tmprect = tmpSurf.get_rect(center = (MINIMAP_SIZE[0]/2, MINIMAP_SIZE[1]/2))
 
+        #Populate minimap with units
+
         for u in self.pygamesSim.object_list:
             if u.is_alive:
                 pygame.draw.circle(tmpSurf,u.color,self.convertPos((u.x,u.y)),3)
+
+        #Create the windows frame on the minimap
 
         self.image.blit(tmpSurf, tmprect)
 
@@ -170,7 +174,7 @@ class miniMap(pygame.sprite.Sprite):
         self.image.blit(tmpSurf,rect)
 
     def mapTouch(self,pos):
-
+        """Calculate the position of the touch on the minimap"""
         windowX = self.pygamesSim.window.get_width()
         coordX = pos[0] - (windowX - MINIMAP_SIZE[0])
         coordY = pos[1]
@@ -183,11 +187,13 @@ class miniMap(pygame.sprite.Sprite):
             return None
 
     def convertPos(self,pos):
+        """Convert cartesian coordinates to isometric coordinates"""
         iso_X = ((pos[0]-pos[1])+self.pygamesSim.MAP_WIDTH)*self.scaleMap_x
         iso_Y = ((pos[0] + pos[1]) / 2) * self.scaleMap_y
         return [iso_X, iso_Y]
 
     def toggleVisible(self):
+        """Toggle visible minimap"""
         self.visible = not self.visible
 
 
@@ -255,7 +261,6 @@ class unit_model(pygame.sprite.Sprite):
                 self.image = textTmp.surface
                 del textTmp
             except IndexError:
-                #print("Index error : Side : {} Key : {:f}/{:d} troup type : {}".format(self.direction,self.animationKey,self.animationKeyMax,self.name))
                 pass
             if self.is_alive:
                 pass #self.image.blit(self.displayText,((self.image.get_width()-self.displayText.get_width())/2,self.image.get_height()-self.displayText.get_height()))
@@ -303,7 +308,7 @@ class PygameView(BattleView):
 
         #---GUI---
 
-        self.commandText = self.font.render(" P : PAUSE/PLAY | +/-/MOUSE WHEEL : ZOOM | ↑↓ : SPEED | ZQSD : MOVE | ESC : QUIT | F10 : FULLSCREEN | F11 : SAVE",False, (255, 255, 255))
+        self.commandText = self.font.render(" P : PAUSE/PLAY | +/-/MOUSE WHEEL : ZOOM | +/- : SPEED | ZQSD : MOVE | M : MINIMAP | ESC : QUIT | F10 : FULLSCREEN | F11 : SAVE",False, (255, 255, 255))
         self.generalNameText = self.font.render("{} | {}".format(self.model.general_1.name, self.model.general_2.name),False, (255, 255, 255))
 
         self.miniMap = miniMap(self)
@@ -347,13 +352,15 @@ class PygameView(BattleView):
         return word.x*word.y
 
     def updateSpriteGroup(self):
+        """Method to update and order sprite group
+        used to resolve z-axis error"""
         self.object_list.sort(key=self.sortingUnits)
         for unit in self.object_list:
             self.unit_spritegroup.add(unit)
 
     def render(self):
+        """Function to render the game screen"""
         self.getInput()
-
         #--- Render MAP & UNITS
         self.window.fill((0,0,0))
         self.makeMap(0,0)
@@ -385,10 +392,12 @@ class PygameView(BattleView):
         pygame.time.wait(1)
 
     def getInput(self):
+        """Method who get all input for the pygame view"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 pygame.quit()
                 exit()
+
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_KP_PLUS:
                     self.zoomIn()
@@ -398,19 +407,18 @@ class PygameView(BattleView):
                     pygame.display.toggle_fullscreen()
                 elif event.key == pygame.K_m:
                     self.miniMap.toggleVisible()
+
             elif event.type == pygame.MOUSEWHEEL:
                 if event.y == 1:
                     self.zoomIn()
                 elif event.y == -1:
                     self.zoomOut()
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    if self.miniMap.visible:
-                        tmpPos = self.miniMap.mapTouch(event.pos)
-                        if tmpPos != None:
-                            self.mapX = (self.window.get_width()/2) - tmpPos[0]
-                            self.mapY = (self.window.get_height()/2) - tmpPos[1]
+                    self.moveMinimap(event.pos)
 
+        #Its more faster to use pygames build-in keyboard event than use an external API
         key = pygame.key.get_pressed()
         if key[pygame.K_z]:
             self.mapY += 10*self.ZOOM
@@ -427,3 +435,10 @@ class PygameView(BattleView):
     def zoomOut(self):
         if self.ZOOM > 0.5:
             self.ZOOM -= 0.5
+
+    def moveMinimap(self,pos):
+        if self.miniMap.visible:
+            tmpPos = self.miniMap.mapTouch(pos)
+            if tmpPos != None:
+                self.mapX = (self.window.get_width() / 2) - tmpPos[0]
+                self.mapY = (self.window.get_height() / 2) - tmpPos[1]

@@ -359,7 +359,7 @@ def generalFactory(general_type: str, battle_model) -> General:
         "aegis": Aegis,
         "movetest": MoveTestGeneral,
         "attacktest": AttackTestGeneral,
-        "momoia": MomoIA
+        "momoia": MomoIA,
         "rps": RPSGeneral,
     }
     key = general_type.lower()
