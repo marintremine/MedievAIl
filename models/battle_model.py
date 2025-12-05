@@ -2,9 +2,7 @@ import json
 import os
 from pathlib import Path
 import random
-from datetime import datetime
-from utils import render_snapshot
-import webbrowser
+from jinja2 import Environment, FileSystemLoader
 
 from models.general import *
 from models.unit import *
@@ -34,21 +32,20 @@ class BattleModel:
         self.list_objects = []
         self.winner = None
 
-    def load(self, path:str, ai1:str, ai2:str)->None:
+    def load(self, path:str, general_1:General, general_2:General)->None:
         """Charge le scénario de bataille à partir d'un fichier JSON et initialise les généraux et leurs armées."""
-        # load json
 
+        # assign generals
+        self.general_1 = general_1
+        self.general_2 = general_2
+
+        # load json
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
             
         # load map
         self.map_width = data["map_width"]
         self.map_height = data["map_height"]
-
-        # load generals
-        self.general_1 = generalFactory(ai1, self)
-        self.general_2 = generalFactory(ai2, self)
-
 
         # load army
         for unit_data in data["army1"]:
@@ -87,8 +84,9 @@ class BattleModel:
 
 
     def save(self, scenario_file: str = None) -> None:
-        """Enregistre le scénario."""
-
+        """
+        Enregistre l'état actuel de la bataille dans un fichier JSON.
+        """
         data = self.to_dict()
         scenarios_dir = Path("scenarios")
         scenarios_dir.mkdir(parents=True, exist_ok=True)
@@ -109,34 +107,25 @@ class BattleModel:
         with open(scenarios_dir / candidate, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
-    def snapshot_html(self, filename=None):
+    def snapshot_html(self) -> None:
         """
-        Génère un snapshot HTML basé sur self.to_dict()
-        et ouvre le fichier dans le navigateur.
+        Génère un snapshot HTML du modèle de bataille
         """
-        html_content = render_snapshot(self)
-
-        snapshots_dir = os.path.join(os.getcwd(), "snapshots")
-        os.makedirs(snapshots_dir, exist_ok=True)
-
-        if filename is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            filename = os.path.join(snapshots_dir, f"battle_snapshot_{timestamp}.html")
-
-        with open(filename, "w", encoding="utf-8") as f:
-            f.write(html_content)
-
-        try:
-            webbrowser.open("file://" + filename)
-        except Exception:
-            pass
+        file_loader = FileSystemLoader('templates') 
+        env = Environment(loader=file_loader)
+        template = env.get_template('snapshot.html')
+        html = template.render(model=self)
         
+        snapshots_dir = Path("snapshots")
+        snapshots_dir.mkdir(parents=True, exist_ok=True)
+
+        with open(snapshots_dir / 'snapshot.html', "w", encoding="utf-8") as f:
+            f.write(html)
+
 
 
     def update(self) -> None:
         """Met à jour l'état de la bataille à chaque tick."""
-
-
 
         # Generals decide in random order
         generals = [g for g in (self.general_1, self.general_2) if g is not None]

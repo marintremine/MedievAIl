@@ -7,9 +7,9 @@ from views.battle_view import BattleView
 
 
 class BattleController:
-    def __init__(self, model : BattleModel, view : BattleView):
+    def __init__(self, model : BattleModel):
         self.model = model
-        self.view = view
+        self.view_list = []
         self.game_speed = GAME_SPEED
         self.datafile = None
 
@@ -41,6 +41,8 @@ class BattleController:
                     self.actions.put("prev_view_mode")
                 elif key == keyboard.Key.esc:
                     self.actions.put("exit")
+                elif key == keyboard.Key.tab:
+                    self.actions.put("snapshot")
 
             except AttributeError:
                 pass
@@ -133,10 +135,11 @@ class BattleController:
 
                 # --- RENDER FRAME ---
 
-                if self.view and now - last_frame >= frame_interval:
-                    self.view.render()
-                    frame_stats += 1
-                    last_frame = now
+                if len(self.view_list) > 0 and now - last_frame >= frame_interval:
+                    for view in self.view_list:
+                        view.render()
+                        frame_stats += 1
+                        last_frame = now
                     #print(f"Frame rendered ({frame_stats}/{self.fps} FPS)")
 
                 # --- STATS OUTPUT ---
@@ -149,6 +152,7 @@ class BattleController:
                 time.sleep(0.0001) # Sleep pour éviter l'utilisation à 100% du CPU
         finally:
             # Nettoyage terminal à la fin de la boucle
-            self.view.cleanup()
+            for view in self.view_list:
+                view.cleanup()
 
         return self.model.winner
