@@ -119,28 +119,28 @@ class BattleController:
                             self.speed_down()
                             break
                         case "move_up":
-                            self.view.move_view(0, -1)
+                            self.view.move_view_up()
                             break
                         case "move_down":
-                            self.view.move_view(0, 1)
+                            self.view.move_view_down()
                             break
                         case "move_left":
-                            self.view.move_view(-1, 0)
+                            self.view.move_view_left()
                             break
                         case "move_right":
-                            self.view.move_view(1, 0)
+                            self.view.move_view_right()
                             break
                         case "move_up_fast":
-                            self.view.move_view_fast(0, -1)
+                            self.view.move_view_up_fast()
                             break
                         case "move_down_fast":
-                            self.view.move_view_fast(0, 1)
+                            self.view.move_view_down_fast()
                             break
                         case "move_left_fast":
-                            self.view.move_view_fast(-1, 0)
+                            self.view.move_view_left_fast()
                             break
                         case "move_right_fast":
-                            self.view.move_view_fast(1, 0)
+                            self.view.move_view_right_fast()
                             break
                         case "scroll_up":
                             self.view.scroll_up()
