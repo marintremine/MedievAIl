@@ -263,7 +263,7 @@ class unit_model(pygame.sprite.Sprite):
             except IndexError:
                 pass
             if self.is_alive:
-                pass #self.image.blit(self.displayText,((self.image.get_width()-self.displayText.get_width())/2,self.image.get_height()-self.displayText.get_height()))
+                pass
 
         else:
             self.image.set_alpha(0)
@@ -273,13 +273,8 @@ class PygameView(BattleView):
     def __init__(self, model : BattleModel, controller):
         super().__init__(model, controller)
 
-        self.model = model
-        self.controller = controller
-
         #---MAP & WINDOW CONST---
-        self.MAP_HEIGHT = model.map_height
-        self.MAP_WIDTH = model.map_width
-        self.MAP_DIAG = ((self.MAP_HEIGHT**2 + self.MAP_HEIGHT**2)**0.5)
+
 
         self.WINDOW_HEIGHT = PYGAME_WIN[1]
         self.WINDOW_WIDTH = PYGAME_WIN[0]
@@ -309,19 +304,28 @@ class PygameView(BattleView):
         #---GUI---
 
         self.commandText = self.font.render(" P : PAUSE/PLAY | +/-/MOUSE WHEEL : ZOOM | +/- : SPEED | ZQSD : MOVE | M : MINIMAP | ESC : QUIT | F10 : FULLSCREEN | F11 : SAVE",False, (255, 255, 255))
-        self.generalNameText = self.font.render("{} | {}".format(self.model.general_1.name, self.model.general_2.name),False, (255, 255, 255))
 
-        self.miniMap = miniMap(self)
-        self.miniMapGrp = pygame.sprite.Group()
-        self.miniMapGrp.add(self.miniMap)
         #---Unit asset loading--
         self.ASSETS = {}
         for u in LIST_UNITS:
             self.ASSETS[u] = assetLoader(u)
 
-        self.object_list = []
+
         self.unit_spritegroup = pygame.sprite.Group()
 
+    def load(self):
+        self.MAP_HEIGHT = self.model.map_height
+        self.MAP_WIDTH = self.model.map_width
+
+
+        self.generalNameText = self.font.render("{} | {}".format(self.model.general_1.name, self.model.general_2.name),False, (255, 255, 255))
+
+        self.miniMap = miniMap(self)
+        self.miniMapGrp = pygame.sprite.Group()
+        self.miniMapGrp.add(self.miniMap)
+
+        self.object_list = []
+        self.unit_spritegroup.empty()
         # --- initialise army 1 units
         for unit in self.model.get_army(self.model.general_1):
             tmp = unit_model(unit,self,pygame.color.Color(255,0,0))
@@ -360,6 +364,7 @@ class PygameView(BattleView):
 
     def render(self):
         """Function to render the game screen"""
+
         self.getInput()
         #--- Render MAP & UNITS
         self.window.fill((0,0,0))
