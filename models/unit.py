@@ -11,7 +11,7 @@ class Object:
 
 class Unit(Object):
     def __init__(self, name: str, general: "General", hp: int, attack: int, armor: int, pierce_armor: int, # pyright: ignore[reportUndefinedVariable]
-                 range_: int, line_of_sight: int, speed: float, cooldown: float, x: int, y: int, bonus_attacks: dict, battle_model):
+                 range_: int, line_of_sight: int, speed: float, cooldown: float, x: int, y: int, bonus_attacks: dict, battle_model, occupancy):
         super().__init__(x, y, battle_model)
         self.name = name
         self.general = general
@@ -30,6 +30,7 @@ class Unit(Object):
         self.currentAction = "stand"
         self.direction = (0, 1)
         self.bonus_attacks = bonus_attacks
+        self.occupancy = occupancy
 
     def is_alive(self) -> bool:
         return self.hp > 0
@@ -61,7 +62,8 @@ class Unit(Object):
 
     def move(self, new_x: int, new_y: int) -> bool:
         """Déplace l'unité vers les coordonnées spécifiées"""
-        if not self.is_alive() or not self.battle_model.is_in_map(new_x, new_y) or self.battle_model.is_obstacle_at(new_x, new_y):
+        #if not self.is_alive() or not self.battle_model.is_in_map(new_x, new_y) or self.battle_model.is_obstacle_at(new_x, new_y):
+        if not self.is_alive() or not self.battle_model.is_coord_accessible(new_x, new_y, self):
             return False
         self.currentAction = "walk"
         # Calcul direction
@@ -77,9 +79,11 @@ class Unit(Object):
         self.move_progress += self.speed * self.battle_model.delta_time
         
         if self.move_progress >= 1.0:
+            self.battle_model.state_map[(self.x, self.y)].remove(self)
             self.x = new_x
             self.y = new_y
-            self.move_progress -= 1.0 
+            self.move_progress -= 1.0
+            self.battle_model.state_map[(new_x, new_y)].add(self)
             return True
         
         return False
@@ -113,7 +117,8 @@ class Pikeman(Unit):
             x=x,
             y=y,
             bonus_attacks={Knight: 22},
-            battle_model=battle_model   
+            battle_model=battle_model,
+            occupancy = 1
         )
 
 
@@ -133,7 +138,8 @@ class Knight(Unit):
             x=x,
             y=y,
             bonus_attacks={},
-            battle_model=battle_model
+            battle_model=battle_model,
+            occupancy=1
         )
 
 
@@ -153,7 +159,8 @@ class Crossbowman(Unit):
             x=x,
             y=y,
             bonus_attacks={},            
-            battle_model=battle_model
+            battle_model=battle_model,
+            occupancy=1
         )
         self.accuracy = 0.85
 

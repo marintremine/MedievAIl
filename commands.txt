@@ -1,3 +1,3 @@
 python main.py tourney -G attacktest aegis braindead -S scenarios/scenario_test.json scenarios/symmetric_armies.json -N 2
 
-python main.py run scenarios/scenario_test.json attacktest attacktest
+python main.py battle scenarios/scenario_test.json aegis attacktest

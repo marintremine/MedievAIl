@@ -17,7 +17,7 @@ class Move(Order):
 
     def action(self) -> None:
 
-        path = self.unit.battle_model.shortest_path(
+        path = self.unit.battle_model.shortest_path(self.unit,
             start=(self.unit.x, self.unit.y),
             end=(self.target_x, self.target_y)
         )
@@ -42,7 +42,7 @@ class Attack(Order) :
         if self.unit.in_range(self.target):
             self.unit.attack_target(self.target)
         else:
-            path = self.unit.battle_model.shortest_path(
+            path = self.unit.battle_model.shortest_path(self.unit,
                 start=(self.unit.x, self.unit.y),
                 end=(self.target.x, self.target.y)
             )
