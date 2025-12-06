@@ -24,6 +24,8 @@ class Battle:
     def run(self):
         self.model.reset()
         self.model.load(self.scenario, self.general_1, self.general_2)
+        for v in self.controller.view_list:
+            v.load()
         winner = None
         if len(self.controller.view_list) > 0:
             winner = self.controller.run()
