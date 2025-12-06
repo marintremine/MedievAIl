@@ -2,11 +2,7 @@ import json
 import os
 from pathlib import Path
 import random
-from datetime import datetime
-
-from scenarios.generate_symmetric_armies_json import map_width, map_height
-from utils import render_snapshot
-import webbrowser
+from jinja2 import Environment, FileSystemLoader
 
 from models.general import *
 from models.unit import *
@@ -24,28 +20,32 @@ class BattleModel:
         self.delta_time = 0.0
         self.list_objects = []
         self.state_map = {}
+        self.winner = None
 
 
-    def load(self, path:str, ai1:str, ai2:str)->None:
+    def reset(self)->None:
+        """Réinitialise le modèle de bataille."""
+        self.general_1 = None
+        self.general_2 = None
+        self.map_width = None
+        self.map_height = None
+        self.list_objects = []
+        self.winner = None
+
+    def load(self, path:str, general_1:General, general_2:General)->None:
         """Charge le scénario de bataille à partir d'un fichier JSON et initialise les généraux et leurs armées."""
-        # load json
 
+        # assign generals
+        self.general_1 = general_1
+        self.general_2 = general_2
+
+        # load json
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
             
         # load map
         self.map_width = data["map_width"]
         self.map_height = data["map_height"]
-
-        # load generals
-        self.general_1 = generalFactory(ai1, self)
-        self.general_2 = generalFactory(ai2, self)
-
-        #Initalize dictionary of all coordinates in map
-
-        for i in range(map_width +1):
-            for j in range(map_height +1):
-                self.state_map.update({(i, j): set()})
 
         # load army
         for unit_data in data["army1"]:
@@ -64,6 +64,17 @@ class BattleModel:
                 unit.move_progress = unit_data["move_progress"]
             self.state_map[(unit.x, unit.y)].add(unit)
             self.list_objects.append(unit)
+            # Load obstacles (if any)
+            for obs_data in data.get("obstacles", []):
+            # Create the unit obstacle and then make the ifs
+                obstacle = ObstacleFactory(
+                    obs_type=obs_data.get("type", "obstacle"),
+                    x=obs_data["x"],
+                    y=obs_data["y"],
+                    battle_model=self,
+                    )
+                self.list_objects.append(obstacle)
+
 
         for unit_data in data["army2"]:
             unit = unitFactory(
@@ -85,8 +96,9 @@ class BattleModel:
 
 
     def save(self, scenario_file: str = None) -> None:
-        """Enregistre le scénario."""
-
+        """
+        Enregistre l'état actuel de la bataille dans un fichier JSON.
+        """
         data = self.to_dict()
         scenarios_dir = Path("scenarios")
         scenarios_dir.mkdir(parents=True, exist_ok=True)
@@ -107,32 +119,26 @@ class BattleModel:
         with open(scenarios_dir / candidate, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=4)
 
-    def snapshot_html(self, filename=None):
+    def snapshot_html(self) -> None:
         """
-        Génère un snapshot HTML basé sur self.to_dict()
-        et ouvre le fichier dans le navigateur.
+        Génère un snapshot HTML du modèle de bataille
         """
-        html_content = render_snapshot(self)
-
-        snapshots_dir = os.path.join(os.getcwd(), "snapshots")
-        os.makedirs(snapshots_dir, exist_ok=True)
-
-        if filename is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            filename = os.path.join(snapshots_dir, f"battle_snapshot_{timestamp}.html")
-
-        with open(filename, "w", encoding="utf-8") as f:
-            f.write(html_content)
-
-        try:
-            webbrowser.open("file://" + filename)
-        except Exception:
-            pass
+        file_loader = FileSystemLoader('templates') 
+        env = Environment(loader=file_loader)
+        template = env.get_template('snapshot.html')
+        html = template.render(model=self)
         
+        snapshots_dir = Path("snapshots")
+        snapshots_dir.mkdir(parents=True, exist_ok=True)
+
+        with open(snapshots_dir / 'snapshot.html', "w", encoding="utf-8") as f:
+            f.write(html)
+
 
 
     def update(self) -> None:
         """Met à jour l'état de la bataille à chaque tick."""
+
         # Generals decide in random order
         generals = [g for g in (self.general_1, self.general_2) if g is not None]
         random.shuffle(generals)
@@ -145,6 +151,13 @@ class BattleModel:
         for unit in units:
             unit.action.action()
 
+        # Check for end of battle
+        army1_alive = any(isinstance(obj, Unit) and obj.general == self.general_1 and obj.is_alive() for obj in self.list_objects)
+        army2_alive = any(isinstance(obj, Unit) and obj.general == self.general_2 and obj.is_alive() for obj in self.list_objects)
+        if army1_alive and not army2_alive:
+            self.winner = self.general_1
+        if army2_alive and not army1_alive:
+            self.winner = self.general_2
 
     def pause(self)->None:
         """Met en pause ou reprend la simulation de la bataille."""
