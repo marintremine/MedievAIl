@@ -1,6 +1,6 @@
 from __future__ import annotations
 import random
-
+import math
 from models.order import Attack, Move, Wait, Defense
 from models.unit import Unit
 
@@ -22,6 +22,10 @@ class General:
         )
 
     def sort_army(self, army):
+        """
+        :param army:
+        :return: dictionnaire contenant des listes d'unités de même type.
+        """
         dict_army = {}
         for unit in army:
             if type(unit).__name__ not in dict_army:
@@ -124,6 +128,206 @@ class Aegis(General):
             else:
                 unit.action = Attack(unit, target)
 
+class GeneralAugustin(General):
+    def __init__(self, battle_model):
+        super().__init__("General-Augustus", battle_model)
+
+    def decide(self) -> None:
+        army = self.battle_model.get_army(self)
+        sorted_army = self.sort_army(army)
+        enemies = self.battle_model.get_enemy_army(self)
+        meeting_point = self.find_meeting_point(enemies)
+        if not enemies:
+            return
+        if "Pikeman" in sorted_army:
+            pikemen = sorted_army["Pikeman"]
+        elif "Knight" in sorted_army:
+            knights = sorted_army["Knight"]
+        elif "Crossbowman" in sorted_army:
+            crossbowmen = sorted_army["Crossbowman"]
+
+        for unit in army:
+            prox_targets = self.find_all_in_scope(unit, enemies)
+            if not prox_targets:
+                coor = self.measure_max_damage_without_target(unit, enemies, meeting_point)
+                if coor:
+                    match coor[0]:
+                        case 1:
+                            unit.action = Move(unit, coor[1][0], coor[1][1])
+                        case 2:
+                            unit.action = Move(unit, coor[1], coor[2])
+                        case 3:
+                            unit.action = Defense(unit)
+                        case _:
+                            unit.action = Wait(unit)
+
+                else:
+                    unit.action = Defense(unit)
+            else:
+                target = self.measure_max_damage_target(unit, prox_targets)
+                if target:
+                    unit.action = Attack(unit, target[1])
+                else:
+                    unit.action = Defense(unit)
+
+
+    def measure_max_damage_target(self, unit, prox_targets):
+            candidate = []
+            candidate_bonus = []
+            for next in prox_targets:
+                if str(type(next).__name__) in unit.bonus_attacks:
+                        candidate_bonus.append(next)
+                if (next.hp - unit.attack)  <= 0:
+                    candidate.append(next)
+            if candidate_bonus:
+                target = self.find_highest_hp(candidate_bonus)
+                return [1,target]
+
+            if not candidate:
+                target = self.find_lowest_hp(prox_targets)
+                return [1, target]
+
+
+            sorted_target = self.sort_army(candidate)
+            if "Knight" in sorted_target:
+                knights = sorted_target["Knight"]
+                target = self.find_highest_hp(knights)
+                return [1,target]
+            elif "Crossbowman" in sorted_target:
+                crossbowmen = sorted_target["Crossbowman"]
+                target = self.find_highest_hp(crossbowmen)
+                return [1,target]
+            elif "Pikeman" in sorted_target:
+                pikemen = sorted_target["Pikeman"]
+                target = self.find_highest_hp(pikemen)
+                return [1,target]
+
+    def is_same_unit(self, unit, enemy):
+        return type(unit).__name__ == type(enemy).__name__
+
+    def find_lowest_hp(self, units):
+        lowest = units[0]
+        for unit in units:
+            if lowest.hp > unit.hp:
+                lowest = unit
+        return lowest
+
+
+
+    def measure_max_damage_without_target(self, unit, enemies, meeting_point):
+        print(enemies)
+        exposure = self.map_enemy(unit, enemies)
+        if not exposure:
+            return [2, meeting_point[1][0], meeting_point[1][1]]
+
+        else:
+            matrix_pos = self.matrice_pos(unit)
+            for pos in matrix_pos:
+                decision = self.in_security(pos[0], pos[1], enemies)
+                if decision:
+                    return [2, pos[0], pos[1]]
+        target = self.find_lowest_hp(enemies)
+        if target is not None:
+            return [2, target.x, target.y]
+        return [3]
+
+    def matrice_pos(self, unit):
+        x_init = unit.x -1
+        y_init = unit.y -1
+        pos_matrix = []
+        for i in range(x_init, x_init +3):
+            for j in range(y_init, y_init + 3):
+                pos_matrix.append((i, j))
+        return pos_matrix
+
+
+
+    def in_security(self, x, y, enemies):
+        near_enemies = self.map_enemy_coor_unit(x, y, enemies)
+        if near_enemies:
+            for enemy in enemies:
+                distance = self.calc_distance_coor_unit(x, y, enemy)
+                if enemy.range >= distance:
+                    return False
+            return True
+        else:
+            return True
+
+    def find_meeting_point(self, enemies):
+        x_avg = 0
+        y_avg = 0
+        min_x = self.battle_model.map_width
+        max_x = 0
+        for unit in enemies:
+            x_avg += unit.x
+            y_avg += unit.y
+            if unit.x > max_x:
+                max_x = unit.x
+            if unit.x < min_x:
+                min_x = unit.x
+
+        x_avg //= len(enemies)
+        y_avg //=len(enemies)
+        return [(min_x, y_avg), (x_avg, y_avg), (max_x, y_avg)]
+
+    def can_escape_enemy_range(self, unit, enemy):
+        distance = self.calc_distance(unit, enemy)
+        if distance + unit.speed <= enemy.range :
+            return []
+        else:
+            dx = unit.x - enemy.x
+            dy = unit.y - enemy.y
+            ratio= unit.speed / distance
+            x = unit.x + (dx * ratio)
+            y = unit.y + (dy * ratio)
+            return [x, y]
+
+    def map_enemy(self, unit, enemies):
+        near_enemies =[]
+        for enemy in enemies:
+            distance = self.calc_distance(unit, enemy)
+            if enemy.range >= distance:
+                near_enemies.append(enemy)
+        return near_enemies
+
+    def map_enemy_coor_unit(self, x, y, enemies):
+        near_enemies = []
+        for enemy in enemies:
+            distance = self.calc_distance_coor_unit(x, y, enemy)
+            if enemy.range >= distance:
+                near_enemies.append(enemy)
+        return near_enemies
+
+    def find_highest_hp(self, units):
+        max_hp = units[0]
+        for unit in units:
+            if unit.hp > max_hp.hp:
+                max_hp = unit
+        return max_hp
+
+    def find_all_in_scope(self,unit,  enemies):
+        prox_enemies = []
+        for enemy in enemies:
+            distance = self.calc_distance(unit, enemy)
+            if unit.range >= distance:
+                prox_enemies.append(enemy)
+        else:
+            return prox_enemies
+
+    def calc_max_loss(self, unit, enemies):
+        risk = enemies[0]
+        for enemy in enemies:
+            if enemy.attack > risk.attack:
+                risk = enemy
+        return risk
+
+    def calc_distance(self, unit, enemy):
+        return abs((enemy.x - unit.x) + (enemy.y - unit.y))
+
+    def calc_distance_coor_unit(self, x, y, unit):
+        return abs(x - unit.x) + abs(y - unit.y)
+
+
 class MoveTestGeneral(General):
     """
     Un général qui ordonne à chaque unité de se déplacer vers des coordonnées aléatoires sur la carte si elle est en attente.
@@ -166,7 +370,8 @@ def generalFactory(general_type: str, battle_model) -> General:
         "braindead": BrainDead,
         "aegis": Aegis,
         "movetest": MoveTestGeneral,
-        "attacktest": AttackTestGeneral
+        "attacktest": AttackTestGeneral,
+        "augustus" : GeneralAugustin
     }
     key = general_type.lower()
     if key in general_classes:
