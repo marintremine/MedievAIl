@@ -538,7 +538,7 @@ class RPSGeneral(General):
         """
         start = (unit.x, unit.y)
         end = (target.x, target.y)
-        nxt = self.battle_model.shortest_path(start, end)
+        nxt = self.battle_model.shortest_path(unit, start, end)
         return nxt  # soit (nx, ny), soit None si bloqué
 
     #décision

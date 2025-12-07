@@ -220,7 +220,7 @@ class BattleModel:
         return False
 
     def is_fitting(self, x, y, unit):
-        units = self.state_map[(x, y)]
+        units = self.objects['state_map'].get((x, y), set())
         occupancy = 0
         if units:
             for unit in units:

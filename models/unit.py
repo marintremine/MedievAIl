@@ -134,11 +134,11 @@ class Unit(Object):
         self.move_progress += self.speed * self.battle_model.delta_time
         
         if self.move_progress >= 1.0:
-            self.battle_model.state_map[(self.x, self.y)].remove(self)
+            self.battle_model.objects['state_map'][(self.x, self.y)].discard(self)
             self.x = new_x
             self.y = new_y
             self.move_progress -= 1.0
-            self.battle_model.state_map[(new_x, new_y)].add(self)
+            self.battle_model.objects['state_map'][(new_x, new_y)].add(self)
             return True
         
         return False
@@ -175,7 +175,7 @@ class Pikeman(Unit):
             y=y,
             bonus_attacks={Knight: 22},
             battle_model=battle_model,
-            occupancy = 1
+            occupancy = 0.40
         )
 
 
@@ -219,7 +219,7 @@ class Crossbowman(Unit):
             y=y,
             bonus_attacks={},            
             battle_model=battle_model,
-            occupancy=1
+            occupancy=0.40
         )
         self.accuracy = 0.85
 

@@ -89,6 +89,7 @@ class Defense(Order):
         if len(enemies_in_sight) > 0:
             target = enemies_in_sight[0]
             path = self.unit.battle_model.shortest_path(
+                self.unit,
                 start=(self.unit.x, self.unit.y),
                 end=(target.x, target.y)
             )
