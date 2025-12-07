@@ -218,8 +218,19 @@ class BattleModel:
             if isinstance(obj, Obstacle):
                 return True
         return False
+
+    def is_fitting(self, x, y, unit):
+        units = self.state_map[(x, y)]
+        occupancy = 0
+        if units:
+            for unit in units:
+                occupancy += unit.occupancy
+        return occupancy + unit.occupancy <= 1
+
+    def is_coord_accessible(self, x, y, unit):
+        return self.is_in_map(x, y) and not self.is_obstacle_at(x, y) and self.is_fitting(x, y ,unit)
     
-    def shortest_path(self, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]]:
+    def shortest_path(self, unit, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]]:
         """
         Mini pathfinding :
         - déplace vers les coordonnés en ligne droite
@@ -247,29 +258,35 @@ class BattleModel:
 
         # ESSAI 1 : ligne droite
         nx, ny = x + dx, y + dy
-        if self.is_in_map(nx, ny) and not self.is_obstacle_at(nx, ny):
+        #if self.is_in_map(nx, ny) and not self.is_obstacle_at(nx, ny):
+        if self.is_coord_accessible(nx, ny, unit):
             return (nx, ny)
 
         # ESSAI 2 : esquive à gauche
         lx, ly = x - dy, y + dx
-        if self.is_in_map(lx, ly) and not self.is_obstacle_at(lx, ly):
+        #if self.is_in_map(lx, ly) and not self.is_obstacle_at(lx, ly):
+        if self.is_coord_accessible(lx, ly, unit):
+
             return (lx, ly)
 
         # ESSAI 3 : esquive à droite
         rx, ry = x + dy, y - dx
-        if self.is_in_map(rx, ry) and not self.is_obstacle_at(rx, ry):
+        #if self.is_in_map(rx, ry) and not self.is_obstacle_at(rx, ry):
+        if self.is_coord_accessible(rx, ry, unit):
             return (rx, ry)
 
         # ESSAI 4 : avancer seulement en X si possible
         if dx != 0:
             nx2 = x + dx
-            if self.is_in_map(nx2, y) and not self.is_obstacle_at(nx2, y):
+            #if self.is_in_map(nx2, y) and not self.is_obstacle_at(nx2, y):
+            if self.is_coord_accessible(nx2, y, unit):
                 return (nx2, y)
 
         # ESSAI 5 : avancer seulement en Y si possible
         if dy != 0:
             ny2 = y + dy
-            if self.is_in_map(x, ny2) and not self.is_obstacle_at(x, ny2):
+            #if self.is_in_map(x, ny2) and not self.is_obstacle_at(x, ny2):
+            if self.is_coord_accessible(x, ny2, unit):
                 return (x, ny2)
 
         # Aucun mouvement possible
