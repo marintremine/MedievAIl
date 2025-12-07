@@ -61,6 +61,7 @@ class Tournament:
                             general_1, general_2 = gen2, gen1
 
                         battle = Battle(self.model, self.controller, general_1, general_2, scenario_path)
+                        self.controller.last_saved = None  # reset save state between battles
                         winner = battle.run()
 
                         print("Winner:", winner)
