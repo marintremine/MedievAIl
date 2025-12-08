@@ -157,6 +157,29 @@ class Unit(Object):
             "move_progress": self.move_progress
         }
 
+
+class Longswordsman(Unit):
+    def __init__(self, general: "General", x: int, y: int, battle_model):
+        super().__init__(
+            name="Longswordsman",
+            general=general,
+            hp=60,
+            attack=9,
+            armor=1,
+            pierce_armor=1,
+            range_= 0,
+            line_of_sight=6,
+            speed=0.96,
+            attack_delay=0,
+            reload_time=2.0,
+            x= x,
+            y= y,
+            bonus_attacks={},
+            battle_model= battle_model,
+            occupancy=0.20
+        )
+
+
 class Pikeman(Unit):
     def __init__(self, general: "General", x: int, y: int, battle_model): # pyright: ignore[reportUndefinedVariable]
         super().__init__(
@@ -232,7 +255,8 @@ def unitFactory(unit_type, general, x, y, battle_model) -> Unit: # pyright: igno
     unit_classes = {
         "pikeman": Pikeman,
         "knight": Knight,
-        "crossbowman": Crossbowman
+        "crossbowman": Crossbowman,
+        "longswordsman": Longswordsman
     }
     key = unit_type.lower()
     if key in unit_classes:
