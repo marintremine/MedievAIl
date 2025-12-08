@@ -180,6 +180,7 @@ class BattleModel:
     def update(self) -> None:
         """Met à jour l'état de la bataille à chaque tick."""
 
+
         # Generals decide in random order
         generals = [g for g in (self.general_1, self.general_2) if g is not None]
         random.shuffle(generals)

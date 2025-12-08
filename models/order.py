@@ -10,6 +10,8 @@ class Order:
         if not self.unit.is_alive():
             return
 
+    def __str__(self) -> str:
+        return f"Order(Abstract) for {self.unit.name}"
 
 
 class Move(Order):
@@ -33,7 +35,8 @@ class Move(Order):
         next_x, next_y = path
         self.unit.move(next_x, next_y)
 
-         
+    def __str__(self) -> str:
+        return f"Move Order for {self.unit.name} to ({self.target_x}, {self.target_y})"
 class Attack(Order) :
     def __init__(self, unit: "Unit", target: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
@@ -60,7 +63,9 @@ class Attack(Order) :
             
             next_x, next_y = path
             self.unit.move(next_x, next_y)
-        
+    
+    def __str__(self) -> str:
+        return f"Attack Order for {self.unit.name} to attack {self.target.name}"
 
 
 class Wait(Order):
@@ -71,6 +76,9 @@ class Wait(Order):
     def action(self) -> None:
         super().action()
         pass
+
+    def __str__(self) -> str:
+        return f"Wait Order for {self.unit.name}"
 
 class Defense(Order):
     def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
@@ -98,4 +106,6 @@ class Defense(Order):
             next_x, next_y = path
             self.unit.move(next_x, next_y)
 
+    def __str__(self) -> str:
+        return f"Defense Order for {self.unit.name}"
         
