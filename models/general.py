@@ -3,6 +3,7 @@ import random
 import math
 from models.order import Attack, Move, Wait, Defense
 from models.unit import *
+from enum import Enum
 
 class General:
     def __init__(self, name: str, battle_model) -> None: # pyright: ignore[reportUndefinedVariable]
@@ -65,7 +66,7 @@ class Daft(General):
             return
 
         for unit in my_units:
-            if not unit.is_alive() or not isinstance(unit.action, Wait):
+            if not unit.is_alive() or not isinstance(unit.order, Wait):
                 continue
 
             closest_enemy = self.get_closest_enemy(unit, enemy_units)
@@ -73,6 +74,7 @@ class Daft(General):
                 continue
 
             unit.order = Attack(unit, closest_enemy)
+
 
 
 class BrainDead(General):
@@ -85,6 +87,87 @@ class BrainDead(General):
     def decide(self) -> None:
         for unit in self.battle_model.get_army(self):
            unit.order = Defense(unit)
+
+
+
+class IA_Global(General):
+    class Strategy(Enum):
+        OFFENSIVE = 1
+        DEFENSIVE = 2
+        LURE = 3
+
+    def __init__(self, battle_model):
+        self.strategy = self.Strategy.OFFENSIVE
+        self.tactics_methods = [
+            self.tactic_hit_and_run,
+            self.tactic_bonus_damage,
+            self.tactic_safe_position,
+            self.tactic_group_units,
+            self.tactic_attack_weakest,
+            self.tactic_one_shot_enemy,
+            self.tactic_focus_nearest,
+        ]
+        super().__init__("IA_Global", battle_model)
+
+    def tactic_hit_and_run(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    def tactic_bonus_damage(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    #tactique se mettre en sécurité
+    def tactic_safe_position(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    def tactic_group_units(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+    
+    def tactic_attack_weakest(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    def tactic_one_shot_enemy(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    def tactic_focus_nearest(self, unit):
+        weight = 0
+        order = None
+        enemies = unit.nearest_enemies()
+        if enemies:
+            target = enemies[0]
+            order = Attack(unit, target)
+            weight = 5
+
+        return weight, order
+
+    def decide(self) -> None:
+        match self.strategy:
+            case self.Strategy.OFFENSIVE:
+                for unit in self.battle_model.get_army(self):
+                    best_weight = 0
+                    best_order = Wait(unit)
+                    for tactic in self.tactics_methods:
+                        weight, order = tactic(unit)
+                        if weight > best_weight:
+                            best_weight = weight
+                            best_order = order
+                    unit.order = best_order
+            case self.Strategy.DEFENSIVE:
+                for unit in self.battle_model.get_army(self):
+                    unit.order = Defense(unit)
+            case self.Strategy.LURE:
+                print("Lure strategy not yet implemented.")
 
 
 class Aegis(General):
@@ -132,7 +215,7 @@ class Aegis(General):
             return
 
         for unit in self.battle_model.get_army(self):
-            if not isinstance(unit.action, Wait):
+            if not isinstance(unit.order, Wait):
                 continue
 
             target = self.get_best_enemy(unit, enemies)
@@ -359,7 +442,7 @@ class MoveTestGeneral(General):
 
     def decide(self) -> None:
         for unit in self.battle_model.get_army(self):
-            if isinstance(unit, Unit) and unit.is_alive() and isinstance(unit.action, Wait):
+            if isinstance(unit, Unit) and unit.is_alive() and isinstance(unit.order, Wait):
                 # pick random coords inside the map 
                 new_x = random.randrange(0, self.battle_model.map_width)
                 new_y = random.randrange(0, self.battle_model.map_height)
@@ -377,15 +460,17 @@ class AttackTestGeneral(General):
 
     def decide(self) -> None:
         enemy_units = self.battle_model.get_enemy_army(self)
-        
+
         for unit in self.battle_model.get_army(self):
-            if unit.is_alive() and isinstance(unit.action, Wait):
+            if unit.is_alive() and isinstance(unit.order, Wait):
                 if enemy_units:
                     # choose a random enemy unit to attack
                     target = random.choice(tuple(enemy_units))
                     unit.order = Attack(unit, target)
                 else:
                     unit.order = Wait(unit)
+
+    
 
 class MomoIA(General):
     def __init__(self, battle_model):
@@ -547,7 +632,7 @@ class RPSGeneral(General):
             return
 
         for unit in self.battle_model.get_army(self):
-            if not unit.is_alive() or not isinstance(unit.action, Wait):
+            if not unit.is_alive() or not isinstance(unit.order, Wait):
                 continue
 
             target = self.get_best_enemy(unit, enemies)
@@ -581,6 +666,7 @@ def generalFactory(general_type: str, battle_model) -> General:
         "augustus" : GeneralAugustin,
         "momoia": MomoIA,
         "rps": RPSGeneral,
+        "ia_global": IA_Global,
     }
     key = general_type.lower()
     if key in general_classes:

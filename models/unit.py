@@ -50,7 +50,7 @@ class Unit(Object):
         distance = abs(self.x - target.x) + abs(self.y - target.y)
         return distance <= self.line_of_sight
     
-    def enemies_in_sight(self) -> "Unit | None":
+    def enemies_in_sight(self):
         """Retourne une liste des unités ennemies dans le champ de vision dans le champ de vision du plus proche au plus éloigné"""
         enemies = [
             enemy for enemy in self.battle_model.get_enemy_army(self.general)
@@ -59,7 +59,7 @@ class Unit(Object):
         enemies.sort(key=lambda u: abs(self.x - u.x) + abs(self.y - u.y))
         return enemies
 
-    def enemies_in_range(self) -> "Unit | None":
+    def enemies_in_range(self):
         """Retourne une liste des unités ennemies à portée d'attaque du plus proche au plus éloigné"""
         enemies = [
             enemy for enemy in self.battle_model.get_enemy_army(self.general)
@@ -67,12 +67,21 @@ class Unit(Object):
         ]
         enemies.sort(key=lambda u: abs(self.x - u.x) + abs(self.y - u.y))
         return enemies
-
+    
+    def nearest_enemies(self):
+        """Retourne une listes des unités ennemies du plus proche au plus éloigné"""
+        enemies = [
+            enemy for enemy in self.battle_model.get_enemy_army(self.general)
+            if enemy.is_alive()
+        ]
+        enemies.sort(key=lambda u: abs(self.x - u.x) + abs(self.y - u.y))
+        return enemies
 
     def action(self) -> None:
         """Exécute l'action actuelle de l'unité"""
         if not self.is_alive():
             return
+        
         # Décrémenter le temps de rechargement qu'importe l'action
         if self.current_reload_time > 0:
             self.current_reload_time -= 1 * self.battle_model.delta_time
