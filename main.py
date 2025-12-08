@@ -173,7 +173,7 @@ def main():
         if args.terminal:
             view = TerminalView(model, controller)
             controller.view_list.append(view)
-        elif args.pygame:
+        if args.pygame:
             view = PygameView(model, controller)
             controller.view_list.append(view)
 

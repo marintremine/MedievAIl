@@ -65,7 +65,7 @@ class Daft(General):
             return
 
         for unit in my_units:
-            if not unit.is_alive() or not isinstance(unit.order, Wait):
+            if not unit.is_alive() or not isinstance(unit.action, Wait):
                 continue
 
             closest_enemy = self.get_closest_enemy(unit, enemy_units)
@@ -84,7 +84,7 @@ class BrainDead(General):
 
     def decide(self) -> None:
         for unit in self.battle_model.get_army(self):
-            unit.order = Defense(unit)
+           unit.order = Defense(unit)
 
 
 class Aegis(General):
@@ -132,7 +132,7 @@ class Aegis(General):
             return
 
         for unit in self.battle_model.get_army(self):
-            if not isinstance(unit.order, Wait):
+            if not isinstance(unit.action, Wait):
                 continue
 
             target = self.get_best_enemy(unit, enemies)
@@ -145,11 +145,11 @@ class Aegis(General):
                 continue
 
             if self.manhattan(unit, target) <= 2:
-                unit.order = Attack(unit, target)
+               unit.order = Attack(unit, target)
             elif target.name == "Pikeman" and self.has_crossbow_support(unit):
-                unit.order = Wait(unit)
+               unit.order = Wait(unit)
             else:
-                unit.order = Attack(unit, target)
+               unit.order = Attack(unit, target)
 
 class GeneralAugustin(General):
     def __init__(self, battle_model):
@@ -176,22 +176,22 @@ class GeneralAugustin(General):
                 if coor:
                     match coor[0]:
                         case 1:
-                            unit.action = Move(unit, coor[1][0], coor[1][1])
+                           unit.order = Move(unit, coor[1][0], coor[1][1])
                         case 2:
-                            unit.action = Move(unit, coor[1], coor[2])
+                           unit.order = Move(unit, coor[1], coor[2])
                         case 3:
-                            unit.action = Defense(unit)
+                           unit.order = Defense(unit)
                         case _:
-                            unit.action = Wait(unit)
+                           unit.order = Wait(unit)
 
                 else:
-                    unit.action = Defense(unit)
+                   unit.order = Defense(unit)
             else:
                 target = self.measure_max_damage_target(unit, prox_targets)
                 if target:
-                    unit.action = Attack(unit, target[1])
+                   unit.order = Attack(unit, target[1])
                 else:
-                    unit.action = Defense(unit)
+                   unit.order = Defense(unit)
 
 
     def measure_max_damage_target(self, unit, prox_targets):
@@ -238,7 +238,6 @@ class GeneralAugustin(General):
 
 
     def measure_max_damage_without_target(self, unit, enemies, meeting_point):
-        print(enemies)
         exposure = self.map_enemy(unit, enemies)
         if not exposure:
             return [2, meeting_point[1][0], meeting_point[1][1]]
@@ -360,7 +359,7 @@ class MoveTestGeneral(General):
 
     def decide(self) -> None:
         for unit in self.battle_model.get_army(self):
-            if isinstance(unit, Unit) and unit.is_alive() and isinstance(unit.order, Wait):
+            if isinstance(unit, Unit) and unit.is_alive() and isinstance(unit.action, Wait):
                 # pick random coords inside the map 
                 new_x = random.randrange(0, self.battle_model.map_width)
                 new_y = random.randrange(0, self.battle_model.map_height)
@@ -380,7 +379,7 @@ class AttackTestGeneral(General):
         enemy_units = self.battle_model.get_enemy_army(self)
         
         for unit in self.battle_model.get_army(self):
-            if unit.is_alive() and isinstance(unit.order, Wait):
+            if unit.is_alive() and isinstance(unit.action, Wait):
                 if enemy_units:
                     # choose a random enemy unit to attack
                     target = random.choice(tuple(enemy_units))
@@ -430,7 +429,7 @@ class MomoIA(General):
                 if abs(avg_x-unit.x) <=3 and abs(avg_y -unit.y) <= 3:
                     unit.order = Attack(unit, nearest)
                     # if dist2 <= 4: 
-                    #     unit.order = Attack(unit, nearest)
+                    #    unit.order = Attack(unit, nearest)
                 else :
                     for u in enemy_units :
                         anyone = self.is_anyone_there(avg_x, avg_y, u.x , u.y, 2)
@@ -446,7 +445,7 @@ class MomoIA(General):
                         Wait(unit)
                         
                 if abs(avg_x-unit.x) <= 3 and abs(avg_y-unit.y) <= 3:
-                    unit.order = Attack(unit, nearest)
+                   unit.order = Attack(unit, nearest)
                 else:
                     for u in enemy_units:
                         anyone = self.is_anyone_there(avg_x, avg_y, u.x, u.y, 2)
@@ -460,7 +459,7 @@ class MomoIA(General):
                 if abs(avg_x-unit.x) <=3 and abs(avg_y -unit.y) <= 3:
                     unit.order = Attack(unit, nearest)
                     # if dist2 <= 4: 
-                    #     unit.order = Attack(unit, nearest)
+                    #    unit.order = Attack(unit, nearest)
                 else :
                     for u in enemy_units :
                         anyone = self.is_anyone_there(avg_x, avg_y, u.x , u.y, 2)
@@ -548,7 +547,7 @@ class RPSGeneral(General):
             return
 
         for unit in self.battle_model.get_army(self):
-            if not unit.is_alive() or not isinstance(unit.order, Wait):
+            if not unit.is_alive() or not isinstance(unit.action, Wait):
                 continue
 
             target = self.get_best_enemy(unit, enemies)
