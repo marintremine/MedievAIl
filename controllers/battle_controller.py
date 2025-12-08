@@ -13,6 +13,7 @@ class BattleController:
         self.view_list = []
         self.game_speed = GAME_SPEED
         self.datafile = None
+        self.last_saved = None
 
         self.actions = queue.Queue()
         self._start_input_listeners()
@@ -31,6 +32,8 @@ class BattleController:
                     self.actions.put("pause")
                 elif key == kb.Key.f11:
                     self.actions.put("save")
+                elif key == kb.Key.f12:
+                    self.actions.put("load")
                 elif key == kb.Key.f1:
                     self.actions.put("next_view_mode")
                 elif key == kb.Key.f2:
@@ -135,7 +138,12 @@ class BattleController:
                             self.model.pause()
                             break
                         case "save":
-                            self.model.save(self.datafile)
+                            self.last_saved = self.model.save()
+                            break
+                        case "load":
+                            if self.last_saved is not None:
+                                self.model.running = False
+                                self.model.load(self.last_saved, self.model.general_1, self.model.general_2)
                             break
                         case "snapshot":
                             self.model.running = False

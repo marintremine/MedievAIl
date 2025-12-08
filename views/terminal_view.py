@@ -96,7 +96,7 @@ class TerminalView(BattleView):
     def _draw_units(self):
         """Dessine les unités sur la carte."""
         max_y, max_x = self.stdscr.getmaxyx()
-        for obj in self.model.list_objects:
+        for obj in self.model.objects['units']:
             if isinstance(obj, Unit) and not obj.is_alive():
                 continue
 
@@ -213,16 +213,23 @@ class TerminalView(BattleView):
         return 3
     
     def cleanup(self):
-        """Restaure les paramètres du terminal pour éviter les codes d'échappement."""
+        """Restaure les paramètres du terminal et affiche les logs."""
+
+        captured_logs = self._stdout_buffer.getvalue()
+
         try:
-            # sys.stdout = self._original_stdout
             curses.curs_set(1)       # réaffiche le curseur
             curses.nocbreak()        # désactive le mode cbreak
             self.stdscr.keypad(False)
             curses.echo()            # réactive l'écho des touches
-            curses.endwin()          # ferme curses proprement
+            curses.endwin()          # ferme curses proprement (revient au terminal normal)
         except:
             pass
+        finally:
+            # Restauration de la sortie standard
+            sys.stdout = self._original_stdout
+            if captured_logs:
+                print(captured_logs)
 
     def next_view_mode(self):
         """Change le mode de vue."""
