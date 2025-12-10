@@ -28,10 +28,10 @@ class Battle:
             v.load()
         winner = None
         if len(self.controller.view_list) > 0:
-            winner = self.controller.run()
+            winner, winner_remains = self.controller.run()
         else:
-            winner = self.controller.run_fast()
-        return winner
+            winner, winner_remains = self.controller.run_fast()
+        return winner, winner_remains
     
 class Tournament:
     def __init__(self, model , controller, generals, scenarios, number_of_rounds):
@@ -62,7 +62,7 @@ class Tournament:
 
                         battle = Battle(self.model, self.controller, general_1, general_2, scenario_path)
                         self.controller.last_saved = None  # reset save state between battles
-                        winner = battle.run()
+                        winner, winner_remains = battle.run()
 
                         print("Winner:", winner)
 
@@ -185,9 +185,15 @@ def main():
         general_2 = generalFactory(args.ai2, model)
 
         battle = Battle(model, controller, general_1=general_1, general_2=general_2, scenario=args.scenario)
-        winner = battle.run()
+        winner, winner_remains = battle.run()
         if winner:
-            print(f"The winner is: {winner.name}")
+            print(f"The winner is: {winner.name} with {winner_remains["total"]} surviving units.")
+            parts = [f"{winner_remains[t]} {t}" for t in LIST_UNITS_TYPES]
+            if len(parts) == 1:
+                summary = parts[0]
+            else:
+                summary = ", ".join(parts[:-1]) + f" and {parts[-1]}"
+            print(f"{winner.name} had {summary} remaining.")
         else:
             print("The battle ended in a draw.")
     elif args.command == "tourney":

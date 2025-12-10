@@ -9,6 +9,8 @@ from models.unit import *
 from models.order import *
 from models.general import *
 from models.obstacle import *
+from utils import LIST_UNITS_TYPES
+
 
 class BattleModel:
     def __init__(self)->None:
@@ -201,6 +203,17 @@ class BattleModel:
             self.winner = self.general_1
         if army2_alive and not army1_alive:
             self.winner = self.general_2
+
+    def summary(self):
+        winner_remain = {unit_type: 0 for unit_type in LIST_UNITS_TYPES}
+
+        for unit in self.get_army(self.winner):
+            name = unit.name.lower()
+            if name in winner_remain:
+                winner_remain[name] += 1
+        winner_remain["total"] = sum(winner_remain.values())
+
+        return winner_remain
 
     def pause(self)->None:
         """Met en pause ou reprend la simulation de la bataille."""

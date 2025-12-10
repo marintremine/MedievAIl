@@ -2,6 +2,7 @@ import time
 import pynput.keyboard as kb
 import pynput.mouse as ms
 import queue
+from utils import LIST_UNITS_TYPES
 from settings import FPS, TICK_RATE, GAME_SPEED, MAX_TICK
 from models.battle_model import BattleModel
 from views.battle_view import BattleView
@@ -112,7 +113,8 @@ class BattleController:
             self.model.delta_time = 1
             self.model.update()
             tick_count += 1
-        return self.model.winner
+
+        return self.model.winner, self.model.summary()
 
 
     def run(self):
@@ -255,4 +257,4 @@ class BattleController:
             for view in self.view_list:
                 view.cleanup()
 
-        return self.model.winner
+        return self.model.winner, self.model.summary()

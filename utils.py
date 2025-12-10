@@ -3,3 +3,5 @@ def ensure_key(d: dict, key, default):
     if key not in d:
         d[key] = default
     return d[key]
+
+LIST_UNITS_TYPES = ["pikeman", "knight", "crossbowman", "longswordsman"]
