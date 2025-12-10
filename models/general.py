@@ -109,6 +109,37 @@ class IA_Global(General):
         ]
         super().__init__("IA_Global", battle_model)
 
+    def typeunit_priority(self,unit, target):
+         TARGET_PREFS = {
+        "Pikeman":      [("Knights",5), ("Pikemen",0), ("Crossbowman",10),("Longswordsman",3)],
+        "Knight":       [("Crossbowman",0), ("Pikeman",5), ("Knight",10),("Longswordsman",5)],
+        "Crossbowman":  [("Pikeman",0), ("Knight",5), ("Crossbowman",10),("Longswordsman",3)],
+        "Longswordsman":       [("Longswordsman",3), ("Crossbowman",5), ("Pikeman",0),("Knight",5)],
+          }
+         degat = TARGET_PREFS[type(unit).__name__]
+         for score in degat:
+            if score[0] == type(target).__name__:
+                return score[1]
+        
+
+    def poids_distance(self, unit, target):
+        distance=self.manhattan(unit, target)
+        distance = distance/10
+        if distance >10:
+            distance =10
+        return distance
+    
+    def degat_bonus(self, unit, target):
+        degat=10 #pas de bonus par défaut
+        if type(unit).__name__ in target.bonus_attacks:
+            degat=0 #bonus de degat si le type a des bonus_attacks
+        return degat
+   
+    
+
+    
+        
+         
     def tactic_hit_and_run(self, unit):
         weight = 0
         order = None
@@ -121,8 +152,10 @@ class IA_Global(General):
 
     #tactique se mettre en sécurité
     def tactic_safe_position(self, unit):
+        #for the crossbowman to move to a safe position 
         weight = 0
         order = None
+
         return weight, order
 
     def tactic_group_units(self, unit):
@@ -133,7 +166,18 @@ class IA_Global(General):
     def tactic_attack_weakest(self, unit):
         weight = 0
         order = None
-        return weight, order
+        enemies = unit.nearest_enemies()
+        #attack weakest tactic
+        #get nearest enemies to check the hp
+        for enemy in enemies:
+            if not enemy.is_alive():
+                continue
+            #get the enemy with the lowest hp  within range
+            target =min(enemies, key=lambda e: e.hp);#the enemy with the lowest hp
+            order = Attack(unit, target)
+            weight = 7 #to reconsider
+        return weight, order 
+
 
     def tactic_one_shot_enemy(self, unit):
         weight = 0
