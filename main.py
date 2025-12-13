@@ -1,132 +1,81 @@
 
 import argparse
 import sys
-from pathlib import Path
-
-from jinja2 import Environment, FileSystemLoader
 
 from controllers.battle_controller import BattleController
 from controllers.live_server import start_flask_debug_server
-from models.general import General, generalFactory
 from models.battle_model import BattleModel
+from models.general import generalFactory
+
 from views.pygame_view import PygameView
 from views.terminal_view import TerminalView
 from utils import *
 
-class Battle:
-    def __init__(self, model, controller, general_1, general_2, scenario):
-        self.model = model
-        self.controller = controller
-        self.general_1 = general_1
-        self.general_2 = general_2
-        self.scenario = scenario
+from battle import Battle
+from tournament import Tournament
 
-    def run(self):
-        self.model.reset()
-        self.model.load(self.scenario, self.general_1, self.general_2)
-        for v in self.controller.view_list:
-            v.load()
-        winner = None
-        if len(self.controller.view_list) > 0:
-            winner = self.controller.run()
-        else:
-            winner = self.controller.run_fast()
-        return winner
-    
-class Tournament:
-    def __init__(self, model , controller, generals, scenarios, number_of_rounds):
-        self.model = model
-        self.controller = controller
-        self.generals = generals
-        self.scenarios = scenarios
-        self.number_of_rounds = number_of_rounds
 
-        self.score_global = {}                    # general -> victoires totales
-        self.matrix_gvg = {}                      # general1 -> general2 -> victoires
-        self.matrix_by_scenario = {}              # scenario -> general1 -> general2 -> victoires
-        self.score_general_vs_scenario = {}       # scenario -> general -> victoires
+def cli_battle(args):
+    """Exécution du mode battle (un seul combat)."""
 
-    def run(self):
-        for scenario_path in self.scenarios:
-            for i in range(len(self.generals)):
-                for j in range(i + 1, len(self.generals)):
-                    gen1 = self.generals[i]
-                    gen2 = self.generals[j]
-                    print(f"Starting matches between {gen1} and {gen2} on scenario {scenario_path}")
-                    for r in range(self.number_of_rounds):
-                        # alterne les positions
-                        if r % 2 == 0:
-                            general_1, general_2 = gen1, gen2
-                        else:
-                            general_1, general_2 = gen2, gen1
+    model = BattleModel()
+    controller = BattleController(model)
+    controller.datafile = args.datafile
 
-                        battle = Battle(self.model, self.controller, general_1, general_2, scenario_path)
-                        self.controller.last_saved = None  # reset save state between battles
-                        winner = battle.run()
+    if args.terminal:
+        view = TerminalView(model, controller)
+        controller.view_list.append(view)
+    if args.pygame:
+        view = PygameView(model, controller)
+        controller.view_list.append(view)
 
-                        print("Winner:", winner)
+    # si vue, démarrer le serveur Flask pour le débogage
+    if len(controller.view_list) > 0:
+        start_flask_debug_server(model)
 
-                        if winner is None:
-                            print(f"Round {r + 1}/{self.number_of_rounds}: Draw")
-                            continue  # match nul
+    # création des généraux
+    general_1 = generalFactory(args.ai1, model)
+    general_2 = generalFactory(args.ai2, model)
 
-                        print(f'Round {r + 1}/{self.number_of_rounds}: Winner is {winner}')
+    # Exécuter le combat
+    battle = Battle(general_1, general_2, args.scenario,
+                    model=model, controller=controller)
 
-                        # Met à jour les scores
-                        
-                        # score global
-                        ensure_key(self.score_global, winner, 0)
-                        self.score_global[winner] += 1
+    winner = battle.run()
 
-                        # matrice générale
-                        ensure_key(self.matrix_gvg, gen1, {})
-                        ensure_key(self.matrix_gvg[gen1], gen2, 0)
-                        if winner == gen1:
-                            self.matrix_gvg[gen1][gen2] += 1
+    if winner:
+        print(f"The winner is: {winner.name}")
+    else:
+        print("The battle ended in a draw.")
 
-                        ensure_key(self.matrix_gvg, gen2, {})
-                        ensure_key(self.matrix_gvg[gen2], gen1, 0)
-                        if winner == gen2:
-                            self.matrix_gvg[gen2][gen1] += 1
 
-                        # matrice par scénario
-                        s = ensure_key(self.matrix_by_scenario, scenario_path, {})
-                        row = ensure_key(s, gen1, {})
-                        ensure_key(row, gen2, 0)
-                        if winner == gen1:
-                            row[gen2] += 1
+def cli_tournament(args):
+    """Exécution du tournoi complet."""
 
-                        row2 = ensure_key(s, gen2, {})
-                        ensure_key(row2, gen1, 0)
-                        if winner == gen2:
-                            row2[gen1] += 1
+    model = BattleModel()
+    controller = BattleController(model)
+    controller.datafile = args.datafile
 
-                        # score général vs scénario
-                        sg = ensure_key(self.score_general_vs_scenario, scenario_path, {})
-                        ensure_key(sg, winner, 0)
-                        sg[winner] += 1
-                        
+    if args.terminal:
+        view = TerminalView(model, controller)
+        controller.view_list.append(view)
+    if args.pygame:
+        view = PygameView(model, controller)
+        controller.view_list.append(view)
 
-        print("Tournament completed.")
-        self.generate_html()
+    # création des généraux
+    generals = [ generalFactory(g, model).__class__ for g in args.generals ]
 
-    def generate_html(self):
-        env = Environment(loader=FileSystemLoader('templates'))
-        template = env.get_template("tournament.html")
+    # créer et lancer le tournoi
+    tournament = Tournament(
+        model=model,
+        controller=controller,
+        generals=generals,
+        scenarios=args.scenarios,
+        number_of_rounds=args.num,
+    )
 
-        html = template.render(
-            generals=self.generals,
-            scenarios=self.scenarios,
-            score_global=self.score_global,
-            matrix_gvg=self.matrix_gvg,
-            matrix_by_scenario=self.matrix_by_scenario,
-            score_general_vs_scenario=self.score_general_vs_scenario,
-            rounds=self.number_of_rounds
-        )
-        print("html")
-        out = Path("tournament_results.html")
-        out.write_text(html, encoding="utf-8")
-        print(f"HTML results generated → {out.absolute()}")
+    tournament.run()
 
 def main():
     parser = argparse.ArgumentParser(
@@ -165,49 +114,9 @@ def main():
     args = parser.parse_args()
 
     if args.command == "battle":
-        # Setup model, controller, view
-        model = BattleModel()
-        controller = BattleController(model)
-        controller.datafile = args.datafile
-
-        if args.terminal:
-            view = TerminalView(model, controller)
-            controller.view_list.append(view)
-        if args.pygame:
-            view = PygameView(model, controller)
-            controller.view_list.append(view)
-
-        # Run battle
-        if len(controller.view_list) > 0:
-            start_flask_debug_server(model)
-
-        general_1 = generalFactory(args.ai1, model)
-        general_2 = generalFactory(args.ai2, model)
-
-        battle = Battle(model, controller, general_1=general_1, general_2=general_2, scenario=args.scenario)
-        winner = battle.run()
-        if winner:
-            print(f"The winner is: {winner.name}")
-        else:
-            print("The battle ended in a draw.")
+        cli_battle(args)
     elif args.command == "tourney":
-        # Setup model, controller, view
-        model = BattleModel()
-        controller = BattleController(model)
-        controller.datafile = args.datafile
-
-        if args.terminal:
-            view = TerminalView(model, controller)
-            controller.view_list.append(view)
-        elif args.pygame:
-            view = PygameView(model, controller)
-            controller.view_list.append(view)
-
-        generals = [generalFactory(name, model) for name in args.generals]
-
-        # Run tournament
-        tournament = Tournament(model, controller, generals, args.scenarios, number_of_rounds=args.num)
-        tournament.run()
+        cli_tournament(args)
     else:
         parser.print_help()
         sys.exit(1)

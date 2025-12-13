@@ -5,6 +5,16 @@ from models.order import Attack, Move, Wait, Defense
 from models.unit import *
 from enum import Enum
 
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class GeneralId:
+    cls_name: str   
+    instance_id: int 
+
+    def __str__(self):
+        return f"{self.cls_name}#{self.instance_id}"
+
 class General:
     def __init__(self, name: str, battle_model) -> None: # pyright: ignore[reportUndefinedVariable]
         self.name = name
