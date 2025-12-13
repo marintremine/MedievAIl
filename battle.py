@@ -22,5 +22,10 @@ class Battle:
         self.model.load(self.scenario, self.general_1, self.general_2)
         for v in self.controller.view_list:
             v.load()
-        return self.controller.run() if len(self.controller.view_list) > 0 else self.controller.run_fast()
+        winnner = self.controller.run() if len(self.controller.view_list) > 0 else self.controller.run_fast()
+        if winnner is not None:
+            print(f"The winner is: {winnner.name} with {len(self.model.get_army(winnner))} units remaining.")
+        else:
+            print("The battle ended in a draw.")
+        return winnner
     

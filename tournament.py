@@ -192,11 +192,7 @@ class Tournament:
                 self._update_scores(gid1, gid2, scenario, winner)
 
 
-        print("All battles completed.")
-        print({'score_global': self.score_global,
-               'matrix_gvg': self.matrix_gvg,
-               'matrix_by_scenario': self.matrix_by_scenario,
-               'score_general_vs_scenario': self.score_general_vs_scenario})
+        print("All battles completed. (parallelized)")
         self.generate_html()
 
 
@@ -226,4 +222,3 @@ class Tournament:
 
         out = Path("tournament_results.html")
         out.write_text(html, encoding="utf-8")
-        print(f"HTML results generated : {out.absolute()}")
