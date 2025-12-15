@@ -120,30 +120,6 @@ class BattleModel:
         print(f"BattleModel loaded from with {len(self.objects['units'])} units and {len(self.objects['obstacles'])} obstacles.")
 
 
-    # def save(self, scenario_file: str = None) -> None:
-    #     """
-    #     Enregistre l'état actuel de la bataille dans jun fichier JSON.
-    #     """
-    #     data = self.to_dict()
-    #     scenarios_dir = Path("scenarios")
-    #     scenarios_dir.mkdir(parents=True, exist_ok=True)
-
-    #     if not scenario_file:
-    #         base, ext = "saved_scenario", ".json"
-    #     else:
-    #         base, ext = os.path.splitext(scenario_file)
-    #         if ext == "":
-    #             ext = ".json"
-
-    #     candidate = f"{base}{ext}"
-    #     counter = 0
-    #     while (scenarios_dir / candidate).exists():
-    #         counter += 1
-    #         candidate = f"{base}_{counter}{ext}"
-
-    #     with open(scenarios_dir / candidate, "w", encoding="utf-8") as f:
-    #         json.dump(data, f, indent=4)
-
     def save(self) -> dict:
         """
         Enregistre l'état actuel de la bataille dans un dictionnaire.

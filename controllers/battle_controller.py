@@ -5,11 +5,10 @@ import queue
 from utils import LIST_UNITS_TYPES
 from settings import FPS, TICK_RATE, GAME_SPEED, MAX_TICK
 from models.battle_model import BattleModel
-from views.battle_view import BattleView
 
 
 class BattleController:
-    def __init__(self, model : BattleModel):
+    def __init__(self, model : BattleModel, enable_input=True):
         self.model = model
         self.view_list = []
         self.game_speed = GAME_SPEED
@@ -17,7 +16,8 @@ class BattleController:
         self.last_saved = None
 
         self.actions = queue.Queue()
-        self._start_input_listeners()
+        if enable_input:
+            self._start_input_listeners()
 
     def _start_input_listeners(self):
         # Ensemble des touches actuellement pressées
@@ -98,13 +98,11 @@ class BattleController:
         ms_listener.daemon = True
         ms_listener.start()
 
-
     def speed_up(self):
         self.game_speed = min(self.game_speed + 0.25, 10.0)
 
     def speed_down(self):
         self.game_speed = max(self.game_speed - 0.25, 0.25)
-
 
     def run_fast(self):
         self.model.running = True
@@ -114,8 +112,7 @@ class BattleController:
             self.model.update()
             tick_count += 1
 
-        return self.model.winner, self.model.summary()
-
+        return self.model.winner
 
     def run(self):
         tick_count = 0

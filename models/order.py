@@ -11,7 +11,7 @@ class Order:
             return
 
     def __str__(self) -> str:
-        return f"Order(Abstract) for {self.unit.name}"
+        return ""
 
 
 class Move(Order):
@@ -36,7 +36,9 @@ class Move(Order):
         self.unit.move(next_x, next_y)
 
     def __str__(self) -> str:
-        return f"Move Order for {self.unit.name} to ({self.target_x}, {self.target_y})"
+        return f"Move"
+    
+
 class Attack(Order) :
     def __init__(self, unit: "Unit", target: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
@@ -65,7 +67,7 @@ class Attack(Order) :
             self.unit.move(next_x, next_y)
     
     def __str__(self) -> str:
-        return f"Attack Order for {self.unit.name} to attack {self.target.name}"
+        return f"Attack"
 
 
 class Wait(Order):
@@ -78,7 +80,7 @@ class Wait(Order):
         pass
 
     def __str__(self) -> str:
-        return f"Wait Order for {self.unit.name}"
+        return f"Wait"
 
 class Defense(Order):
     def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
@@ -107,5 +109,4 @@ class Defense(Order):
             self.unit.move(next_x, next_y)
 
     def __str__(self) -> str:
-        return f"Defense Order for {self.unit.name}"
-        
+        return f"Defense"

@@ -26,7 +26,6 @@ class Unit(Object):
         self.attack_delay = attack_delay # Temps d'animation (Bloquant)
         self.reload_time = reload_time # Temps de recharge (Non-bloquant)
 
-        
         self.current_attack_delay = 0 
         self.current_reload_time = 0
         self.move_progress = 0
@@ -168,7 +167,7 @@ class Unit(Object):
 
 
 class Longswordsman(Unit):
-    def __init__(self, general: "General", x: int, y: int, battle_model):
+    def __init__(self, general, x: int, y: int, battle_model):
         super().__init__(
             name="Longswordsman",
             general=general,
