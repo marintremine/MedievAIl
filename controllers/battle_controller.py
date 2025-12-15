@@ -112,7 +112,7 @@ class BattleController:
             self.model.update()
             tick_count += 1
 
-        return self.model.winner
+        return self.model.winner, self.model.summary()
 
     def run(self):
         tick_count = 0

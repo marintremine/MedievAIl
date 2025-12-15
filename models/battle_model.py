@@ -181,15 +181,15 @@ class BattleModel:
             self.winner = self.general_2
 
     def summary(self):
-        winner_remain = {unit_type: 0 for unit_type in LIST_UNITS_TYPES}
+        """Fait un bilan des unités restantes a la fin d'une bataille"""
+        survivors = {unit_type: 0 for unit_type in LIST_UNITS_TYPES}
 
         for unit in self.get_army(self.winner):
-            name = unit.name.lower()
-            if name in winner_remain:
-                winner_remain[name] += 1
-        winner_remain["total"] = sum(winner_remain.values())
+            unit_name = unit.name.lower()
+            if unit_name in survivors:
+                survivors[unit_name] += 1
 
-        return winner_remain
+        return survivors
 
     def pause(self)->None:
         """Met en pause ou reprend la simulation de la bataille."""
