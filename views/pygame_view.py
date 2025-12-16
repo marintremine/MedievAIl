@@ -170,6 +170,7 @@ class unit_model(pygame.sprite.Sprite):
 
 class PygameView(BattleView):
     def __init__(self, model : BattleModel, controller):
+    def __init__(self, model : BattleModel, controller):
         super().__init__(model, controller)
 
         #---MAP & WINDOW CONST---

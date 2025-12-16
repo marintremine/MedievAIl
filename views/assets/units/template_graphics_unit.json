@@ -1,0 +1,42 @@
+{
+  "attack": {
+    "number_image":0,
+    "side":{
+      "front":  {"start": 0,"end": 0},
+      "s-west": {"start": 0,"end": 0},
+      "left":   {"start": 0,"end": 0},
+      "n-west": {"start": 0,"end": 0},
+      "back":   {"start": 0,"end": 0}
+    }
+  },
+  "die": {
+    "number_image":0,
+    "side":{
+      "front":  {"start": 0,"end": 0},
+      "s-west": {"start": 0,"end": 0},
+      "left":   {"start": 0,"end": 0},
+      "n-west": {"start": 0,"end": 0},
+      "back":   {"start": 0,"end": 0}
+    }
+  },
+  "stand": {
+    "number_image":0,
+    "side":{
+      "front":  {"start": 0,"end": 0},
+      "s-west": {"start": 0,"end": 0},
+      "left":   {"start": 0,"end": 0},
+      "n-west": {"start": 0,"end": 0},
+      "back":   {"start": 0,"end": 0}
+    }
+  },
+  "walk": {
+    "number_image":0,
+    "side":{
+      "front":  {"start": 0,"end": 0},
+      "s-west": {"start": 0,"end": 0},
+      "left":   {"start": 0,"end": 0},
+      "n-west": {"start": 0,"end": 0},
+      "back":   {"start": 0,"end": 0}
+    }
+  }
+}

@@ -1,0 +1,5 @@
+python main.py tourney -G attacktest aegis braindead -S scenarios/scenario_test.json scenarios/symmetric_armies.json -N 2
+
+python main.py battle scenarios/symmetric_armies.json aegis attacktest
+
+python main.py plot daft PlotLanchester Lanchester "[Pikeman,Crossbowman]" "range(1,100)"
