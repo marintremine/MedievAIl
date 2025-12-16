@@ -42,12 +42,7 @@ def cli_battle(args):
     battle = Battle(general_1, general_2, args.scenario,
                     model=model, controller=controller)
 
-    winner = battle.run()
-
-    if winner:
-        print(f"The winner is: {winner.name}")
-    else:
-        print("The battle ended in a draw.")
+    battle.run()
 
 
 def cli_tournament(args):
