@@ -1,17 +1,18 @@
 from __future__ import annotations
+import math
 from models import battle_model
 from models.order import Wait, Attack, Move
 import random
 
 class Object:
-    def __init__(self, x: int, y: int, battle_model) -> None:
-        self.x = x
-        self.y = y
+    def __init__(self, x: float, y: float, battle_model) -> None:
+        self.x = float(x)
+        self.y = float(y)
         self.battle_model = battle_model
 
 class Unit(Object):
     def __init__(self, name: str, general: "General", hp: int, attack: int, armor: int, pierce_armor: int, # pyright: ignore[reportUndefinedVariable]
-                 range_: int, line_of_sight: int, speed: float, attack_delay: float, reload_time: float, x: int, y: int, bonus_attacks: dict, battle_model, occupancy):
+                 range_: int, line_of_sight: int, speed: float, attack_delay: float, reload_time: float, x: int, y: int, density , radius, bonus_attacks: dict, battle_model):
         super().__init__(x, y, battle_model)
         self.name = name
         self.general = general
@@ -34,7 +35,10 @@ class Unit(Object):
         self.currentAction = "stand"
         self.direction = (0, 1)
         self.bonus_attacks = bonus_attacks
-        self.occupancy = occupancy
+        self.density = density
+        self.radius = radius
+        self.vx = 0.0
+        self.vy = 0.0
 
     def is_alive(self) -> bool:
         """Vérifie si l'unité est encore en vie"""
@@ -42,8 +46,8 @@ class Unit(Object):
     
     def in_range(self, target: "Unit") -> bool:
         """Vérifie si la cible est à portée d'attaque"""
-        distance = abs(self.x - target.x) + abs(self.y - target.y)
-        return distance <= self.range
+        dist = math.hypot(self.x - target.x, self.y - target.y)
+        return dist <= self.range + self.radius
     
     def in_sight(self, target: "Unit") -> bool:
         distance = abs(self.x - target.x) + abs(self.y - target.y)
@@ -119,6 +123,11 @@ class Unit(Object):
         self.current_reload_time = self.reload_time
 
         return True
+    
+    def move_towards(self, tx, ty):
+        from models.movement import desired_velocity
+        self.vx, self.vy = desired_velocity(self, tx, ty)
+        self.currentAction = "walk"
 
     def move(self, new_x: int, new_y: int) -> bool:
         """Déplace l'unité vers les coordonnées spécifiées"""
@@ -183,8 +192,9 @@ class Longswordsman(Unit):
             x= x,
             y= y,
             bonus_attacks={},
+            density=1.0,
+            radius=0.20,
             battle_model= battle_model,
-            occupancy=0.20
         )
 
 
@@ -205,8 +215,9 @@ class Pikeman(Unit):
             x=x,
             y=y,
             bonus_attacks={Knight: 22},
+            density=1.0,
+            radius=0.20,
             battle_model=battle_model,
-            occupancy = 0.40
         )
 
 
@@ -227,8 +238,9 @@ class Knight(Unit):
             x=x,
             y=y,
             bonus_attacks={},
-            battle_model=battle_model,
-            occupancy=1
+            density=3.0,
+            radius=0.35,
+            battle_model=battle_model
         )
 
 
@@ -248,9 +260,10 @@ class Crossbowman(Unit):
             reload_time=2.0,
             x=x,
             y=y,
-            bonus_attacks={},            
-            battle_model=battle_model,
-            occupancy=0.40
+            bonus_attacks={},        
+            density=0.8,
+            radius=0.20,    
+            battle_model=battle_model
         )
         self.accuracy = 0.85
 

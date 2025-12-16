@@ -10,10 +10,12 @@ from models.order import *
 from models.general import *
 from models.obstacle import *
 from utils import LIST_UNITS_TYPES
+from models.movement import SpatialGrid, resolve_collision, slide_velocity
 
 
 class BattleModel:
     def __init__(self)->None:
+        self.spatial_grid = SpatialGrid()
         self.general_1 = None
         self.general_2 = None
         self.running = False
@@ -168,6 +170,34 @@ class BattleModel:
         for unit in list(self.objects['units']):
             unit.action()
 
+        self.spatial_grid.clear()
+        for unit in self.objects['units']:
+            self.spatial_grid.insert(unit)
+
+        # Mouvement + collisions
+        for unit in list(self.objects['units']):
+            vx, vy = unit.vx, unit.vy
+
+            for other in self.spatial_grid.neighbors(unit):
+                if other is unit:
+                    continue
+
+                dx = unit.x - other.x
+                dy = unit.y - other.y
+                dist = math.hypot(dx, dy)
+
+                if dist < unit.radius + other.radius:
+                    nx = dx / (dist or 0.0001)
+                    ny = dy / (dist or 0.0001)
+
+                    vx, vy = slide_velocity(vx, vy, nx, ny)
+                    resolve_collision(unit, other)
+
+            unit.x += vx * self.delta_time
+            unit.y += vy * self.delta_time
+        
+        
+        # Retirer les unités mortes
         dead_units = [u for u in self.objects['units'] if not u.is_alive()]
         for dead in dead_units:
             self.remove_unit(dead)
