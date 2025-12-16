@@ -266,7 +266,7 @@ class unit_model(pygame.sprite.Sprite):
         self.x = self.unitData.x
         self.y = self.unitData.y
         self.direction = self.unitData.direction
-        print(self.unitData, self.x, self.y, self.direction)
+
         # Play the dying animation
         if self.is_alive != self.unitData.is_alive():
             self.is_alive = False
@@ -506,4 +506,3 @@ class PygameView(BattleView):
             if tmpPos is not None:
                 self.mapX = ((self.window.get_width()/2) - (tmpPos[0]*(self.ZOOM)))
                 self.mapY =  ((self.window.get_height()/2) - (tmpPos[1]*self.ZOOM))
-                print((self.window.get_width()/2 + self.mapX, self.window.get_height()/2 + self.mapY))
