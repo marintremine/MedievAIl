@@ -2,6 +2,7 @@ import time
 import pynput.keyboard as kb
 import pynput.mouse as ms
 import queue
+from utils import LIST_UNITS_TYPES
 from settings import FPS, TICK_RATE, GAME_SPEED, MAX_TICK
 from models.battle_model import BattleModel
 
@@ -111,7 +112,7 @@ class BattleController:
             self.model.update()
             tick_count += 1
 
-        return self.model.winner
+        return self.model.winner, self.model.summary()
 
     def run(self):
         tick_count = 0
@@ -242,7 +243,7 @@ class BattleController:
 
                 # --- STATS OUTPUT ---
                 if now - last_stats >= 1.0:
-                    #print(f"TPS: {tick_stats} | FPS: {frame_stats}")
+                    print(f"TPS: {tick_stats} | FPS: {frame_stats}")
                     tick_stats = 0
                     frame_stats = 0
                     last_stats = now
@@ -253,4 +254,4 @@ class BattleController:
             for view in self.view_list:
                 view.cleanup()
 
-        return self.model.winner
+        return self.model.winner, self.model.summary()

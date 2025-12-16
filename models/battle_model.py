@@ -9,6 +9,8 @@ from models.unit import *
 from models.order import *
 from models.general import *
 from models.obstacle import *
+from utils import LIST_UNITS_TYPES
+
 
 class BattleModel:
     def __init__(self)->None:
@@ -178,6 +180,17 @@ class BattleModel:
         if army2_alive and not army1_alive:
             self.winner = self.general_2
 
+    def summary(self):
+        """Fait un bilan des unités restantes a la fin d'une bataille"""
+        survivors = {unit_type: 0 for unit_type in LIST_UNITS_TYPES}
+
+        for unit in self.get_army(self.winner):
+            unit_name = unit.name.lower()
+            if unit_name in survivors:
+                survivors[unit_name] += 1
+
+        return survivors
+
     def pause(self)->None:
         """Met en pause ou reprend la simulation de la bataille."""
         self.running = not self.running
@@ -191,6 +204,9 @@ class BattleModel:
     
     def is_obstacle_at(self, x, y):
         """Vérification de si un obstacle se trouve à la position (x, y)"""
+        for obstacle in self.objects['obstacles']:
+            if (obstacle.x <= x <= (obstacle.x + obstacle.sizeX)) and obstacle.y <= y <= (obstacle.y + obstacle.sizeY):
+                return True
         for obj in self.objects['state_map'].get((x, y), set()):
             if isinstance(obj, Obstacle):
                 return True
