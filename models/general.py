@@ -3,6 +3,17 @@ import random
 import math
 from models.order import Attack, Move, Wait, Defense
 from models.unit import *
+from enum import Enum
+
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class GeneralId:
+    cls_name: str   
+    instance_id: int 
+
+    def __str__(self):
+        return f"{self.cls_name}#{self.instance_id}"
 
 class General:
     def __init__(self, name: str, battle_model) -> None: # pyright: ignore[reportUndefinedVariable]
@@ -75,6 +86,7 @@ class Daft(General):
             unit.order = Attack(unit, closest_enemy)
 
 
+
 class BrainDead(General):
     """
     Un général qui ne donne aucun ordre, toute l'armée est en mode Defense donc les unités attaquent les ennemis dans leur portée.
@@ -84,7 +96,88 @@ class BrainDead(General):
 
     def decide(self) -> None:
         for unit in self.battle_model.get_army(self):
-            unit.order = Defense(unit)
+           unit.order = Defense(unit)
+
+
+
+class IA_Global(General):
+    class Strategy(Enum):
+        OFFENSIVE = 1
+        DEFENSIVE = 2
+        LURE = 3
+
+    def __init__(self, battle_model):
+        self.strategy = self.Strategy.OFFENSIVE
+        self.tactics_methods = [
+            self.tactic_hit_and_run,
+            self.tactic_bonus_damage,
+            self.tactic_safe_position,
+            self.tactic_group_units,
+            self.tactic_attack_weakest,
+            self.tactic_one_shot_enemy,
+            self.tactic_focus_nearest,
+        ]
+        super().__init__("IA_Global", battle_model)
+
+    def tactic_hit_and_run(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    def tactic_bonus_damage(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    #tactique se mettre en sécurité
+    def tactic_safe_position(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    def tactic_group_units(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+    
+    def tactic_attack_weakest(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    def tactic_one_shot_enemy(self, unit):
+        weight = 0
+        order = None
+        return weight, order
+
+    def tactic_focus_nearest(self, unit):
+        weight = 0
+        order = None
+        enemies = unit.nearest_enemies()
+        if enemies:
+            target = enemies[0]
+            order = Attack(unit, target)
+            weight = 5
+
+        return weight, order
+
+    def decide(self) -> None:
+        match self.strategy:
+            case self.Strategy.OFFENSIVE:
+                for unit in self.battle_model.get_army(self):
+                    best_weight = 0
+                    best_order = Wait(unit)
+                    for tactic in self.tactics_methods:
+                        weight, order = tactic(unit)
+                        if weight > best_weight:
+                            best_weight = weight
+                            best_order = order
+                    unit.order = best_order
+            case self.Strategy.DEFENSIVE:
+                for unit in self.battle_model.get_army(self):
+                    unit.order = Defense(unit)
+            case self.Strategy.LURE:
+                print("Lure strategy not yet implemented.")
 
 
 class Aegis(General):
@@ -145,11 +238,11 @@ class Aegis(General):
                 continue
 
             if self.manhattan(unit, target) <= 2:
-                unit.order = Attack(unit, target)
+               unit.order = Attack(unit, target)
             elif target.name == "Pikeman" and self.has_crossbow_support(unit):
-                unit.order = Wait(unit)
+               unit.order = Wait(unit)
             else:
-                unit.order = Attack(unit, target)
+               unit.order = Attack(unit, target)
 
 class GeneralAugustin(General):
     def __init__(self, battle_model):
@@ -176,22 +269,22 @@ class GeneralAugustin(General):
                 if coor:
                     match coor[0]:
                         case 1:
-                            unit.action = Move(unit, coor[1][0], coor[1][1])
+                           unit.order = Move(unit, coor[1][0], coor[1][1])
                         case 2:
-                            unit.action = Move(unit, coor[1], coor[2])
+                           unit.order = Move(unit, coor[1], coor[2])
                         case 3:
-                            unit.action = Defense(unit)
+                           unit.order = Defense(unit)
                         case _:
-                            unit.action = Wait(unit)
+                           unit.order = Wait(unit)
 
                 else:
-                    unit.action = Defense(unit)
+                   unit.order = Defense(unit)
             else:
                 target = self.measure_max_damage_target(unit, prox_targets)
                 if target:
-                    unit.action = Attack(unit, target[1])
+                   unit.order = Attack(unit, target[1])
                 else:
-                    unit.action = Defense(unit)
+                   unit.order = Defense(unit)
 
 
     def measure_max_damage_target(self, unit, prox_targets):
@@ -238,7 +331,6 @@ class GeneralAugustin(General):
 
 
     def measure_max_damage_without_target(self, unit, enemies, meeting_point):
-        print(enemies)
         exposure = self.map_enemy(unit, enemies)
         if not exposure:
             return [2, meeting_point[1][0], meeting_point[1][1]]
@@ -378,7 +470,7 @@ class AttackTestGeneral(General):
 
     def decide(self) -> None:
         enemy_units = self.battle_model.get_enemy_army(self)
-        
+
         for unit in self.battle_model.get_army(self):
             if unit.is_alive() and isinstance(unit.order, Wait):
                 if enemy_units:
@@ -387,6 +479,8 @@ class AttackTestGeneral(General):
                     unit.order = Attack(unit, target)
                 else:
                     unit.order = Wait(unit)
+
+    
 
 class MomoIA(General):
     def __init__(self, battle_model):
@@ -430,7 +524,7 @@ class MomoIA(General):
                 if abs(avg_x-unit.x) <=3 and abs(avg_y -unit.y) <= 3:
                     unit.order = Attack(unit, nearest)
                     # if dist2 <= 4: 
-                    #     unit.order = Attack(unit, nearest)
+                    #    unit.order = Attack(unit, nearest)
                 else :
                     for u in enemy_units :
                         anyone = self.is_anyone_there(avg_x, avg_y, u.x , u.y, 2)
@@ -446,7 +540,7 @@ class MomoIA(General):
                         Wait(unit)
                         
                 if abs(avg_x-unit.x) <= 3 and abs(avg_y-unit.y) <= 3:
-                    unit.order = Attack(unit, nearest)
+                   unit.order = Attack(unit, nearest)
                 else:
                     for u in enemy_units:
                         anyone = self.is_anyone_there(avg_x, avg_y, u.x, u.y, 2)
@@ -460,7 +554,7 @@ class MomoIA(General):
                 if abs(avg_x-unit.x) <=3 and abs(avg_y -unit.y) <= 3:
                     unit.order = Attack(unit, nearest)
                     # if dist2 <= 4: 
-                    #     unit.order = Attack(unit, nearest)
+                    #    unit.order = Attack(unit, nearest)
                 else :
                     for u in enemy_units :
                         anyone = self.is_anyone_there(avg_x, avg_y, u.x , u.y, 2)
@@ -582,6 +676,7 @@ def generalFactory(general_type: str, battle_model) -> General:
         "augustus" : GeneralAugustin,
         "momoia": MomoIA,
         "rps": RPSGeneral,
+        "ia_global": IA_Global,
     }
     key = general_type.lower()
     if key in general_classes:
