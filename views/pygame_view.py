@@ -11,7 +11,7 @@ import json
 
 MINIMAP_SIZE = (300,150)
 MINIMAP_SCALE =  (MINIMAP_SIZE[0]*MINIMAP_SIZE[1])/(PYGAME_WIN[0]*PYGAME_WIN[1])
-LIST_UNITS = ["Pikeman","Crossbowman","Knight"]
+LIST_UNITS = ["Pikeman","Crossbowman","Knight","Longsword"]
 LIST_OBSTACLES = ["Bush","Rock","Tree"]
 
 switchOrientation = {
@@ -266,7 +266,7 @@ class unit_model(pygame.sprite.Sprite):
         self.x = self.unitData.x
         self.y = self.unitData.y
         self.direction = self.unitData.direction
-
+        print(self.unitData, self.x, self.y, self.direction)
         # Play the dying animation
         if self.is_alive != self.unitData.is_alive():
             self.is_alive = False
@@ -398,6 +398,7 @@ class PygameView(BattleView):
         """MAP constructor"""
         self.map = pygame.Surface((self.MAP_DIAG_W * self.SCALE, self.MAP_DIAG_H * self.SCALE))
         self.map.fill((0,0,0))
+
         points = [self.convertCartToIso((pos_x, pos_y)),
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y)),
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y+self.MAP_HEIGHT)),
