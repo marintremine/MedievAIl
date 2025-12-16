@@ -26,7 +26,6 @@ class Unit(Object):
         self.attack_delay = attack_delay # Temps d'animation (Bloquant)
         self.reload_time = reload_time # Temps de recharge (Non-bloquant)
 
-        
         self.current_attack_delay = 0 
         self.current_reload_time = 0
         self.move_progress = 0
@@ -50,7 +49,7 @@ class Unit(Object):
         distance = abs(self.x - target.x) + abs(self.y - target.y)
         return distance <= self.line_of_sight
     
-    def enemies_in_sight(self) -> "Unit | None":
+    def enemies_in_sight(self):
         """Retourne une liste des unités ennemies dans le champ de vision dans le champ de vision du plus proche au plus éloigné"""
         enemies = [
             enemy for enemy in self.battle_model.get_enemy_army(self.general)
@@ -59,7 +58,7 @@ class Unit(Object):
         enemies.sort(key=lambda u: abs(self.x - u.x) + abs(self.y - u.y))
         return enemies
 
-    def enemies_in_range(self) -> "Unit | None":
+    def enemies_in_range(self):
         """Retourne une liste des unités ennemies à portée d'attaque du plus proche au plus éloigné"""
         enemies = [
             enemy for enemy in self.battle_model.get_enemy_army(self.general)
@@ -67,12 +66,21 @@ class Unit(Object):
         ]
         enemies.sort(key=lambda u: abs(self.x - u.x) + abs(self.y - u.y))
         return enemies
-
+    
+    def nearest_enemies(self):
+        """Retourne une listes des unités ennemies du plus proche au plus éloigné"""
+        enemies = [
+            enemy for enemy in self.battle_model.get_enemy_army(self.general)
+            if enemy.is_alive()
+        ]
+        enemies.sort(key=lambda u: abs(self.x - u.x) + abs(self.y - u.y))
+        return enemies
 
     def action(self) -> None:
         """Exécute l'action actuelle de l'unité"""
         if not self.is_alive():
             return
+        
         # Décrémenter le temps de rechargement qu'importe l'action
         if self.current_reload_time > 0:
             self.current_reload_time -= 1 * self.battle_model.delta_time
@@ -157,6 +165,29 @@ class Unit(Object):
             "move_progress": self.move_progress
         }
 
+
+class Longswordsman(Unit):
+    def __init__(self, general, x: int, y: int, battle_model):
+        super().__init__(
+            name="Longswordsman",
+            general=general,
+            hp=60,
+            attack=9,
+            armor=1,
+            pierce_armor=1,
+            range_= 0,
+            line_of_sight=6,
+            speed=0.96,
+            attack_delay=0,
+            reload_time=2.0,
+            x= x,
+            y= y,
+            bonus_attacks={},
+            battle_model= battle_model,
+            occupancy=0.20
+        )
+
+
 class Pikeman(Unit):
     def __init__(self, general: "General", x: int, y: int, battle_model): # pyright: ignore[reportUndefinedVariable]
         super().__init__(
@@ -232,7 +263,8 @@ def unitFactory(unit_type, general, x, y, battle_model) -> Unit: # pyright: igno
     unit_classes = {
         "pikeman": Pikeman,
         "knight": Knight,
-        "crossbowman": Crossbowman
+        "crossbowman": Crossbowman,
+        "longswordsman": Longswordsman
     }
     key = unit_type.lower()
     if key in unit_classes:

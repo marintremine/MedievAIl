@@ -69,6 +69,19 @@ body {
     transition: width 0.3s;
 }
 
+.cd_bar {
+    height: 6px;
+    background-color: #999;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 3px;
+}
+
+.cd_fill {
+    height: 100%;
+    background-color: #e74c3c;
+    transition: width 0.2s linear;
+}
 </style>
 
 
@@ -84,18 +97,25 @@ body {
         <div class="unit_container">
             {% for unit in model.get_army(general) %}
             {% if unit.is_alive() %}
-            <div class="unit_card {{color}}">
-                <div>
-                    <strong>{{ unit.name }}</strong><br>
-                    Pos: ({{unit.x}}, {{unit.y}})
-                </div>
-                <div style="min-width: 80px; text-align:right;">
-                    HP: {{ unit.hp }}/{{ unit.max_hp }}
-                    <div class="hp_bar">
-                        <div class="hp_fill" style="width:{{ (unit.hp/unit.max_hp)*100 }}%"></div>
+                <div class="unit_card {{color}}">
+                    <div>
+                        <strong>{{ unit.name }}</strong><br>
+                        Pos: ({{unit.x}}, {{unit.y}})<br>
+                        Order : {{ unit.order }}<br>
+                        Cooldown : 
+                        {% if unit.current_reload_time <= 0 %}
+                            <span style="font-weight: bold;">Available</span>
+                        {% else %}
+                            {{ "%.2f"|format(unit.current_reload_time) }}s
+                        {% endif %}
+                    </div>
+                    <div style="min-width: 80px; text-align:right;">
+                        HP: {{ unit.hp }}/{{ unit.max_hp }}
+                        <div class="hp_bar">
+                            <div class="hp_fill" style="width:{{ (unit.hp/unit.max_hp)*100 }}%"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
             {% endif %}
             {% endfor %}
         </div>

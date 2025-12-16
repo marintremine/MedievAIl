@@ -204,6 +204,8 @@ class TerminalView(BattleView):
             return "P"
         elif isinstance(unit, Crossbowman):
             return "C"
+        elif isinstance(unit, Longswordsman):
+            return "L"
         return "U"
     
     def _get_unit_color(self, unit):
