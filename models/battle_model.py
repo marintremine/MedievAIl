@@ -234,6 +234,9 @@ class BattleModel:
     
     def is_obstacle_at(self, x, y):
         """Vérification de si un obstacle se trouve à la position (x, y)"""
+        for obstacle in self.objects['obstacles']:
+            if (obstacle.x <= x <= (obstacle.x + obstacle.sizeX)) and obstacle.y <= y <= (obstacle.y + obstacle.sizeY):
+                return True
         for obj in self.objects['state_map'].get((x, y), set()):
             if isinstance(obj, Obstacle):
                 return True
