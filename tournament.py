@@ -4,12 +4,9 @@ from jinja2 import Environment, FileSystemLoader
 from models.battle_model import BattleModel
 from controllers.battle_controller import BattleController
 from battle import Battle
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
-from multiprocessing import Pool, cpu_count
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from utils import ensure_key
 from models.general import GeneralId
-
-
 
 def run_single_battle_wrapper(args):
     gid1, gen_cls1, gid2, gen_cls2, scenario_path = args
