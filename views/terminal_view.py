@@ -4,8 +4,8 @@ import io
 
 from time import time
 from views.battle_view import BattleView
-from models.battle_model import BattleModel
 from models.unit import *
+from models.obstacle import *
 
 # Modes de vues
 VIEW_BATTLE = 0
@@ -67,6 +67,7 @@ class TerminalView(BattleView):
         if self.view_mode == VIEW_BATTLE:
             self._draw_map()
             self._draw_units()
+            self._draw_obstacles()
             self._draw_info()
         elif self.view_mode == VIEW_ARMY_INFO:
             self._draw_army_infos()
@@ -83,8 +84,8 @@ class TerminalView(BattleView):
             for x in range(min(self.model.map_width, max_x)):
 
                 offset_x, offset_y = self.view_offsets[self.view_mode]
-                map_x = x + offset_x
-                map_y = y + offset_y
+                map_x = x + offset_x # Calcul de la position sur la carte
+                map_y = y + offset_y # Calcul de la position sur la carte
                 
                 if map_y >= self.model.map_height or map_x >= self.model.map_width:
                     continue
@@ -96,7 +97,7 @@ class TerminalView(BattleView):
     def _draw_units(self):
         """Dessine les unités sur la carte."""
         max_y, max_x = self.stdscr.getmaxyx()
-        for obj in self.model.objects['units']:
+        for obj in self.model.get_units():
             if isinstance(obj, Unit) and not obj.is_alive():
                 continue
 
@@ -105,7 +106,7 @@ class TerminalView(BattleView):
             screen_y = obj.y - offset_y
 
             if 0 <= screen_y < max_y and 0 <= screen_x < max_x:
-                symbol = self._get_unit_symbol(obj)
+                symbol = self._get_object_symbol(obj)
                 color_pair = self._get_unit_color(obj)
                 try:
                     self.stdscr.addch(screen_y, screen_x, symbol,
@@ -113,16 +114,86 @@ class TerminalView(BattleView):
                 except curses.error:
                     pass
 
+    def _draw_obstacles(self):
+        """Dessine les obstacles centrés avec double clipping (Écran ET Carte)."""
+        max_y, max_x = self.stdscr.getmaxyx()
+        map_width = self.model.map_width
+        map_height = self.model.map_height
+        
+        offset_x, offset_y = self.view_offsets[self.view_mode]
+
+        for obj in self.model.get_obstacles():
+            # Calcul du centrage
+            delta_x = obj.sizeX // 2
+            delta_y = obj.sizeY // 2
+
+            # Coordonnées du coin HAUT-GAUCHE de l'objet dans le MONDE (absolu)
+            world_x = obj.x - delta_x
+            world_y = obj.y - delta_y
+
+            # Coordonnées du coin HAUT-GAUCHE sur l'ÉCRAN (relatif)
+            screen_x = world_x - offset_x
+            screen_y = world_y - offset_y
+            
+            # --- Clipping VERTICAL (Y) ---
+            start_dy_screen = max(0, -screen_y)
+            start_dy_map = max(0, -world_y)
+            
+            # On prend le plus restrictif des deux départs
+            start_dy = max(start_dy_screen, start_dy_map)
+
+            # On ne dépasse pas la taille de l'objet, ni le bas de l'écran, ni le bas de la carte
+            limit_screen_y = max_y - screen_y
+            limit_map_y = map_height - world_y
+            end_dy = min(obj.sizeY, limit_screen_y, limit_map_y)
+
+            # --- Clipping HORIZONTAL (X) ---
+            start_dx_screen = max(0, -screen_x)
+            start_dx_map = max(0, -world_x)
+            
+            start_dx = max(start_dx_screen, start_dx_map)
+
+            limit_screen_x = max_x - screen_x
+            limit_map_x = map_width - world_x
+            end_dx = min(obj.sizeX, limit_screen_x, limit_map_x)
+
+            if start_dy < end_dy and start_dx < end_dx:
+                symbol = self._get_object_symbol(obj)
+                color = curses.color_pair(3)
+
+                try:
+                    for dy in range(start_dy, end_dy):
+                        for dx in range(start_dx, end_dx):
+                            self.stdscr.addch(
+                                screen_y + dy,
+                                screen_x + dx,
+                                symbol,
+                                color
+                            )
+                except curses.error:
+                    pass
+
     def _draw_info(self):
         """Affiche les informations de statut en bas de l'écran."""
         max_y, max_x = self.stdscr.getmaxyx()
-        status_y = min(self.model.map_height + 1, max_y - 1)
+        status_y3 = min(self.model.map_height + 3, max_y - 1)
+        status_y2 = status_y3 - 1
+        status_y1 = status_y2 - 1
+
+        touches = "[F1] Vue précédente | [F2] Vue suivante | [F11] Sauvegarder | [F12] Charger"
+        touches2 = "[Flèches]/[ZQSD] Déplacer vue | [P] Pause/Reprendre | [+/-] Vitesse | [ECHAP] Quitter"
         time_str = f"Temps : {time():.1f}s"
         running_str = "RUNNING" if self.model.running else "PAUSED"
         speed_str = f"Speed: {self.controller.game_speed}x"
         info_line = f"{time_str}   |   État : {running_str}   |   {speed_str}"
+        
         try:
-            self.stdscr.addstr(status_y, 0, info_line[:max_x - 1])
+            if status_y1 >= 0:
+                self.stdscr.addstr(status_y1, 0, touches[:max_x - 1])
+            if status_y2 >= 0:
+                self.stdscr.addstr(status_y2, 0, touches2[:max_x - 1])
+            if status_y3 >= 0:
+                self.stdscr.addstr(status_y3, 0, info_line[:max_x - 1])
         except curses.error:
             pass
 
@@ -196,16 +267,22 @@ class TerminalView(BattleView):
                 except curses.error:
                     pass
 
-    def _get_unit_symbol(self, unit):
+    def _get_object_symbol(self, obj):
         """Définit un symbole simple pour représenter les unités."""
-        if isinstance(unit, Knight):
+        if isinstance(obj, Knight):
             return "K"
-        elif isinstance(unit, Pikeman):
+        elif isinstance(obj, Pikeman):
             return "P"
-        elif isinstance(unit, Crossbowman):
+        elif isinstance(obj, Crossbowman):
             return "C"
-        elif isinstance(unit, Longswordsman):
+        elif isinstance(obj, Longswordsman):
             return "L"
+        elif isinstance(obj, Bush):
+            return "B"
+        elif isinstance(obj, Rock):
+            return "R"
+        elif isinstance(obj, Tree):
+            return "T"
         return "U"
     
     def _get_unit_color(self, unit):
