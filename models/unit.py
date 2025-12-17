@@ -206,7 +206,7 @@ class Pikeman(Unit):
             y=y,
             bonus_attacks={Knight: 22},
             battle_model=battle_model,
-            occupancy = 0.40
+            occupancy = 1
         )
 
 
@@ -250,7 +250,7 @@ class Crossbowman(Unit):
             y=y,
             bonus_attacks={},            
             battle_model=battle_model,
-            occupancy=0.40
+            occupancy=1
         )
         self.accuracy = 0.85
 
