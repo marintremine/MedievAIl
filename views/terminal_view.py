@@ -158,7 +158,7 @@ class TerminalView(BattleView):
 
             offset_x, offset_y = self.view_offsets[self.view_mode]
             screen_x = int(round(obj.x)) - offset_x
-            screen_y = int(round(obj.y)) - offset_y
+            screen_y = int(round(obj.y)) - offset_y + top_margin
 
             # Vérification entre header et footer
             if top_margin <= screen_y < visual_limit_y and 0 <= screen_x < max_x:
