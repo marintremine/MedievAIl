@@ -268,7 +268,7 @@ class TerminalView(BattleView):
         if max_y < 4:
             return
 
-        touches = "[F1] Vue précédente | [F2] Vue suivante | [F3] Sauvegarder | [F4] Charger"
+        touches = "[F1] Vue précédente | [F2] Vue suivante | [F11] Sauvegarder | [F12] Charger"
         touches2 = "[Flèches]/[ZQSD] Déplacer vue | [P] Pause/Reprendre | [+/-] Vitesse | [ECHAP] Quitter"
         time_str = f"Temps : {time():.1f}s"
         running_str = "RUNNING" if self.model.running else "PAUSED"
