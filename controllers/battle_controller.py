@@ -2,6 +2,7 @@ import time
 import pynput.keyboard as kb
 import pynput.mouse as ms
 import queue
+import io
 from utils import LIST_UNITS_TYPES
 from settings import FPS, TICK_RATE, GAME_SPEED, MAX_TICK
 from models.battle_model import BattleModel
@@ -11,6 +12,7 @@ class BattleController:
     def __init__(self, model : BattleModel, enable_input=True):
         self.model = model
         self.view_list = []
+        self.shared_log_buffer = io.StringIO()
         self.game_speed = GAME_SPEED
         self.datafile = None
         self.last_saved = None
@@ -115,6 +117,10 @@ class BattleController:
         return self.model.winner
 
     def run(self):
+        for view in self.view_list:
+            if hasattr(view, 'prepare'):
+                view.prepare()
+
         tick_count = 0
         tick_interval = 1 / TICK_RATE
         frame_interval = 1 / FPS

@@ -299,10 +299,10 @@ class Crossbowman(Unit):
             super()._apply_damage(target)
             
 
-class Longswordsman(Unit):
+class Longsword(Unit):
     def __init__(self, general, x: int, y: int, battle_model):
         super().__init__(
-            name="Longswordsman",
+            name="Longsword",
             general=general,
             hp=60,
             attack=9,
@@ -328,7 +328,7 @@ def unitFactory(unit_type, general, x, y, battle_model) -> Unit: # pyright: igno
         "pikeman": Pikeman,
         "knight": Knight,
         "crossbowman": Crossbowman,
-        "longsword": Longswordsman
+        "longsword": Longsword
     }
     key = unit_type.lower()
     if key in unit_classes:
