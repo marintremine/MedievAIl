@@ -1,5 +1,4 @@
 import json
-import os
 from pathlib import Path
 import random
 from jinja2 import Environment, FileSystemLoader
@@ -109,8 +108,7 @@ class BattleModel:
                 )
             self.objects['obstacles'].add(obstacle)
 
-        print(f"BattleModel loaded from with {len(self.objects['units'])} units and {len(self.objects['obstacles'])} obstacles.")
-
+        print(f"Battle loaded between {self.general_1.name} vs {self.general_2.name} from {data if isinstance(data, str) else 'quick save'}.")
 
     def save(self) -> dict:
         """
@@ -189,7 +187,10 @@ class BattleModel:
     def pause(self)->None:
         """Met en pause ou reprend la simulation de la bataille."""
         self.running = not self.running
-
+        if self.running:
+            print("Battle resumed.")
+        else:
+            print("Battle paused.")
     
     def is_in_map(self, x, y):
         """Vérification si les coordonnées sont dans les limites de la carte"""
