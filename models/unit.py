@@ -328,7 +328,7 @@ def unitFactory(unit_type, general, x, y, battle_model) -> Unit: # pyright: igno
         "pikeman": Pikeman,
         "knight": Knight,
         "crossbowman": Crossbowman,
-        "longswordsman": Longswordsman
+        "longsword": Longsword
     }
     key = unit_type.lower()
     if key in unit_classes:
