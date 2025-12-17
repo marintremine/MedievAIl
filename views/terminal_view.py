@@ -25,7 +25,9 @@ class TerminalView(BattleView):
             VIEW_MESSAGE: [0, 0]
         }
 
-        self._stdout_buffer = io.StringIO()
+        self._stdout_buffer = self.controller.shared_log_buffer
+
+        # Rediriger la sortie standard vers le buffer
         self._original_stdout = sys.stdout
         sys.stdout = self._stdout_buffer
 
@@ -401,8 +403,6 @@ class TerminalView(BattleView):
         finally:
             # Restauration de la sortie standard
             sys.stdout = self._original_stdout
-            if captured_logs:
-                print(captured_logs)
 
     def next_view_mode(self):
         """Change le mode de vue."""
