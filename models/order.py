@@ -22,18 +22,8 @@ class Move(Order):
 
     def action(self) -> None:
         super().action()
-
-        path = self.unit.battle_model.shortest_path(self.unit,
-            start=(self.unit.x, self.unit.y),
-            end=(self.target_x, self.target_y)
-        )
-
-        if path is None:
+        if self.unit.move_towards(self.target_x, self.target_y):
             self.unit.order = Wait(self.unit)
-            return
-        
-        next_x, next_y = path
-        self.unit.move(next_x, next_y)
 
     def __str__(self) -> str:
         return f"Move"
@@ -50,21 +40,11 @@ class Attack(Order) :
         if not self.target.is_alive():
             self.unit.order = Wait(self.unit)
             return
-        
+            
         if self.unit.in_range(self.target):
             self.unit.attack_target(self.target)
         else:
-            path = self.unit.battle_model.shortest_path(self.unit,
-                start=(self.unit.x, self.unit.y),
-                end=(self.target.x, self.target.y)
-            )
-            
-            if path is None:
-                self.unit.order = Wait(self.unit)
-                return
-            
-            next_x, next_y = path
-            self.unit.move(next_x, next_y)
+            self.unit.move_towards(self.target.x, self.target.y)
     
     def __str__(self) -> str:
         return f"Attack"
@@ -98,15 +78,7 @@ class Defense(Order):
         enemies_in_sight = self.unit.enemies_in_sight()
         if len(enemies_in_sight) > 0:
             target = enemies_in_sight[0]
-            path = self.unit.battle_model.shortest_path(
-                self.unit,
-                start=(self.unit.x, self.unit.y),
-                end=(target.x, target.y)
-            )
-            if path is None:
-                return
-            next_x, next_y = path
-            self.unit.move(next_x, next_y)
+            self.unit.move_towards(target.x, target.y)
 
     def __str__(self) -> str:
         return f"Defense"
