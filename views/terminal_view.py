@@ -15,8 +15,7 @@ VIEW_MESSAGE = 2
 class TerminalView(BattleView):
     def __init__(self, model, controller):
         super().__init__(model, controller)
-        self._init_curses()
-        self._init_colors()
+        self.stdscr = None  # Fenêtre principale curses
 
         self.view_mode = VIEW_BATTLE
 
@@ -29,6 +28,20 @@ class TerminalView(BattleView):
         self._stdout_buffer = io.StringIO()
         self._original_stdout = sys.stdout
         sys.stdout = self._stdout_buffer
+
+    def prepare(self):
+        """Initialise la vue avant le début de la bataille."""
+        should_init = False
+
+        try:
+            if curses.isendwin():
+                should_init = True
+        except:
+            should_init = True
+
+        if should_init:
+            self._init_curses()
+            self._init_colors()
 
 
     def _init_curses(self):
@@ -171,62 +184,71 @@ class TerminalView(BattleView):
                     pass
 
     def _draw_obstacles(self):
-        """Clipping complet : Header (Haut) et Footer (Bas)."""
+        """
+        Dessine les obstacles avec gestion des coordonnées float et clipping.
+        Utilise corner_x/y directement (plus besoin de recalculer le centre).
+        """
         max_y, max_x = self.stdscr.getmaxyx()
         map_width = self.model.map_width
         map_height = self.model.map_height
         
+        # Marges définies précédemment
         top_margin = 1
         bottom_margin = 3
-        
-        # La ligne à ne pas dépasser vers le bas
         visual_limit_y = max_y - bottom_margin
 
-        offset_x, offset_y = self.view_offsets[self.view_mode]
+        # On s'assure que les offsets sont des entiers
+        offset_x = int(self.view_offsets[self.view_mode][0])
+        offset_y = int(self.view_offsets[self.view_mode][1])
 
         for obj in self.model.get_obstacles():
-            delta_x = obj.sizeX // 2
-            delta_y = obj.sizeY // 2
-
-            world_x = obj.x - delta_x
-            world_y = obj.y - delta_y
+            world_x = int(obj.corner_x)
+            world_y = int(obj.corner_y)
 
             screen_x = world_x - offset_x
             screen_y = (world_y - offset_y) + top_margin
-            
-            # --- Clipping VERTICAL (Y) ---
-            # On coupe si ça rentre dans le Header
+                        
+            # Clipping Header
             start_dy_screen = max(0, top_margin - screen_y)
             
-            # On coupe si ça sort de la carte (en haut)
+            # Clipping Carte (si l'objet commence hors map)
             start_dy_map = max(0, -world_y)
+            
             start_dy = max(start_dy_screen, start_dy_map)
 
-            # Calcul de la limite entre le bas de l'objet et le Footer / bas de la Map
+            # Clipping Footer et Fin de Map
             space_before_footer = visual_limit_y - screen_y
             space_before_map_end = map_height - world_y
 
-            # On coupe si ça rentre dans le Footer ou sort de la carte (en bas)
-            end_dy = min(obj.sizeY, space_before_footer, space_before_map_end)
+            # On prend la taille Y de l'objet (int nécessaire aussi)
+            size_y = int(obj.sizeY)
+            end_dy = min(size_y, space_before_footer, space_before_map_end)
 
-            # --- Clipping HORIZONTAL (X) --- (Standard)
+            # --- Clipping HORIZONTAL (X) ---
             start_dx_screen = max(0, -screen_x)
             start_dx_map = max(0, -world_x)
             start_dx = max(start_dx_screen, start_dx_map)
 
             limit_screen_x = max_x - screen_x
             limit_map_x = map_width - world_x
-            end_dx = min(obj.sizeX, limit_screen_x, limit_map_x)
+            
+            size_x = int(obj.sizeX)
+            end_dx = min(size_x, limit_screen_x, limit_map_x)
 
             if start_dy < end_dy and start_dx < end_dx:
                 symbol = self._get_object_symbol(obj)
                 color = curses.color_pair(3)
+
                 try:
                     for dy in range(start_dy, end_dy):
                         for dx in range(start_dx, end_dx):
+                            # addch exige des entiers (int)
+                            draw_y = int(screen_y + dy)
+                            draw_x = int(screen_x + dx)
+                            
                             self.stdscr.addch(
-                                screen_y + dy,
-                                screen_x + dx,
+                                draw_y,
+                                draw_x,
                                 symbol,
                                 color
                             )
@@ -251,6 +273,8 @@ class TerminalView(BattleView):
         time_str = f"Temps : {time():.1f}s"
         running_str = "RUNNING" if self.model.running else "PAUSED"
         speed_str = f"Speed: {self.controller.game_speed}x"
+        # Afficher les FPS et TPS
+
         info_line = f"{time_str}   |   État : {running_str}   |   {speed_str}"
         
         try:

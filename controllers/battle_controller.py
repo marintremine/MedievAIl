@@ -115,6 +115,10 @@ class BattleController:
         return self.model.winner
 
     def run(self):
+        for view in self.view_list:
+            if hasattr(view, 'prepare'):
+                view.prepare()
+
         tick_count = 0
         tick_interval = 1 / TICK_RATE
         frame_interval = 1 / FPS
