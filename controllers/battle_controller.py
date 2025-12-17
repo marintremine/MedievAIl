@@ -243,7 +243,7 @@ class BattleController:
 
                 # --- STATS OUTPUT ---
                 if now - last_stats >= 1.0:
-                    print(f"TPS: {tick_stats} | FPS: {frame_stats}")
+                    #print(f"TPS: {tick_stats} | FPS: {frame_stats}")
                     tick_stats = 0
                     frame_stats = 0
                     last_stats = now
