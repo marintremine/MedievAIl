@@ -65,6 +65,7 @@ class TerminalView(BattleView):
             self._init_colors()
 
         if self.view_mode == VIEW_BATTLE:
+            self._draw_header()
             self._draw_map()
             self._draw_units()
             self._draw_obstacles()
@@ -77,35 +78,91 @@ class TerminalView(BattleView):
 
         self.stdscr.refresh()
 
-    def _draw_map(self):
-        """Dessine la carte de base (terrain)."""
+    def _draw_header(self):
+        """Affiche les infos des généraux sur la première ligne (fixe)."""
         max_y, max_x = self.stdscr.getmaxyx()
-        for y in range(min(self.model.map_height, max_y)):
-            for x in range(min(self.model.map_width, max_x)):
+        
+        # Récupération des données
+        g1 = self.model.general_1
+        g2 = self.model.general_2
+        army1_size = len(self.model.get_army(g1))
+        army2_size = len(self.model.get_army(g2))
+        
+        # Construction des chaînes
+        empty_line = " " * (max_x - 1)
+        self.stdscr.addstr(0, 0, empty_line)
 
+        # Affichage Général 1 (Gauche)
+        info_g1 = f"{g1.name} : {army1_size} unités"
+        color_g1 = self.general_colors.get(g1, 1) | curses.A_BOLD # Couleur du général 1 en gras
+        self.stdscr.addstr(0, 0, info_g1, curses.color_pair(color_g1))
+
+        # Affichage Général 2 (Droite)
+        info_g2 = f"{g2.name} : {army2_size} unités"
+        color_g2 = self.general_colors.get(g2, 3) | curses.A_BOLD
+        
+        # Calcul pour aligner à droite
+        pos_x_g2 = max(0, max_x - len(info_g2) - 1)
+
+        if pos_x_g2 > len(info_g1) + 2:
+             self.stdscr.addstr(0, pos_x_g2, info_g2, curses.color_pair(color_g2))
+
+    def _draw_map(self):
+        """Dessine la carte entre le Header et le Footer."""
+        max_y, max_x = self.stdscr.getmaxyx()
+        
+        top_margin = 1      # Header
+        bottom_margin = 3   # Footer
+        
+        # La hauteur disponible pour la carte
+        visual_limit_y = max_y - bottom_margin
+
+        for y in range(self.model.map_height):
+            # Si on dépasse logiquement la zone visible, on arrête la boucle Y
+            if y + top_margin >= visual_limit_y: 
+               break
+
+            for x in range(min(self.model.map_width, max_x)):
                 offset_x, offset_y = self.view_offsets[self.view_mode]
-                map_x = x + offset_x # Calcul de la position sur la carte
-                map_y = y + offset_y # Calcul de la position sur la carte
                 
+                # Coordonnées carte
+                map_x = x + offset_x
+                map_y = y + offset_y
+                
+                # Position écran
+                screen_y = y + top_margin
+                
+                # Si on tape dans le footer, on n'affiche pas
+                if screen_y >= visual_limit_y:
+                    continue
+
                 if map_y >= self.model.map_height or map_x >= self.model.map_width:
                     continue
+                
                 try:
-                    self.stdscr.addch(y, x, '.', curses.color_pair(3))
+                    self.stdscr.addch(screen_y, x, '.', curses.color_pair(3))
                 except curses.error:
                     pass
 
     def _draw_units(self):
-        """Dessine les unités sur la carte."""
+        """Dessine les unités en respectant Header et Footer."""
         max_y, max_x = self.stdscr.getmaxyx()
+        top_margin = 1
+        bottom_margin = 3
+        
+        visual_limit_y = max_y - bottom_margin
+
         for obj in self.model.get_units():
             if isinstance(obj, Unit) and not obj.is_alive():
                 continue
 
             offset_x, offset_y = self.view_offsets[self.view_mode]
+            
             screen_x = obj.x - offset_x
-            screen_y = obj.y - offset_y
+            screen_y = (obj.y - offset_y) + top_margin 
 
-            if 0 <= screen_y < max_y and 0 <= screen_x < max_x:
+            # Vérification entre header et footer
+            if top_margin <= screen_y < visual_limit_y and 0 <= screen_x < max_x:
                 symbol = self._get_object_symbol(obj)
                 color_pair = self._get_unit_color(obj)
                 try:
@@ -115,42 +172,47 @@ class TerminalView(BattleView):
                     pass
 
     def _draw_obstacles(self):
-        """Dessine les obstacles centrés avec double clipping (Écran ET Carte)."""
+        """Clipping complet : Header (Haut) et Footer (Bas)."""
         max_y, max_x = self.stdscr.getmaxyx()
         map_width = self.model.map_width
         map_height = self.model.map_height
         
+        top_margin = 1
+        bottom_margin = 3
+        
+        # La ligne à ne pas dépasser vers le bas
+        visual_limit_y = max_y - bottom_margin
+
         offset_x, offset_y = self.view_offsets[self.view_mode]
 
         for obj in self.model.get_obstacles():
-            # Calcul du centrage
             delta_x = obj.sizeX // 2
             delta_y = obj.sizeY // 2
 
-            # Coordonnées du coin HAUT-GAUCHE de l'objet dans le MONDE (absolu)
             world_x = obj.x - delta_x
             world_y = obj.y - delta_y
 
-            # Coordonnées du coin HAUT-GAUCHE sur l'ÉCRAN (relatif)
             screen_x = world_x - offset_x
-            screen_y = world_y - offset_y
+            screen_y = (world_y - offset_y) + top_margin
             
             # --- Clipping VERTICAL (Y) ---
-            start_dy_screen = max(0, -screen_y)
-            start_dy_map = max(0, -world_y)
+            # On coupe si ça rentre dans le Header
+            start_dy_screen = max(0, top_margin - screen_y)
             
-            # On prend le plus restrictif des deux départs
+            # On coupe si ça sort de la carte (en haut)
+            start_dy_map = max(0, -world_y)
             start_dy = max(start_dy_screen, start_dy_map)
 
-            # On ne dépasse pas la taille de l'objet, ni le bas de l'écran, ni le bas de la carte
-            limit_screen_y = max_y - screen_y
-            limit_map_y = map_height - world_y
-            end_dy = min(obj.sizeY, limit_screen_y, limit_map_y)
+            # Calcul de la limite entre le bas de l'objet et le Footer / bas de la Map
+            space_before_footer = visual_limit_y - screen_y
+            space_before_map_end = map_height - world_y
 
-            # --- Clipping HORIZONTAL (X) ---
+            # On coupe si ça rentre dans le Footer ou sort de la carte (en bas)
+            end_dy = min(obj.sizeY, space_before_footer, space_before_map_end)
+
+            # --- Clipping HORIZONTAL (X) --- (Standard)
             start_dx_screen = max(0, -screen_x)
             start_dx_map = max(0, -world_x)
-            
             start_dx = max(start_dx_screen, start_dx_map)
 
             limit_screen_x = max_x - screen_x
@@ -160,7 +222,6 @@ class TerminalView(BattleView):
             if start_dy < end_dy and start_dx < end_dx:
                 symbol = self._get_object_symbol(obj)
                 color = curses.color_pair(3)
-
                 try:
                     for dy in range(start_dy, end_dy):
                         for dx in range(start_dx, end_dx):
@@ -174,13 +235,19 @@ class TerminalView(BattleView):
                     pass
 
     def _draw_info(self):
-        """Affiche les informations de statut en bas de l'écran."""
+        """Affiche le footer fixe (3 dernières lignes)."""
         max_y, max_x = self.stdscr.getmaxyx()
-        status_y3 = min(self.model.map_height + 3, max_y - 1)
-        status_y2 = status_y3 - 1
-        status_y1 = status_y2 - 1
+        
+        # On définit les lignes fixes en partant du bas
+        line_info = max_y - 1
+        line_keys2 = max_y - 2
+        line_keys1 = max_y - 3
 
-        touches = "[F1] Vue précédente | [F2] Vue suivante | [F11] Sauvegarder | [F12] Charger"
+        # Si l'écran est trop petit pour afficher les infos, on n'affiche rien
+        if max_y < 4:
+            return
+
+        touches = "[F1] Vue précédente | [F2] Vue suivante | [F3] Sauvegarder | [F4] Charger"
         touches2 = "[Flèches]/[ZQSD] Déplacer vue | [P] Pause/Reprendre | [+/-] Vitesse | [ECHAP] Quitter"
         time_str = f"Temps : {time():.1f}s"
         running_str = "RUNNING" if self.model.running else "PAUSED"
@@ -188,12 +255,16 @@ class TerminalView(BattleView):
         info_line = f"{time_str}   |   État : {running_str}   |   {speed_str}"
         
         try:
-            if status_y1 >= 0:
-                self.stdscr.addstr(status_y1, 0, touches[:max_x - 1])
-            if status_y2 >= 0:
-                self.stdscr.addstr(status_y2, 0, touches2[:max_x - 1])
-            if status_y3 >= 0:
-                self.stdscr.addstr(status_y3, 0, info_line[:max_x - 1])
+            # On nettoie la zone du footer pour éviter les traînées de la carte
+            empty = " " * (max_x - 1)
+            self.stdscr.addstr(line_keys1, 0, empty, curses.A_REVERSE)
+            self.stdscr.addstr(line_keys2, 0, empty, curses.A_REVERSE)
+            self.stdscr.addstr(line_info, 0, empty, curses.A_REVERSE)
+
+            # On écrit le texte
+            self.stdscr.addstr(line_keys1, 0, touches[:max_x - 1], curses.A_REVERSE)
+            self.stdscr.addstr(line_keys2, 0, touches2[:max_x - 1], curses.A_REVERSE)
+            self.stdscr.addstr(line_info, 0, info_line[:max_x - 1], curses.A_REVERSE)
         except curses.error:
             pass
 

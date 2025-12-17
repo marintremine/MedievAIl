@@ -31,9 +31,9 @@ class BattleController:
                 # Pause / save / exit / view modes
                 if key == kb.KeyCode.from_char('p'):
                     self.actions.put("pause")
-                elif key == kb.Key.f11:
+                elif key == kb.Key.f3:
                     self.actions.put("save")
-                elif key == kb.Key.f12:
+                elif key == kb.Key.f4:
                     self.actions.put("load")
                 elif key == kb.Key.f1:
                     self.actions.put("next_view_mode")
