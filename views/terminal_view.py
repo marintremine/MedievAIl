@@ -59,6 +59,10 @@ class TerminalView(BattleView):
     def render(self):
         """Rendu principal de la vue terminal."""
         self.stdscr.erase()
+        
+        if self.model.general_1 not in self.general_colors \
+        or self.model.general_2 not in self.general_colors:
+            self._init_colors()
 
         if self.view_mode == VIEW_BATTLE:
             self._draw_map()
@@ -71,7 +75,7 @@ class TerminalView(BattleView):
             self._draw_standard_output(text, 0)
 
         self.stdscr.refresh()
-    
+
     def _draw_map(self):
         """Dessine la carte de base (terrain)."""
         max_y, max_x = self.stdscr.getmaxyx()
@@ -92,13 +96,13 @@ class TerminalView(BattleView):
     def _draw_units(self):
         """Dessine les unités sur la carte."""
         max_y, max_x = self.stdscr.getmaxyx()
-        for obj in self.model.list_objects:
+        for obj in self.model.objects['units']:
             if isinstance(obj, Unit) and not obj.is_alive():
                 continue
 
             offset_x, offset_y = self.view_offsets[self.view_mode]
-            screen_x = obj.x - offset_x
-            screen_y = obj.y - offset_y
+            screen_x = int(round(obj.x)) - offset_x
+            screen_y = int(round(obj.y)) - offset_y
 
             if 0 <= screen_y < max_y and 0 <= screen_x < max_x:
                 symbol = self._get_unit_symbol(obj)
@@ -128,7 +132,7 @@ class TerminalView(BattleView):
         info_lines = [
             f"Unité: {unit.name}",
             f"HP: {unit.hp}/{unit.max_hp}",
-            f"Position: ({unit.x}, {unit.y})",
+            f"Position: ({unit.x:.2f}, {unit.y:.2f})",
             f"Action: {unit.currentAction}",
             f"Cooldown: {unit.cooldown_timer}/{unit.cooldown}"
         ]
@@ -160,7 +164,7 @@ class TerminalView(BattleView):
             taille_armee = len(army)
             header = f"{army_name} (Général: {general.name} - Taille de l'armée: {taille_armee})"
             lines = [header] + [
-                f"- {unit.name} | HP: {unit.hp}/{unit.max_hp} | Pos: ({unit.x},{unit.y})"
+                f"- {unit.name} | HP: {unit.hp}/{unit.max_hp} | Pos: ({unit.x:.2f},{unit.y:.2f})"
                 for unit in army
             ]
 
@@ -200,6 +204,8 @@ class TerminalView(BattleView):
             return "P"
         elif isinstance(unit, Crossbowman):
             return "C"
+        elif isinstance(unit, Longswordsman):
+            return "L"
         return "U"
     
     def _get_unit_color(self, unit):
@@ -209,16 +215,23 @@ class TerminalView(BattleView):
         return 3
     
     def cleanup(self):
-        """Restaure les paramètres du terminal pour éviter les codes d'échappement."""
+        """Restaure les paramètres du terminal et affiche les logs."""
+
+        captured_logs = self._stdout_buffer.getvalue()
+
         try:
-            sys.stdout = self._original_stdout
             curses.curs_set(1)       # réaffiche le curseur
             curses.nocbreak()        # désactive le mode cbreak
             self.stdscr.keypad(False)
             curses.echo()            # réactive l'écho des touches
-            curses.endwin()          # ferme curses proprement
+            curses.endwin()          # ferme curses proprement (revient au terminal normal)
         except:
             pass
+        finally:
+            # Restauration de la sortie standard
+            sys.stdout = self._original_stdout
+            if captured_logs:
+                print(captured_logs)
 
     def next_view_mode(self):
         """Change le mode de vue."""
@@ -237,6 +250,22 @@ class TerminalView(BattleView):
         offset[0] = max(0, min(offset[0] + dx, self.model.map_width - 1))
         offset[1] = max(0, min(offset[1] + dy, self.model.map_height - 1))
 
+    def move_view_up(self):
+        """Déplace la caméra vers le haut pour la vue battle."""
+        self.move_view(0, -1)
+
+    def move_view_down(self):
+        """Déplace la caméra vers le bas pour la vue battle."""
+        self.move_view(0, 1)
+
+    def move_view_left(self):
+        """Déplace la caméra vers la gauche pour la vue battle."""
+        self.move_view(-1, 0)
+
+    def move_view_right(self):
+        """Déplace la caméra vers la droite pour la vue battle."""
+        self.move_view(1, 0)
+
     def move_view_fast(self, dx, dy):
         """Déplace rapidement la caméra sur la carte pour la vue battle."""
         if self.view_mode != VIEW_BATTLE:
@@ -245,6 +274,22 @@ class TerminalView(BattleView):
         offset = self.view_offsets[self.view_mode]
         offset[0] = max(0, min(offset[0] + dx * 5, self.model.map_width - 1))
         offset[1] = max(0, min(offset[1] + dy * 5, self.model.map_height - 1))
+
+    def move_view_up_fast(self):
+        """Déplace rapidement la caméra vers le haut pour la vue battle."""
+        self.move_view_fast(0, -1)
+
+    def move_view_down_fast(self):
+        """Déplace rapidement la caméra vers le bas pour la vue battle."""
+        self.move_view_fast(0, 1)
+
+    def move_view_left_fast(self):
+        """Déplace rapidement la caméra vers la gauche pour la vue battle."""
+        self.move_view_fast(-1, 0)
+
+    def move_view_right_fast(self):
+        """Déplace rapidement la caméra vers la droite pour la vue battle."""
+        self.move_view_fast(1, 0)
 
     def scroll_up(self):
         """Scroll pour la vue info armée."""

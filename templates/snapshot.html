@@ -1,0 +1,124 @@
+<style>
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    margin: 20px;
+}
+
+.stats_container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#battle_container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.army {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+}
+
+.army.red {
+    background-color: #F04C4D;
+}
+
+.army.blue {
+    background-color: #3B8EEA;
+}
+
+.army h3{
+    color: #fff;
+    text-align: center;
+    margin-top: 0;
+}
+
+.unit_container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.unit_card {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 5px;
+    background-color: #f7f7f7;
+}
+
+.hp_bar {
+    height: 8px;
+    background-color: #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 4px;
+}
+
+.hp_fill {
+    height: 100%;
+    background-color: #2ecc71;
+    width: 100%;
+    transition: width 0.3s;
+}
+
+.cd_bar {
+    height: 6px;
+    background-color: #999;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 3px;
+}
+
+.cd_fill {
+    height: 100%;
+    background-color: #e74c3c;
+    transition: width 0.2s linear;
+}
+</style>
+
+
+<div class="stats_container">
+    <h2><span class="red">{{model.general_1}}</span> vs <span class="blue">{{model.general_2}}</span></h2>
+    <h2>Map : {{ model.map_width }} x {{ model.map_height }}</h2>
+</div>
+
+<div id="battle_container">
+    {% for general, color in [(model.general_1, "red"), (model.general_2, "blue")] %}
+    <div class="army {{color}}">
+        <h3>Armée du {{general}} ( {{ model.get_army(general) | length }} unités )</h3>
+        <div class="unit_container">
+            {% for unit in model.get_army(general) %}
+            {% if unit.is_alive() %}
+                <div class="unit_card {{color}}">
+                    <div>
+                        <strong>{{ unit.name }}</strong><br>
+                        Pos: ({{ "%.2f"|format(unit.x) }}, {{ "%.2f"|format(unit.y) }})<br>
+                        Order : {{ unit.order }}<br>
+                        Cooldown : 
+                        {% if unit.current_reload_time <= 0 %}
+                            <span style="font-weight: bold;">Available</span>
+                        {% else %}
+                            {{ "%.2f"|format(unit.current_reload_time) }}s
+                        {% endif %}
+                    </div>
+                    <div style="min-width: 80px; text-align:right;">
+                        HP: {{ unit.hp }}/{{ unit.max_hp }}
+                        <div class="hp_bar">
+                            <div class="hp_fill" style="width:{{ (unit.hp/unit.max_hp)*100 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>

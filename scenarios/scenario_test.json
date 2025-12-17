@@ -1,6 +1,7 @@
 {
-  "map_width": 20,
-  "map_height": 15,
+  
+  "map_width": 50,
+  "map_height": 50,
   "army1": [
     {
       "type": "crossbowman",

@@ -1,4 +1,5 @@
 from __future__ import annotations
+import random
 
 
 class Order:
@@ -6,7 +7,11 @@ class Order:
         self.unit = unit
 
     def action(self) -> None:
-        pass   
+        if not self.unit.is_alive():
+            return
+
+    def __str__(self) -> str:
+        return ""
 
 
 class Move(Order):
@@ -16,60 +21,64 @@ class Move(Order):
         self.target_y = y
 
     def action(self) -> None:
+        super().action()
+        if self.unit.move_towards(self.target_x, self.target_y):
+            self.unit.order = Wait(self.unit)
 
-        path = self.unit.battle_model.shortest_path(
-            start=(self.unit.x, self.unit.y),
-            end=(self.target_x, self.target_y)
-        )
+    def __str__(self) -> str:
+        return f"Move"
+    
 
-        if path is None:
-            self.unit.action = Wait(self.unit)
-            return
-         
-        next_x, next_y = path
-        self.unit.move(next_x, next_y)
-        
 class Attack(Order) :
     def __init__(self, unit: "Unit", target: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
         self.target = target
 
     def action(self) -> None:
+        super().action()
+
         if not self.target.is_alive():
-            self.unit.action = Wait(self.unit)
+            self.unit.order = Wait(self.unit)
             return
-        
+            
         if self.unit.in_range(self.target):
             self.unit.attack_target(self.target)
         else:
-            path = self.unit.battle_model.shortest_path(
-                start=(self.unit.x, self.unit.y),
-                end=(self.target.x, self.target.y)
-            )
-            
-            if path is None:
-                self.unit.action = Wait(self.unit)
-                return
-            
-            next_x, next_y = path
-            self.unit.move(next_x, next_y)
+            self.unit.move_towards(self.target.x, self.target.y)
+    
+    def __str__(self) -> str:
+        return f"Attack"
+
 
 class Wait(Order):
     def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
-        #self.unit.direction = (0, 1)
         self.unit.currentAction = "stand"
 
     def action(self) -> None:
+        super().action()
         pass
+
+    def __str__(self) -> str:
+        return f"Wait"
 
 class Defense(Order):
     def __init__(self, unit: "Unit") -> None: # pyright: ignore[reportUndefinedVariable]
         super().__init__(unit)
-        #self.unit.direction = (0, 1)
         self.unit.currentAction = "stand"
 
     def action(self) -> None:
-        for enemy in self.unit.battle_model.get_enemy_army(self.unit.general):
-            if self.unit.in_range(enemy):
-                self.unit.attack_target(enemy)
+        super().action()
+
+        enemies_in_range = self.unit.enemies_in_range()
+        if len(enemies_in_range) > 0:
+            target = enemies_in_range[0]
+            self.unit.attack_target(target)
+            return
+        enemies_in_sight = self.unit.enemies_in_sight()
+        if len(enemies_in_sight) > 0:
+            target = enemies_in_sight[0]
+            self.unit.move_towards(target.x, target.y)
+
+    def __str__(self) -> str:
+        return f"Defense"
