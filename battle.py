@@ -23,8 +23,9 @@ class Battle:
         self.model.load(self.scenario, self.general_1, self.general_2)
         for v in self.controller.view_list:
             v.load()
-        winner, winner_survivors = self.controller.run() if len(self.controller.view_list) > 0 else self.controller.run_fast()
+        winner = self.controller.run() if len(self.controller.view_list) > 0 else self.controller.run_fast()
         if winner is not None:
+            winner_survivors = self.model.summary()
             print(f"The winner is: {winner.name} with {len(self.model.get_army(winner))} units remaining.")
             parts = [f"{winner_survivors[t]} {t}" for t in LIST_UNITS_TYPES]
             if len(parts) == 1:

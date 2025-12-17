@@ -112,7 +112,7 @@ class BattleController:
             self.model.update()
             tick_count += 1
 
-        return self.model.winner, self.model.summary()
+        return self.model.winner
 
     def run(self):
         tick_count = 0
@@ -254,4 +254,4 @@ class BattleController:
             for view in self.view_list:
                 view.cleanup()
 
-        return self.model.winner, self.model.summary()
+        return self.model.winner
