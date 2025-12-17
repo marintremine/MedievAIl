@@ -22,7 +22,8 @@ class Move(Order):
 
     def action(self) -> None:
         super().action()
-        self.unit.move_towards(self.target_x, self.target_y)
+        if self.unit.move_towards(self.target_x, self.target_y):
+            self.unit.order = Wait(self.unit)
 
     def __str__(self) -> str:
         return f"Move"
@@ -77,15 +78,7 @@ class Defense(Order):
         enemies_in_sight = self.unit.enemies_in_sight()
         if len(enemies_in_sight) > 0:
             target = enemies_in_sight[0]
-            path = self.unit.battle_model.shortest_path(
-                self.unit,
-                start=(self.unit.x, self.unit.y),
-                end=(target.x, target.y)
-            )
-            if path is None:
-                return
-            next_x, next_y = path
-            self.unit.move(next_x, next_y)
+            self.unit.move_towards(target.x, target.y)
 
     def __str__(self) -> str:
         return f"Defense"

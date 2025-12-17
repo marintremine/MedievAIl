@@ -16,10 +16,6 @@ class LanchesterScenario:
         self.model.general_1 = generalFactory(ai_name, self.model)
         self.model.general_2 = generalFactory(ai_name, self.model)
         self.model.objects['units'].clear()
-        self.model.objects['state_map'].clear()
-        for x in range(self.model.map_width):
-            for y in range(self.model.map_height):
-                self.model.objects['state_map'][(x, y)] = set()
         self.model.objects['armies'][self.model.general_1] = set()
         self.model.objects['armies'][self.model.general_2] = set()
 
@@ -41,9 +37,7 @@ class LanchesterScenario:
             u = unit_cls(self.model.general_1, x=i % 100, y=y_pos_1 + (i // 100), battle_model=self.model)
             self.model.objects['units'].add(u)
             self.model.objects['armies'][self.model.general_1].add(u)
-            self.model.objects['state_map'][(u.x, u.y)].add(u)
         for i in range(N * 2):
             u = unit_cls(self.model.general_2, x=i % 100, y=y_pos_2 + (i // 100), battle_model=self.model)
             self.model.objects['units'].add(u)
             self.model.objects['armies'][self.model.general_2].add(u)
-            self.model.objects['state_map'][(u.x, u.y)].add(u)
