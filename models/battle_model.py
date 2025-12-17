@@ -9,6 +9,7 @@ from models.unit import *
 from models.order import *
 from models.general import *
 from models.obstacle import *
+from models.spatial_grid import SpatialGrid
 from utils import LIST_UNITS_TYPES
 
 
@@ -23,12 +24,12 @@ class BattleModel:
         self.objects = {
             'obstacles': set(),
             'units': set(),
-            'armies': {},
-            'state_map': {}
+            'armies': {}
         }
+        self.spatial_grid = None
         self.winner = None
+        
     
-
     def reset(self)->None:
         """Réinitialise le modèle de bataille."""
         self.general_1 = None
@@ -38,9 +39,9 @@ class BattleModel:
         self.objects = {
             'obstacles': set(),
             'units': set(),
-            'armies': {},
-            'state_map': {}
+            'armies': {}
         }
+        self.spatial_grid = None
         self.winner = None
 
     def load(self, data, general_1:General, general_2:General)->None:
@@ -60,17 +61,11 @@ class BattleModel:
 
         self.objects['armies'][self.general_1] = set()
         self.objects['armies'][self.general_2] = set()
-
-        
             
         # load map
         self.map_width = loaded_data["map_width"]
         self.map_height = loaded_data["map_height"]
-
-        self.objects['state_map'] = {}
-        for x in range(self.map_width):
-            for y in range(self.map_height):
-                self.objects['state_map'][(x, y)] = set()
+        self.spatial_grid = SpatialGrid(self.map_width, self.map_height)
 
         armies_data = [
             (loaded_data.get("army1", []), self.general_1),
@@ -95,7 +90,6 @@ class BattleModel:
                 # Timers
                 unit.current_reload_time = unit_data.get("current_reload_time", 0)
                 unit.current_attack_delay = unit_data.get("current_attack_delay", 0)
-                unit.move_progress = unit_data.get("move_progress", 0)
 
                 # Etat actuel
                 unit.currentAction = "stand" 
@@ -103,7 +97,6 @@ class BattleModel:
                 # Enregistrement dans les collections
                 self.objects['units'].add(unit)
                 self.objects['armies'][general].add(unit)
-                self.objects['state_map'][(unit.x, unit.y)].add(unit)
 
 
         # load obstacles
@@ -115,7 +108,6 @@ class BattleModel:
                 battle_model=self,
                 )
             self.objects['obstacles'].add(obstacle)
-            self.objects['state_map'][(obstacle.x, obstacle.y)].add(obstacle)
 
         print(f"BattleModel loaded from with {len(self.objects['units'])} units and {len(self.objects['obstacles'])} obstacles.")
 
@@ -149,15 +141,17 @@ class BattleModel:
         
         if unit.general in self.objects['armies']:
             self.objects['armies'][unit.general].discard(unit)
-            
-        coord = (unit.x, unit.y)
-        if coord in self.objects['state_map']:
-            self.objects['state_map'][coord].discard(unit)
 
 
     def update(self) -> None:
         """Met à jour l'état de la bataille à chaque tick."""
 
+        self.spatial_grid.clear()
+        
+        for unit in self.objects['units']:
+            self.spatial_grid.add_object(unit)
+        for obstacle in self.objects['obstacles']:
+            self.spatial_grid.add_object(obstacle)
 
         # Generals decide in random order
         generals = [g for g in (self.general_1, self.general_2) if g is not None]
@@ -167,7 +161,8 @@ class BattleModel:
 
         for unit in list(self.objects['units']):
             unit.action()
-
+        
+        # Retirer les unités mortes
         dead_units = [u for u in self.objects['units'] if not u.is_alive()]
         for dead in dead_units:
             self.remove_unit(dead)
@@ -207,83 +202,7 @@ class BattleModel:
         for obstacle in self.objects['obstacles']:
             if (obstacle.x <= x <= (obstacle.x + obstacle.sizeX)) and obstacle.y <= y <= (obstacle.y + obstacle.sizeY):
                 return True
-        for obj in self.objects['state_map'].get((x, y), set()):
-            if isinstance(obj, Obstacle):
-                return True
         return False
-
-    def is_fitting(self, x, y, unit):
-        units = self.objects['state_map'].get((x, y), set())
-        occupancy = 0
-        if units:
-            for unit in units:
-                occupancy += unit.occupancy
-        return occupancy + unit.occupancy <= 1
-
-    def is_coord_accessible(self, x, y, unit):
-        return self.is_in_map(x, y) and not self.is_obstacle_at(x, y) and self.is_fitting(x, y ,unit)
-    
-    def shortest_path(self, unit, start: tuple[int, int], end: tuple[int, int]) -> list[tuple[int, int]]:
-        """
-        Mini pathfinding :
-        - déplace vers les coordonnés en ligne droite
-        - si bloqué : esquive à gauche puis à droite
-        - sinon avance en X ou Y seul
-        - renvoie un tuple avec le prochain pas ou None
-        """
-
-        x, y = start
-        tx, ty = end
-
-        # Déjà à destination
-        if (x, y) == (tx, ty):
-            return None   # rien à faire
-
-        # Direction vers la cible
-        dx = 0
-        dy = 0
-
-        if tx > x: dx = 1
-        elif tx < x: dx = -1
-
-        if ty > y: dy = 1
-        elif ty < y: dy = -1
-
-        # ESSAI 1 : ligne droite
-        nx, ny = x + dx, y + dy
-        #if self.is_in_map(nx, ny) and not self.is_obstacle_at(nx, ny):
-        if self.is_coord_accessible(nx, ny, unit):
-            return (nx, ny)
-
-        # ESSAI 2 : esquive à gauche
-        lx, ly = x - dy, y + dx
-        #if self.is_in_map(lx, ly) and not self.is_obstacle_at(lx, ly):
-        if self.is_coord_accessible(lx, ly, unit):
-
-            return (lx, ly)
-
-        # ESSAI 3 : esquive à droite
-        rx, ry = x + dy, y - dx
-        #if self.is_in_map(rx, ry) and not self.is_obstacle_at(rx, ry):
-        if self.is_coord_accessible(rx, ry, unit):
-            return (rx, ry)
-
-        # ESSAI 4 : avancer seulement en X si possible
-        if dx != 0:
-            nx2 = x + dx
-            #if self.is_in_map(nx2, y) and not self.is_obstacle_at(nx2, y):
-            if self.is_coord_accessible(nx2, y, unit):
-                return (nx2, y)
-
-        # ESSAI 5 : avancer seulement en Y si possible
-        if dy != 0:
-            ny2 = y + dy
-            #if self.is_in_map(x, ny2) and not self.is_obstacle_at(x, ny2):
-            if self.is_coord_accessible(x, ny2, unit):
-                return (x, ny2)
-
-        # Aucun mouvement possible
-        return None
 
     def get_units(self) -> set[Unit]:
         """Retourne l'ensemble des unités dans le modèle de bataille."""

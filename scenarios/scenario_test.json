@@ -1,32 +1,29 @@
 {
-  "map": {
-    "width": 50,
-    "height": 50
-  },
-  "armies": {
-    "army1": [
-      {
-        "type": "crossbowman",
-        "x": 0,
-        "y": 0
-      },
-      {
-        "type": "knight",
-        "x": 1,
-        "y": 0
-      },
-      {
-        "type": "pikeman",
-        "x": 2,
-        "y": 0
-      }
-    ],
-    "army2": [
-      {
-        "type": "crossbowman",
-        "x": 19,
-        "y": 14
-      }
-    ]
-  }
+  
+  "map_width": 50,
+  "map_height": 50,
+  "army1": [
+    {
+      "type": "crossbowman",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "knight",
+      "x": 1,
+      "y": 0
+    },
+    {
+      "type": "pikeman",
+      "x": 2,
+      "y": 0
+    }
+  ],
+  "army2": [
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    }
+  ]
 }

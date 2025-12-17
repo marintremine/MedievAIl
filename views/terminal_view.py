@@ -157,9 +157,8 @@ class TerminalView(BattleView):
                 continue
 
             offset_x, offset_y = self.view_offsets[self.view_mode]
-            
-            screen_x = obj.x - offset_x
-            screen_y = (obj.y - offset_y) + top_margin 
+            screen_x = int(round(obj.x)) - offset_x
+            screen_y = int(round(obj.y)) - offset_y
 
             # Vérification entre header et footer
             if top_margin <= screen_y < visual_limit_y and 0 <= screen_x < max_x:
@@ -274,7 +273,7 @@ class TerminalView(BattleView):
         info_lines = [
             f"Unité: {unit.name}",
             f"HP: {unit.hp}/{unit.max_hp}",
-            f"Position: ({unit.x}, {unit.y})",
+            f"Position: ({unit.x:.2f}, {unit.y:.2f})",
             f"Action: {unit.currentAction}",
             f"Cooldown: {unit.cooldown_timer}/{unit.cooldown}"
         ]
@@ -306,7 +305,7 @@ class TerminalView(BattleView):
             taille_armee = len(army)
             header = f"{army_name} (Général: {general.name} - Taille de l'armée: {taille_armee})"
             lines = [header] + [
-                f"- {unit.name} | HP: {unit.hp}/{unit.max_hp} | Pos: ({unit.x},{unit.y})"
+                f"- {unit.name} | HP: {unit.hp}/{unit.max_hp} | Pos: ({unit.x:.2f},{unit.y:.2f})"
                 for unit in army
             ]
 
