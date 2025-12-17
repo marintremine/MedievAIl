@@ -227,6 +227,8 @@ class BattleModel:
     
     def to_dict(self):
         return {
+            "general1": self.general_1,
+            "general2": self.general_2,
             "map_width": self.map_width,
             "map_height": self.map_height,
             "army1": [

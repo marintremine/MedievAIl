@@ -1,6 +1,7 @@
 import argparse
 import sys
 from utils import *
+import json
 
 from controllers.battle_controller import BattleController
 from controllers.live_server import start_flask_debug_server
@@ -44,6 +45,34 @@ def cli_battle(args):
 
     battle.run()
 
+def cli_load(args):
+    model = BattleModel()
+    controller = BattleController(model)
+
+    if isinstance(args.savedfile, str):
+           with open(args.savedfile, "r", encoding="utf-8") as f:
+               loaded_data = json.load(f)
+    else:
+        loaded_data = args.savedfile
+           
+    g1 = generalFactory(loaded_data["general1"], model)
+    g2 = generalFactory(loaded_data["general2"], model)
+
+    if args.terminal:
+        view = TerminalView(model, controller)
+        controller.view_list.append(view)
+    if args.pygame:
+        view = PygameView(model, controller)
+        controller.view_list.append(view)
+
+    if len(controller.view_list) > 0:
+        start_flask_debug_server(model)
+
+
+    battle = Battle(g1, g2, args.savedfile,
+                    model=model, controller=controller)
+
+    battle.run()
 
 def cli_tournament(args):
     """Exécution du tournoi complet."""
@@ -131,11 +160,21 @@ def main():
     plot_parser.add_argument("-d", "--datafile", type=str, default=None,
                              help="Chemin du fichier pour écrire les données brutes générées par le scénario")
 
+# ---- LOAD SAVEFILE ----
+    battle_parser = subparsers.add_parser("load", help="Lancer une bataille")
+    battle_parser.add_argument("savedfile", type=str, help="La bataille a chargé")
+    battle_parser.add_argument("-t", "--terminal", action="store_true", help="Afficher la vue terminal")
+    battle_parser.add_argument("-p", "--pygame", action="store_true",
+                            help="Utiliser la vue pygame pour la bataille")
+    battle_parser.add_argument("-d", "--datafile", type=str, default=None,
+                            help="Chemin du fichier pour écrire les données de la bataille (ou '-' pour stdout)")
 
     args = parser.parse_args()
 
     if args.command == "battle":
         cli_battle(args)
+    elif args.command == "load":
+        cli_load(args)
     elif args.command == "tourney":
         cli_tournament(args)
     elif args.command == "plot":
