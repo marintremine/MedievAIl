@@ -27,8 +27,13 @@ class Battle:
 
         winner = self.controller.run() if len(self.controller.view_list) > 0 else self.controller.run_fast()
 
+        # Gestion de la sortie standard
         original_stdout = sys.stdout
-        if hasattr(self.controller, 'shared_log_buffer'):
+
+        has_terminal_view = any(v.__class__.__name__ == 'TerminalView' for v in self.controller.view_list)
+        has_buffer = hasattr(self.controller, 'shared_log_buffer')
+
+        if has_terminal_view and has_buffer:
             sys.stdout = self.controller.shared_log_buffer
 
         try:
