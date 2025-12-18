@@ -14,6 +14,8 @@ MINIMAP_SCALE =  (MINIMAP_SIZE[0]*MINIMAP_SIZE[1])/(PYGAME_WIN[0]*PYGAME_WIN[1])
 LIST_UNITS = ["Pikeman","Crossbowman","Knight","Longsword"]
 LIST_OBSTACLES = ["Bush","Rock","Tree"]
 
+SIZE_TILE = (60,30)
+
 switchOrientation = {
     "(1, 1)": "front",
     "(-1, -1)": "back",
@@ -133,12 +135,15 @@ class obstacle(pygame.sprite.Sprite):
     def __init__(self,obstacleData,texture,pygameSim):
         super().__init__()
         self.type = obstacleData.type
-        self.x = obstacleData.x
-        self.y = obstacleData.y
-        self.sizeX = obstacleData.sizeX
-        self.sizeY = obstacleData.sizeY
+        self.obstacleData = obstacleData
+        self.pygameSim = pygameSim
         self.image = texture[self.type][random.randint(0,len(texture[self.type])-1)]
-        self.rect = self.image.get_rect(midbottom=pygameSim.convertCartToIso((self.x,self.y)))
+        self.x , self.y = pygameSim.convertCartToIso((self.obstacleData.x, self.obstacleData.y))
+        self.rect = self.image.get_rect(midbottom=(self.x + pygameSim.mapX,self.y + pygameSim.mapY))
+
+    def update(self):
+        self.x, self.y = self.pygameSim.convertCartToIso((self.obstacleData.x, self.obstacleData.y))
+        self.rect = self.image.get_rect(midbottom=(self.x + self.pygameSim.mapX, self.y + self.pygameSim.mapY))
 
 
 class miniMap(pygame.sprite.Sprite):
@@ -302,7 +307,14 @@ class unit_model(pygame.sprite.Sprite):
 
         else:
             self.image.set_alpha(0)
-        self.rect = self.image.get_rect(midbottom=self.pygameSim.convertCartToIso((self.x, self.y)))
+        x,y = self.pygameSim.convertCartToIso((self.x, self.y))
+        self.rect = self.image.get_rect(midbottom=(x + self.pygameSim.mapX, y + self.pygameSim.mapY))
+
+    def convertCartToIso(self,points):
+        """Function to convert cartesian position to isometric position"""
+        iso_x = ((points[0] - points[1]) * ( SIZE_TILE[0] / 2 ))
+        iso_y =((points[0] + points[1]) * ( SIZE_TILE[1] / 2 ))
+        return [iso_x, iso_y]
 
 class PygameView(BattleView):
     def __init__(self, model : BattleModel, controller):
@@ -320,7 +332,7 @@ class PygameView(BattleView):
         self.WINDOW_OFFSET_H = self.WINDOW_HEIGHT / 2
         self.WINDOW_OFFSET_W = self.WINDOW_WIDTH / 2
 
-        self.SCALE = 4
+        self.SCALE = 60
         self.ZOOM = 1
 
         #---PYGAME ENV DEFINE---
@@ -369,13 +381,22 @@ class PygameView(BattleView):
         self.MAP_HEIGHT = self.model.map_height
         self.MAP_WIDTH = self.model.map_width
         self.MAP_DIAG_W = abs( - self.MAP_HEIGHT - self.MAP_WIDTH)
-        self.MAP_DIAG_H = (self.MAP_HEIGHT + self.MAP_WIDTH) / 2
+        self.MAP_DIAG_H = (self.MAP_HEIGHT + self.MAP_WIDTH) // 2
 
         self.generalNameText = self.font.render("{} | {}".format(self.model.general_1.name, self.model.general_2.name),False, (255, 255, 255))
 
         self.miniMap = miniMap(self)
         self.miniMapGrp = pygame.sprite.Group()
         self.miniMapGrp.add(self.miniMap)
+
+
+        self.gridSize = (self.MAP_DIAG_W * self.SCALE) // (SIZE_TILE[0])
+        self.tiles = []
+        print(self.gridSize,self.MAP_DIAG_H,self.MAP_DIAG_W)
+
+        for grid_y in range(self.gridSize):
+            for grid_x in range(self.gridSize):
+                self.tiles.append({'grid_x': grid_x, 'grid_y': grid_y, 'color': (0,255,0)})
 
         self.object_list = []
         self.unit_spritegroup.empty()
@@ -396,19 +417,27 @@ class PygameView(BattleView):
 
     def makeMap(self,pos_x,pos_y):
         """MAP constructor"""
-        self.map = pygame.Surface((self.MAP_DIAG_W * self.SCALE, self.MAP_DIAG_H * self.SCALE))
-        self.map.fill((0,0,0))
-
-        points = [self.convertCartToIso((pos_x, pos_y)),
-              self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y)),
-              self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y+self.MAP_HEIGHT)),
-              self.convertCartToIso((pos_x, pos_y+self.MAP_HEIGHT))]
-        pygame.gfxdraw.textured_polygon(self.map, points, self.MAP_TEXTURE, 0, 0)
+        #self.map = pygame.Surface((, self.MAP_DIAG_H * self.SCALE))
+        #self.map.fill((0,0,0))
+        for tile in self.tiles:
+            x,y = self.convertCartToIso((tile['grid_x'],tile['grid_y']))
+            screen_X = x + self.mapX
+            screen_Y = y + self.mapY
+            if -SIZE_TILE[0] < screen_X < (self.window.get_width() + SIZE_TILE[0]) and -SIZE_TILE[1] < screen_Y < (self.window.get_height() + SIZE_TILE[1]) :
+                points = [
+                    (screen_X, screen_Y),
+                    (screen_X + SIZE_TILE[0]/2, screen_Y + SIZE_TILE[1]/2),
+                    (screen_X, screen_Y + SIZE_TILE[1]),
+                    (screen_X - SIZE_TILE[0]/2, screen_Y + SIZE_TILE[1]/2)
+                ]
+                pygame.draw.polygon(self.window, (0,255,0),points)
+                pygame.draw.polygon(self.window, (255, 255, 255), points,width=1)
+                #pygame.gfxdraw.textured_polygon(self.window, points, self.MAP_TEXTURE, 0, 0)
 
     def convertCartToIso(self,points):
         """Function to convert cartesian position to isometric position"""
-        iso_x = math.floor(((points[0] - points[1] + ( self.MAP_DIAG_W / 2 )) * self.SCALE))
-        iso_y = math.floor((((points[0] + points[1]) / 2) * self.SCALE))
+        iso_x = ((points[0] - points[1]) * ( SIZE_TILE[0] / 2 ))
+        iso_y =((points[0] + points[1]) * ( SIZE_TILE[1] / 2 ))
         return [iso_x, iso_y]
 
     def sortingUnits(self,word):
@@ -430,10 +459,10 @@ class PygameView(BattleView):
         self.makeMap(0,0)
         self.updateSpriteGroup()
         self.unit_spritegroup.update()
-        self.unit_spritegroup.draw(self.map)
-        self.map = pygame.transform.scale(self.map,(self.map.get_width()*self.ZOOM,self.map.get_height()*self.ZOOM))
-        self.rect = self.map.get_rect(center=(self.window.get_width()/2 + self.mapX, self.window.get_height()/2 + self.mapY))
-        self.window.blit(self.map, self.rect)
+        self.unit_spritegroup.draw(self.window)
+        # self.map = pygame.transform.scale(self.map,(self.map.get_width()*self.ZOOM,self.map.get_height()*self.ZOOM))
+        # self.rect = self.map.get_rect(center=(self.window.get_width()/2 + self.mapX, self.window.get_height()/2 + self.mapY))
+        # self.window.blit(self.map, self.rect)
 
         if self.miniMap.visible:
             self.miniMapGrp.update()
