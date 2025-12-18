@@ -378,7 +378,7 @@ class PygameView(BattleView):
 
         #---GUI---
         self.generalNameText = None
-        self.commandText = self.font.render(" P : PAUSE/PLAY | +/-/MOUSE WHEEL : ZOOM | +/- : SPEED | ZQSD : MOVE | M : MINIMAP | ESC : QUIT | F10 : FULLSCREEN | F11 : SAVE",False, (255, 255, 255))
+        self.commandText = self.font.render(" P : PAUSE/PLAY | +/- : SPEED | ZQSD : MOVE | M : MINIMAP | ESC : QUIT | F10 : FULLSCREEN | F11 : SAVE",False, (255, 255, 255))
 
         #---Unit asset loading--
         self.object_list = None
@@ -494,9 +494,9 @@ class PygameView(BattleView):
         self.window.blit(self.font.render("Running : {} | Speed : {:.2f}x".format(self.model.running,self.controller.game_speed),
                                     False, (255,255,255)),(0,0))
 
-        self.window.blit(self.font.render("ZOOM : {:.2f}x".format(self.ZOOM),
-                                  False, (255,255,255)),
-                                    (self.window.get_width()-self.font.size("ZOOM : 0.00x")[0],0))
+        # self.window.blit(self.font.render("ZOOM : {:.2f}x".format(self.ZOOM),
+        #                           False, (255,255,255)),
+        #                             (self.window.get_width()-self.font.size("ZOOM : 0.00x")[0],0))
         self.window.blit(self.commandText, (0,self.window.get_height()-self.font.get_height()))
 
         pygame.display.flip()
@@ -512,19 +512,21 @@ class PygameView(BattleView):
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    self.zoomIn()
+                    # self.zoomIn()
+                    pass
                 elif event.key == pygame.K_DOWN:
-                    self.zoomOut()
+                    # self.zoomOut()
+                    pass
                 elif event.key == pygame.K_F10:
                     pygame.display.toggle_fullscreen()
                 elif event.key == pygame.K_m:
                     self.miniMap.toggleVisible()
 
-            elif event.type == pygame.MOUSEWHEEL:
-                if event.y == 1:
-                    self.zoomIn()
-                elif event.y == -1:
-                    self.zoomOut()
+            # elif event.type == pygame.MOUSEWHEEL:
+            #     if event.y == 1:
+            #         self.zoomIn()
+            #     elif event.y == -1:
+            #         self.zoomOut()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -541,12 +543,12 @@ class PygameView(BattleView):
         elif key[pygame.K_d]:
             self.mapX -= 10*self.ZOOM
 
-    def zoomIn(self):
-       if self.ZOOM < 2: self.ZOOM += 0.5
-
-    def zoomOut(self):
-        if self.ZOOM > 0.5:
-            self.ZOOM -= 0.5
+    # def zoomIn(self):
+    #    if self.ZOOM < 2: self.ZOOM += 0.5
+    #
+    # def zoomOut(self):
+    #     if self.ZOOM > 0.5:
+    #         self.ZOOM -= 0.5
 
     def moveMinimap(self,pos):
         if self.miniMap.visible:
