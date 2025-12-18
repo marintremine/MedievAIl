@@ -841,7 +841,7 @@ def generalFactory(general_type: str, battle_model) -> General:
         "augustus" : GeneralAugustin,
         "momoia": MomoIA,
         "rps": RPSGeneral,
-        "ia_global": IA_Global,
+        "iaglobal": IA_Global,
     }
     key = general_type.lower()
     if key in general_classes:
