@@ -198,7 +198,7 @@ class Unit(Object):
         
         # === 7. METTRE À JOUR L'ÉTAT ===
         if abs(self.vx) > 0.01 or abs(self.vy) > 0.01:
-            self.currentAction = "move"
+            self.currentAction = "walk"
             if self.vx != 0 or self.vy != 0:
                 self.direction = (self.vx, self.vy)
         else:

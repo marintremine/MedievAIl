@@ -14,7 +14,7 @@ MINIMAP_SCALE =  (MINIMAP_SIZE[0]*MINIMAP_SIZE[1])/(PYGAME_WIN[0]*PYGAME_WIN[1])
 LIST_UNITS = ["Pikeman","Crossbowman","Knight","Longsword"]
 LIST_OBSTACLES = ["Bush","Rock","Tree"]
 
-SIZE_TILE = (60,30)
+SIZE_TILE = (90,45)
 
 switchOrientation = {
     "(1, 1)": "front",
@@ -138,12 +138,20 @@ class obstacle(pygame.sprite.Sprite):
         self.obstacleData = obstacleData
         self.pygameSim = pygameSim
         self.image = texture[self.type][random.randint(0,len(texture[self.type])-1)]
+        self.mapX = obstacleData.x
+        self.mapY = obstacleData.y
         self.x , self.y = pygameSim.convertCartToIso((self.obstacleData.x, self.obstacleData.y))
-        self.rect = self.image.get_rect(midbottom=(self.x + pygameSim.mapX,self.y + pygameSim.mapY))
+        self.x += pygameSim.mapX
+        self.y += pygameSim.mapY
+        self.rect = self.image.get_rect(midbottom=(self.x,self.y))
 
     def update(self):
+        self.mapX = self.obstacleData.x
+        self.mapY = self.obstacleData.y
         self.x, self.y = self.pygameSim.convertCartToIso((self.obstacleData.x, self.obstacleData.y))
-        self.rect = self.image.get_rect(midbottom=(self.x + self.pygameSim.mapX, self.y + self.pygameSim.mapY))
+        self.x += self.pygameSim.mapX
+        self.y += self.pygameSim.mapY
+        self.rect = self.image.get_rect(midbottom=(self.x, self.y))
 
 
 class miniMap(pygame.sprite.Sprite):
@@ -198,7 +206,7 @@ class miniMap(pygame.sprite.Sprite):
         for u in self.pygamesSim.object_list:
             if  isinstance(u, unit_model):
                 if u.is_alive:
-                    pygame.draw.circle(tmpSurf, u.color, self.convertPos((u.x, u.y)), 3)
+                    pygame.draw.circle(tmpSurf, u.color, self.convertPos((u.mapX, u.mapY)), 3)
 
         self.image.blit(tmpSurf, tmprect)
         # Create the windows frame on the minimap
@@ -251,8 +259,11 @@ class unit_model(pygame.sprite.Sprite):
     def __init__(self,unitData,texture,pygameSim,color):
         super().__init__()
         self.unitData = unitData
-        self.x = unitData.x
-        self.y = unitData.y
+        self.mapX = unitData.x
+        self.mapY = unitData.y
+        self.x, self.y = pygameSim.convertCartToIso((unitData.x, unitData.y))
+        self.x += pygameSim.mapX
+        self.y += pygameSim.mapY
         self.color = color
         self.name = unitData.name
         self.action = unitData.currentAction
@@ -268,9 +279,12 @@ class unit_model(pygame.sprite.Sprite):
         self.displayText = self.pygameSim.font.render(str(self.unitData.general.name), False, color)
 
     def update (self):
-        self.x = self.unitData.x
-        self.y = self.unitData.y
-        self.direction = self.unitData.direction
+        self.mapX = self.unitData.x
+        self.mapY = self.unitData.y
+        self.x, self.y = self.pygameSim.convertCartToIso((self.unitData.x, self.unitData.y))
+        self.x += self.pygameSim.mapX
+        self.y += self.pygameSim.mapY
+        self.direction = "(1, 1)"  #(int(math.ceil(self.unitData.direction[0])), int(math.ceil(self.unitData.direction[1])))
 
         # Play the dying animation
         if self.is_alive != self.unitData.is_alive():
@@ -297,7 +311,7 @@ class unit_model(pygame.sprite.Sprite):
                 else:
                     self.animationKey += 0.5
 
-        if self.action != "dead":
+        if True :#self.action != "dead":
             try:
                 self.image = self.TEXTURE[self.animation][switchOrientation[str(self.direction)]][math.floor(self.animationKey)]
             except IndexError:
@@ -307,14 +321,8 @@ class unit_model(pygame.sprite.Sprite):
 
         else:
             self.image.set_alpha(0)
-        x,y = self.pygameSim.convertCartToIso((self.x, self.y))
-        self.rect = self.image.get_rect(midbottom=(x + self.pygameSim.mapX, y + self.pygameSim.mapY))
+        self.rect = self.image.get_rect(midbottom=(self.x, self.y))
 
-    def convertCartToIso(self,points):
-        """Function to convert cartesian position to isometric position"""
-        iso_x = ((points[0] - points[1]) * ( SIZE_TILE[0] / 2 ))
-        iso_y =((points[0] + points[1]) * ( SIZE_TILE[1] / 2 ))
-        return [iso_x, iso_y]
 
 class PygameView(BattleView):
     def __init__(self, model : BattleModel, controller):
@@ -332,7 +340,7 @@ class PygameView(BattleView):
         self.WINDOW_OFFSET_H = self.WINDOW_HEIGHT / 2
         self.WINDOW_OFFSET_W = self.WINDOW_WIDTH / 2
 
-        self.SCALE = 60
+        self.SCALE = 90
         self.ZOOM = 1
 
         #---PYGAME ENV DEFINE---
@@ -344,6 +352,7 @@ class PygameView(BattleView):
 
         self.font = pygame.font.SysFont('Calibri', 20)
         self.window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT),pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self.window.convert_alpha()
 
         #---MAP VARIABLES---
         self.MAP_TEXTURE = assetLoaderMap()
@@ -390,7 +399,7 @@ class PygameView(BattleView):
         self.miniMapGrp.add(self.miniMap)
 
 
-        self.gridSize = (self.MAP_DIAG_W * self.SCALE) // (SIZE_TILE[0])
+        self.gridSize = self.MAP_WIDTH
         self.tiles = []
         print(self.gridSize,self.MAP_DIAG_H,self.MAP_DIAG_W)
 
@@ -417,8 +426,6 @@ class PygameView(BattleView):
 
     def makeMap(self,pos_x,pos_y):
         """MAP constructor"""
-        #self.map = pygame.Surface((, self.MAP_DIAG_H * self.SCALE))
-        #self.map.fill((0,0,0))
         for tile in self.tiles:
             x,y = self.convertCartToIso((tile['grid_x'],tile['grid_y']))
             screen_X = x + self.mapX
@@ -430,9 +437,11 @@ class PygameView(BattleView):
                     (screen_X, screen_Y + SIZE_TILE[1]),
                     (screen_X - SIZE_TILE[0]/2, screen_Y + SIZE_TILE[1]/2)
                 ]
-                pygame.draw.polygon(self.window, (0,255,0),points)
-                pygame.draw.polygon(self.window, (255, 255, 255), points,width=1)
-                #pygame.gfxdraw.textured_polygon(self.window, points, self.MAP_TEXTURE, 0, 0)
+                try:
+                    pygame.gfxdraw.textured_polygon(self.window, points, self.MAP_TEXTURE, 0, 0)
+                except pygame.error:
+                    pass
+                pygame.draw.polygon(self.window, (100, 100, 100), points,width=2)
 
     def convertCartToIso(self,points):
         """Function to convert cartesian position to isometric position"""
@@ -448,7 +457,9 @@ class PygameView(BattleView):
         used to resolve z-axis error"""
         self.object_list.sort(key=self.sortingUnits)
         for unit in self.object_list:
-            self.unit_spritegroup.add(unit)
+            unit.update()
+            if -SIZE_TILE[0] < unit.x < (self.window.get_width() + SIZE_TILE[0]) and -SIZE_TILE[1] < unit.y < (self.window.get_height() + SIZE_TILE[1]) :
+                self.unit_spritegroup.add(unit)
 
     def render(self):
         """Function to render the game screen"""
@@ -460,9 +471,6 @@ class PygameView(BattleView):
         self.updateSpriteGroup()
         self.unit_spritegroup.update()
         self.unit_spritegroup.draw(self.window)
-        # self.map = pygame.transform.scale(self.map,(self.map.get_width()*self.ZOOM,self.map.get_height()*self.ZOOM))
-        # self.rect = self.map.get_rect(center=(self.window.get_width()/2 + self.mapX, self.window.get_height()/2 + self.mapY))
-        # self.window.blit(self.map, self.rect)
 
         if self.miniMap.visible:
             self.miniMapGrp.update()
@@ -533,5 +541,5 @@ class PygameView(BattleView):
         if self.miniMap.visible:
             tmpPos = self.miniMap.mapTouch(pos)
             if tmpPos is not None:
-                self.mapX = ((self.window.get_width()/2) - (tmpPos[0]*(self.ZOOM)))
-                self.mapY =  ((self.window.get_height()/2) - (tmpPos[1]*self.ZOOM))
+                self.mapX = ((self.window.get_width()/2) - (tmpPos[0] * self.ZOOM))
+                self.mapY =  ((self.window.get_height()/2) - (tmpPos[1] * self.ZOOM))
