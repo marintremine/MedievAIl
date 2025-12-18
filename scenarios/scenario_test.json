@@ -1,29 +1,19 @@
 {
   
-  "map_width": 50,
-  "map_height": 50,
+  "map_width": 10,
+  "map_height": 10,
   "army1": [
-    {
-      "type": "crossbowman",
+        {
+      "type": "longsword",
       "x": 0,
-      "y": 0
-    },
-    {
-      "type": "knight",
-      "x": 1,
-      "y": 0
-    },
-    {
-      "type": "pikeman",
-      "x": 2,
       "y": 0
     }
   ],
   "army2": [
     {
-      "type": "crossbowman",
-      "x": 19,
-      "y": 14
+      "type": "longsword",
+      "x": 10,
+      "y": 10
     }
   ]
 }

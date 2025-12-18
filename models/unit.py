@@ -104,9 +104,9 @@ class Unit(Object):
             self.currentAction = "stand" # On attend
             return False
 
-        self.currentAction = "attack"
         # Si l'animation d'attaque n'est pas finie (Wind-up)
         if self.current_attack_delay < self.attack_delay:
+                self.currentAction = "attack"
                 self.current_attack_delay += self.battle_model.delta_time
                 return False # L'attaque n'est pas encore partie
         
@@ -131,7 +131,7 @@ class Unit(Object):
         dy = ty - self.y
         distance = math.hypot(dx, dy)
         
-        if distance < self.radius * 2:
+        if distance < self.radius:
             self.vx = 0.0
             self.vy = 0.0
             self.currentAction = "stand"
@@ -198,7 +198,7 @@ class Unit(Object):
         
         # === 7. METTRE À JOUR L'ÉTAT ===
         if abs(self.vx) > 0.01 or abs(self.vy) > 0.01:
-            self.currentAction = "move"
+            self.currentAction = "walk"
             if self.vx != 0 or self.vy != 0:
                 self.direction = (self.vx, self.vy)
         else:
@@ -311,7 +311,7 @@ class Longsword(Unit):
             range_= 0,
             line_of_sight=6,
             speed=0.96,
-            attack_delay=0,
+            attack_delay=0.35,
             reload_time=2.0,
             x= x,
             y= y,
