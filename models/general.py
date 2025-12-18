@@ -335,8 +335,8 @@ class IA_Global(General):
                             best_weight = weight
                             best_order = order
                             best_tactic_name = tactic
-                    if best_weight > 20:
-                        print(f"[{unit.name}] -> {best_tactic_name} (Poids: {best_weight}) -> {best_order}")
+                    # if best_weight > 20:
+                    #     print(f"[{unit.name}] -> {best_tactic_name} (Poids: {best_weight}) -> {best_order}")
                     unit.order = best_order
             case self.Strategy.DEFENSIVE:
                 for unit in self.battle_model.get_army(self):
