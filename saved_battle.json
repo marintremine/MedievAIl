@@ -1,0 +1,80 @@
+{
+  "general1": "momoia",
+  "general2": "momoia",
+  "map_width": 120,
+  "map_height": 120,
+  "army1": [
+    {
+      "type": "crossbowman",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "knight",
+      "x": 1,
+      "y": 0
+    },
+    {
+      "type": "pikeman",
+      "x": 2,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "knight",
+      "x": 1,
+      "y": 0
+    },
+    {
+      "type": "pikeman",
+      "x": 2,
+      "y": 0
+    }
+  ],
+  "army2": [
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 14
+    }
+  ]
+}
