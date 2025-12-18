@@ -131,7 +131,7 @@ class Unit(Object):
         dy = ty - self.y
         distance = math.hypot(dx, dy)
         
-        if distance < self.radius * 2:
+        if distance < self.radius:
             self.vx = 0.0
             self.vy = 0.0
             self.currentAction = "stand"

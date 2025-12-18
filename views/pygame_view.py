@@ -287,7 +287,12 @@ class unit_model(pygame.sprite.Sprite):
         self.x, self.y = self.pygameSim.convertCartToIso((self.unitData.x, self.unitData.y))
         self.x += self.pygameSim.mapX
         self.y += self.pygameSim.mapY
-        self.is_alive = self.unitData.is_alive()
+        # Play the dying animation
+        if self.is_alive != self.unitData.is_alive():
+            self.is_alive = False
+            self.animation = "die"
+            self.animationKeyMax = len(self.TEXTURE[self.animation][switchOrientation[str(self.direction)]])-1
+            self.animationKey = 0
 
     def update (self):
 
@@ -299,13 +304,6 @@ class unit_model(pygame.sprite.Sprite):
                 self.direction = "(-1, -1)"
             else:
                 self.direction = "(1, 1)"
-
-        # Play the dying animation
-        if self.is_alive != self.unitData.is_alive():
-            self.is_alive = False
-            self.animation = "die"
-            self.animationKeyMax = len(self.TEXTURE[self.animation][switchOrientation[str(self.direction)]])-1
-            self.animationKey = 0
 
         # Play or actuate the actual animation
         if self.pygameSim.model.running:
