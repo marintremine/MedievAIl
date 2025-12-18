@@ -36,6 +36,7 @@ class Battle:
         if has_terminal_view and has_buffer:
             sys.stdout = self.controller.shared_log_buffer
 
+
         try:
             if winner is not None:
                 winner_survivors = self.model.summary()
@@ -50,3 +51,5 @@ class Battle:
                 print("The battle ended in a draw.")
         finally:
             sys.stdout = original_stdout
+
+        return winner
