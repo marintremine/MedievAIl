@@ -129,7 +129,7 @@ def main():
     plot_parser.add_argument("-N", "--num", type=int, default=10,
                              help="Nombre de batailles par point de donnée pour la moyenne (défaut: 10)")
     plot_parser.add_argument("-d", "--datafile", type=str, default=None,
-                             help="Chemin du fichier pour écrire les données brutes générées par le scénario")
+                             help="Chemin du fichier pour envoyer le tracé matplotlib")
 
 
     args = parser.parse_args()
