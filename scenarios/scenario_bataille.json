@@ -1,0 +1,2008 @@
+{
+  "map_width": 100,
+  "map_height": 100,
+  "army1": [
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 10
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 10
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 10
+    },
+    {
+      "type": "longsword",
+      "x": 10,
+      "y": 11
+    },
+    {
+      "type": "knight",
+      "x": 11,
+      "y": 11
+    },
+    {
+      "type": "crossbowman",
+      "x": 12,
+      "y": 11
+    },
+    {
+      "type": "pikeman",
+      "x": 13,
+      "y": 11
+    },
+    {
+      "type": "longsword",
+      "x": 14,
+      "y": 11
+    },
+    {
+      "type": "knight",
+      "x": 10,
+      "y": 12
+    },
+    {
+      "type": "crossbowman",
+      "x": 11,
+      "y": 12
+    },
+    {
+      "type": "pikeman",
+      "x": 12,
+      "y": 12
+    },
+    {
+      "type": "longsword",
+      "x": 13,
+      "y": 12
+    },
+    {
+      "type": "knight",
+      "x": 14,
+      "y": 12
+    },
+    {
+      "type": "crossbowman",
+      "x": 10,
+      "y": 13
+    },
+    {
+      "type": "pikeman",
+      "x": 11,
+      "y": 13
+    },
+    {
+      "type": "longsword",
+      "x": 12,
+      "y": 13
+    },
+    {
+      "type": "knight",
+      "x": 13,
+      "y": 13
+    },
+    {
+      "type": "crossbowman",
+      "x": 14,
+      "y": 13
+    },
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 14
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 14
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 14
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 14
+    },
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 30
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 30
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 30
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 30
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 30
+    },
+    {
+      "type": "longsword",
+      "x": 10,
+      "y": 31
+    },
+    {
+      "type": "knight",
+      "x": 11,
+      "y": 31
+    },
+    {
+      "type": "crossbowman",
+      "x": 12,
+      "y": 31
+    },
+    {
+      "type": "pikeman",
+      "x": 13,
+      "y": 31
+    },
+    {
+      "type": "longsword",
+      "x": 14,
+      "y": 31
+    },
+    {
+      "type": "knight",
+      "x": 10,
+      "y": 32
+    },
+    {
+      "type": "crossbowman",
+      "x": 11,
+      "y": 32
+    },
+    {
+      "type": "pikeman",
+      "x": 12,
+      "y": 32
+    },
+    {
+      "type": "longsword",
+      "x": 13,
+      "y": 32
+    },
+    {
+      "type": "knight",
+      "x": 14,
+      "y": 32
+    },
+    {
+      "type": "crossbowman",
+      "x": 10,
+      "y": 33
+    },
+    {
+      "type": "pikeman",
+      "x": 11,
+      "y": 33
+    },
+    {
+      "type": "longsword",
+      "x": 12,
+      "y": 33
+    },
+    {
+      "type": "knight",
+      "x": 13,
+      "y": 33
+    },
+    {
+      "type": "crossbowman",
+      "x": 14,
+      "y": 33
+    },
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 34
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 34
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 34
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 34
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 34
+    },
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 50
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 50
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 50
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 50
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 50
+    },
+    {
+      "type": "longsword",
+      "x": 10,
+      "y": 51
+    },
+    {
+      "type": "knight",
+      "x": 11,
+      "y": 51
+    },
+    {
+      "type": "crossbowman",
+      "x": 12,
+      "y": 51
+    },
+    {
+      "type": "pikeman",
+      "x": 13,
+      "y": 51
+    },
+    {
+      "type": "longsword",
+      "x": 14,
+      "y": 51
+    },
+    {
+      "type": "knight",
+      "x": 10,
+      "y": 52
+    },
+    {
+      "type": "crossbowman",
+      "x": 11,
+      "y": 52
+    },
+    {
+      "type": "pikeman",
+      "x": 12,
+      "y": 52
+    },
+    {
+      "type": "longsword",
+      "x": 13,
+      "y": 52
+    },
+    {
+      "type": "knight",
+      "x": 14,
+      "y": 52
+    },
+    {
+      "type": "crossbowman",
+      "x": 10,
+      "y": 53
+    },
+    {
+      "type": "pikeman",
+      "x": 11,
+      "y": 53
+    },
+    {
+      "type": "longsword",
+      "x": 12,
+      "y": 53
+    },
+    {
+      "type": "knight",
+      "x": 13,
+      "y": 53
+    },
+    {
+      "type": "crossbowman",
+      "x": 14,
+      "y": 53
+    },
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 54
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 54
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 54
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 54
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 54
+    },
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 70
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 70
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 70
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 70
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 70
+    },
+    {
+      "type": "longsword",
+      "x": 10,
+      "y": 71
+    },
+    {
+      "type": "knight",
+      "x": 11,
+      "y": 71
+    },
+    {
+      "type": "crossbowman",
+      "x": 12,
+      "y": 71
+    },
+    {
+      "type": "pikeman",
+      "x": 13,
+      "y": 71
+    },
+    {
+      "type": "longsword",
+      "x": 14,
+      "y": 71
+    },
+    {
+      "type": "knight",
+      "x": 10,
+      "y": 72
+    },
+    {
+      "type": "crossbowman",
+      "x": 11,
+      "y": 72
+    },
+    {
+      "type": "pikeman",
+      "x": 12,
+      "y": 72
+    },
+    {
+      "type": "longsword",
+      "x": 13,
+      "y": 72
+    },
+    {
+      "type": "knight",
+      "x": 14,
+      "y": 72
+    },
+    {
+      "type": "crossbowman",
+      "x": 10,
+      "y": 73
+    },
+    {
+      "type": "pikeman",
+      "x": 11,
+      "y": 73
+    },
+    {
+      "type": "longsword",
+      "x": 12,
+      "y": 73
+    },
+    {
+      "type": "knight",
+      "x": 13,
+      "y": 73
+    },
+    {
+      "type": "crossbowman",
+      "x": 14,
+      "y": 73
+    },
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 74
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 74
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 74
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 74
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 74
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 10
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 10
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 10
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 10
+    },
+    {
+      "type": "longsword",
+      "x": 25,
+      "y": 11
+    },
+    {
+      "type": "knight",
+      "x": 26,
+      "y": 11
+    },
+    {
+      "type": "crossbowman",
+      "x": 27,
+      "y": 11
+    },
+    {
+      "type": "pikeman",
+      "x": 28,
+      "y": 11
+    },
+    {
+      "type": "longsword",
+      "x": 29,
+      "y": 11
+    },
+    {
+      "type": "knight",
+      "x": 25,
+      "y": 12
+    },
+    {
+      "type": "crossbowman",
+      "x": 26,
+      "y": 12
+    },
+    {
+      "type": "pikeman",
+      "x": 27,
+      "y": 12
+    },
+    {
+      "type": "longsword",
+      "x": 28,
+      "y": 12
+    },
+    {
+      "type": "knight",
+      "x": 29,
+      "y": 12
+    },
+    {
+      "type": "crossbowman",
+      "x": 25,
+      "y": 13
+    },
+    {
+      "type": "pikeman",
+      "x": 26,
+      "y": 13
+    },
+    {
+      "type": "longsword",
+      "x": 27,
+      "y": 13
+    },
+    {
+      "type": "knight",
+      "x": 28,
+      "y": 13
+    },
+    {
+      "type": "crossbowman",
+      "x": 29,
+      "y": 13
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 14
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 14
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 14
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 14
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 30
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 30
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 30
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 30
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 30
+    },
+    {
+      "type": "longsword",
+      "x": 25,
+      "y": 31
+    },
+    {
+      "type": "knight",
+      "x": 26,
+      "y": 31
+    },
+    {
+      "type": "crossbowman",
+      "x": 27,
+      "y": 31
+    },
+    {
+      "type": "pikeman",
+      "x": 28,
+      "y": 31
+    },
+    {
+      "type": "longsword",
+      "x": 29,
+      "y": 31
+    },
+    {
+      "type": "knight",
+      "x": 25,
+      "y": 32
+    },
+    {
+      "type": "crossbowman",
+      "x": 26,
+      "y": 32
+    },
+    {
+      "type": "pikeman",
+      "x": 27,
+      "y": 32
+    },
+    {
+      "type": "longsword",
+      "x": 28,
+      "y": 32
+    },
+    {
+      "type": "knight",
+      "x": 29,
+      "y": 32
+    },
+    {
+      "type": "crossbowman",
+      "x": 25,
+      "y": 33
+    },
+    {
+      "type": "pikeman",
+      "x": 26,
+      "y": 33
+    },
+    {
+      "type": "longsword",
+      "x": 27,
+      "y": 33
+    },
+    {
+      "type": "knight",
+      "x": 28,
+      "y": 33
+    },
+    {
+      "type": "crossbowman",
+      "x": 29,
+      "y": 33
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 34
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 34
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 34
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 34
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 34
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 50
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 50
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 50
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 50
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 50
+    },
+    {
+      "type": "longsword",
+      "x": 25,
+      "y": 51
+    },
+    {
+      "type": "knight",
+      "x": 26,
+      "y": 51
+    },
+    {
+      "type": "crossbowman",
+      "x": 27,
+      "y": 51
+    },
+    {
+      "type": "pikeman",
+      "x": 28,
+      "y": 51
+    },
+    {
+      "type": "longsword",
+      "x": 29,
+      "y": 51
+    },
+    {
+      "type": "knight",
+      "x": 25,
+      "y": 52
+    },
+    {
+      "type": "crossbowman",
+      "x": 26,
+      "y": 52
+    },
+    {
+      "type": "pikeman",
+      "x": 27,
+      "y": 52
+    },
+    {
+      "type": "longsword",
+      "x": 28,
+      "y": 52
+    },
+    {
+      "type": "knight",
+      "x": 29,
+      "y": 52
+    },
+    {
+      "type": "crossbowman",
+      "x": 25,
+      "y": 53
+    },
+    {
+      "type": "pikeman",
+      "x": 26,
+      "y": 53
+    },
+    {
+      "type": "longsword",
+      "x": 27,
+      "y": 53
+    },
+    {
+      "type": "knight",
+      "x": 28,
+      "y": 53
+    },
+    {
+      "type": "crossbowman",
+      "x": 29,
+      "y": 53
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 54
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 54
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 54
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 54
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 54
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 70
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 70
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 70
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 70
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 70
+    },
+    {
+      "type": "longsword",
+      "x": 25,
+      "y": 71
+    },
+    {
+      "type": "knight",
+      "x": 26,
+      "y": 71
+    },
+    {
+      "type": "crossbowman",
+      "x": 27,
+      "y": 71
+    },
+    {
+      "type": "pikeman",
+      "x": 28,
+      "y": 71
+    },
+    {
+      "type": "longsword",
+      "x": 29,
+      "y": 71
+    },
+    {
+      "type": "knight",
+      "x": 25,
+      "y": 72
+    },
+    {
+      "type": "crossbowman",
+      "x": 26,
+      "y": 72
+    },
+    {
+      "type": "pikeman",
+      "x": 27,
+      "y": 72
+    },
+    {
+      "type": "longsword",
+      "x": 28,
+      "y": 72
+    },
+    {
+      "type": "knight",
+      "x": 29,
+      "y": 72
+    },
+    {
+      "type": "crossbowman",
+      "x": 25,
+      "y": 73
+    },
+    {
+      "type": "pikeman",
+      "x": 26,
+      "y": 73
+    },
+    {
+      "type": "longsword",
+      "x": 27,
+      "y": 73
+    },
+    {
+      "type": "knight",
+      "x": 28,
+      "y": 73
+    },
+    {
+      "type": "crossbowman",
+      "x": 29,
+      "y": 73
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 74
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 74
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 74
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 74
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 74
+    }
+  ],
+  "army2": [
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 10
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 10
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 10
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 10
+    },
+    {
+      "type": "longsword",
+      "x": 90,
+      "y": 11
+    },
+    {
+      "type": "knight",
+      "x": 89,
+      "y": 11
+    },
+    {
+      "type": "crossbowman",
+      "x": 88,
+      "y": 11
+    },
+    {
+      "type": "pikeman",
+      "x": 87,
+      "y": 11
+    },
+    {
+      "type": "longsword",
+      "x": 86,
+      "y": 11
+    },
+    {
+      "type": "knight",
+      "x": 90,
+      "y": 12
+    },
+    {
+      "type": "crossbowman",
+      "x": 89,
+      "y": 12
+    },
+    {
+      "type": "pikeman",
+      "x": 88,
+      "y": 12
+    },
+    {
+      "type": "longsword",
+      "x": 87,
+      "y": 12
+    },
+    {
+      "type": "knight",
+      "x": 86,
+      "y": 12
+    },
+    {
+      "type": "crossbowman",
+      "x": 90,
+      "y": 13
+    },
+    {
+      "type": "pikeman",
+      "x": 89,
+      "y": 13
+    },
+    {
+      "type": "longsword",
+      "x": 88,
+      "y": 13
+    },
+    {
+      "type": "knight",
+      "x": 87,
+      "y": 13
+    },
+    {
+      "type": "crossbowman",
+      "x": 86,
+      "y": 13
+    },
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 14
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 14
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 14
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 14
+    },
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 30
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 30
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 30
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 30
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 30
+    },
+    {
+      "type": "longsword",
+      "x": 90,
+      "y": 31
+    },
+    {
+      "type": "knight",
+      "x": 89,
+      "y": 31
+    },
+    {
+      "type": "crossbowman",
+      "x": 88,
+      "y": 31
+    },
+    {
+      "type": "pikeman",
+      "x": 87,
+      "y": 31
+    },
+    {
+      "type": "longsword",
+      "x": 86,
+      "y": 31
+    },
+    {
+      "type": "knight",
+      "x": 90,
+      "y": 32
+    },
+    {
+      "type": "crossbowman",
+      "x": 89,
+      "y": 32
+    },
+    {
+      "type": "pikeman",
+      "x": 88,
+      "y": 32
+    },
+    {
+      "type": "longsword",
+      "x": 87,
+      "y": 32
+    },
+    {
+      "type": "knight",
+      "x": 86,
+      "y": 32
+    },
+    {
+      "type": "crossbowman",
+      "x": 90,
+      "y": 33
+    },
+    {
+      "type": "pikeman",
+      "x": 89,
+      "y": 33
+    },
+    {
+      "type": "longsword",
+      "x": 88,
+      "y": 33
+    },
+    {
+      "type": "knight",
+      "x": 87,
+      "y": 33
+    },
+    {
+      "type": "crossbowman",
+      "x": 86,
+      "y": 33
+    },
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 34
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 34
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 34
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 34
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 34
+    },
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 50
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 50
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 50
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 50
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 50
+    },
+    {
+      "type": "longsword",
+      "x": 90,
+      "y": 51
+    },
+    {
+      "type": "knight",
+      "x": 89,
+      "y": 51
+    },
+    {
+      "type": "crossbowman",
+      "x": 88,
+      "y": 51
+    },
+    {
+      "type": "pikeman",
+      "x": 87,
+      "y": 51
+    },
+    {
+      "type": "longsword",
+      "x": 86,
+      "y": 51
+    },
+    {
+      "type": "knight",
+      "x": 90,
+      "y": 52
+    },
+    {
+      "type": "crossbowman",
+      "x": 89,
+      "y": 52
+    },
+    {
+      "type": "pikeman",
+      "x": 88,
+      "y": 52
+    },
+    {
+      "type": "longsword",
+      "x": 87,
+      "y": 52
+    },
+    {
+      "type": "knight",
+      "x": 86,
+      "y": 52
+    },
+    {
+      "type": "crossbowman",
+      "x": 90,
+      "y": 53
+    },
+    {
+      "type": "pikeman",
+      "x": 89,
+      "y": 53
+    },
+    {
+      "type": "longsword",
+      "x": 88,
+      "y": 53
+    },
+    {
+      "type": "knight",
+      "x": 87,
+      "y": 53
+    },
+    {
+      "type": "crossbowman",
+      "x": 86,
+      "y": 53
+    },
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 54
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 54
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 54
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 54
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 54
+    },
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 70
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 70
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 70
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 70
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 70
+    },
+    {
+      "type": "longsword",
+      "x": 90,
+      "y": 71
+    },
+    {
+      "type": "knight",
+      "x": 89,
+      "y": 71
+    },
+    {
+      "type": "crossbowman",
+      "x": 88,
+      "y": 71
+    },
+    {
+      "type": "pikeman",
+      "x": 87,
+      "y": 71
+    },
+    {
+      "type": "longsword",
+      "x": 86,
+      "y": 71
+    },
+    {
+      "type": "knight",
+      "x": 90,
+      "y": 72
+    },
+    {
+      "type": "crossbowman",
+      "x": 89,
+      "y": 72
+    },
+    {
+      "type": "pikeman",
+      "x": 88,
+      "y": 72
+    },
+    {
+      "type": "longsword",
+      "x": 87,
+      "y": 72
+    },
+    {
+      "type": "knight",
+      "x": 86,
+      "y": 72
+    },
+    {
+      "type": "crossbowman",
+      "x": 90,
+      "y": 73
+    },
+    {
+      "type": "pikeman",
+      "x": 89,
+      "y": 73
+    },
+    {
+      "type": "longsword",
+      "x": 88,
+      "y": 73
+    },
+    {
+      "type": "knight",
+      "x": 87,
+      "y": 73
+    },
+    {
+      "type": "crossbowman",
+      "x": 86,
+      "y": 73
+    },
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 74
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 74
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 74
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 74
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 74
+    },
+    {
+      "type": "pikeman",
+      "x": 75,
+      "y": 10
+    },
+    {
+      "type": "longsword",
+      "x": 74,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 73,
+      "y": 10
+    },
+    {
+      "type": "crossbowman",
+      "x": 72,
+      "y": 10
+    },
+    {
+      "type": "pikeman",
+      "x": 71,
+      "y": 10
+    },
+    {
+      "type": "longsword",
+      "x": 75,
+      "y": 11
+    },
+    {
+      "type": "knight",
+      "x": 74,
+      "y": 11
+    },
+    {
+      "type": "crossbowman",
+      "x": 73,
+      "y": 11
+    },
+    {
+      "type": "pikeman",
+      "x": 72,
+      "y": 11
+    },
+    {
+      "type": "longsword",
+      "x": 71,
+      "y": 11
+    },
+    {
+      "type": "knight",
+      "x": 75,
+      "y": 12
+    },
+    {
+      "type": "crossbowman",
+      "x": 74,
+      "y": 12
+    },
+    {
+      "type": "pikeman",
+      "x": 73,
+      "y": 12
+    },
+    {
+      "type": "longsword",
+      "x": 72,
+      "y": 12
+    },
+    {
+      "type": "knight",
+      "x": 71,
+      "y": 12
+    },
+    {
+      "type": "crossbowman",
+      "x": 75,
+      "y": 13
+    },
+    {
+      "type": "pikeman",
+      "x": 74,
+      "y": 13
+    },
+    {
+      "type": "longsword",
+      "x": 73,
+      "y": 13
+    },
+    {
+      "type": "knight",
+      "x": 72,
+      "y": 13
+    },
+    {
+      "type": "crossbowman",
+      "x": 71,
+      "y": 13
+    },
+    {
+      "type": "pikeman",
+      "x": 75,
+      "y": 14
+    },
+    {
+      "type": "longsword",
+      "x": 74,
+      "y": 14
+    },
+    {
+      "type": "knight",
+      "x": 73,
+      "y": 14
+    },
+    {
+      "type": "crossbowman",
+      "x": 72,
+      "y": 14
+    },
+    {
+      "type": "pikeman",
+      "x": 71,
+      "y": 14
+    },
+    {
+      "type": "pikeman",
+      "x": 75,
+      "y": 30
+    },
+    {
+      "type": "longsword",
+      "x": 74,
+      "y": 30
+    },
+    {
+      "type": "knight",
+      "x": 73,
+      "y": 30
+    },
+    {
+      "type": "crossbowman",
+      "x": 72,
+      "y": 30
+    },
+    {
+      "type": "pikeman",
+      "x": 71,
+      "y": 30
+    },
+    {
+      "type": "longsword",
+      "x": 75,
+      "y": 31
+    },
+    {
+      "type": "knight",
+      "x": 74,
+      "y": 31
+    },
+    {
+      "type": "crossbowman",
+      "x": 73,
+      "y": 31
+    },
+    {
+      "type": "pikeman",
+      "x": 72,
+      "y": 31
+    },
+    {
+      "type": "longsword",
+      "x": 71,
+      "y": 31
+    },
+    {
+      "type": "knight",
+      "x": 75,
+      "y": 32
+    },
+    {
+      "type": "crossbowman",
+      "x": 74,
+      "y": 32
+    },
+    {
+      "type": "pikeman",
+      "x": 73,
+      "y": 32
+    },
+    {
+      "type": "longsword",
+      "x": 72,
+      "y": 32
+    },
+    {
+      "type": "knight",
+      "x": 71,
+      "y": 32
+    },
+    {
+      "type": "crossbowman",
+      "x": 75,
+      "y": 33
+    },
+    {
+      "type": "pikeman",
+      "x": 74,
+      "y": 33
+    },
+    {
+      "type": "longsword",
+      "x": 73,
+      "y": 33
+    },
+    {
+      "type": "knight",
+      "x": 72,
+      "y": 33
+    },
+    {
+      "type": "crossbowman",
+      "x": 71,
+      "y": 33
+    },
+    {
+      "type": "pikeman",
+      "x": 75,
+      "y": 34
+    },
+    {
+      "type": "longsword",
+      "x": 74,
+      "y": 34
+    },
+    {
+      "type": "knight",
+      "x": 73,
+      "y": 34
+    },
+    {
+      "type": "crossbowman",
+      "x": 72,
+      "y": 34
+    },
+    {
+      "type": "pikeman",
+      "x": 71,
+      "y": 34
+    },
+    {
+      "type": "pikeman",
+      "x": 75,
+      "y": 50
+    },
+    {
+      "type": "longsword",
+      "x": 74,
+      "y": 50
+    },
+    {
+      "type": "knight",
+      "x": 73,
+      "y": 50
+    },
+    {
+      "type": "crossbowman",
+      "x": 72,
+      "y": 50
+    },
+    {
+      "type": "pikeman",
+      "x": 71,
+      "y": 50
+    },
+    {
+      "type": "longsword",
+      "x": 75,
+      "y": 51
+    },
+    {
+      "type": "knight",
+      "x": 74,
+      "y": 51
+    },
+    {
+      "type": "crossbowman",
+      "x": 73,
+      "y": 51
+    },
+    {
+      "type": "pikeman",
+      "x": 72,
+      "y": 51
+    },
+    {
+      "type": "longsword",
+      "x": 71,
+      "y": 51
+    },
+    {
+      "type": "knight",
+      "x": 75,
+      "y": 52
+    },
+    {
+      "type": "crossbowman",
+      "x": 74,
+      "y": 52
+    },
+    {
+      "type": "pikeman",
+      "x": 73,
+      "y": 52
+    },
+    {
+      "type": "longsword",
+      "x": 72,
+      "y": 52
+    },
+    {
+      "type": "knight",
+      "x": 71,
+      "y": 52
+    },
+    {
+      "type": "crossbowman",
+      "x": 75,
+      "y": 53
+    },
+    {
+      "type": "pikeman",
+      "x": 74,
+      "y": 53
+    },
+    {
+      "type": "longsword",
+      "x": 73,
+      "y": 53
+    },
+    {
+      "type": "knight",
+      "x": 72,
+      "y": 53
+    },
+    {
+      "type": "crossbowman",
+      "x": 71,
+      "y": 53
+    },
+    {
+      "type": "pikeman",
+      "x": 75,
+      "y": 54
+    },
+    {
+      "type": "longsword",
+      "x": 74,
+      "y": 54
+    },
+    {
+      "type": "knight",
+      "x": 73,
+      "y": 54
+    },
+    {
+      "type": "crossbowman",
+      "x": 72,
+      "y": 54
+    },
+    {
+      "type": "pikeman",
+      "x": 71,
+      "y": 54
+    },
+    {
+      "type": "pikeman",
+      "x": 75,
+      "y": 70
+    },
+    {
+      "type": "longsword",
+      "x": 74,
+      "y": 70
+    },
+    {
+      "type": "knight",
+      "x": 73,
+      "y": 70
+    },
+    {
+      "type": "crossbowman",
+      "x": 72,
+      "y": 70
+    },
+    {
+      "type": "pikeman",
+      "x": 71,
+      "y": 70
+    },
+    {
+      "type": "longsword",
+      "x": 75,
+      "y": 71
+    },
+    {
+      "type": "knight",
+      "x": 74,
+      "y": 71
+    },
+    {
+      "type": "crossbowman",
+      "x": 73,
+      "y": 71
+    },
+    {
+      "type": "pikeman",
+      "x": 72,
+      "y": 71
+    },
+    {
+      "type": "longsword",
+      "x": 71,
+      "y": 71
+    },
+    {
+      "type": "knight",
+      "x": 75,
+      "y": 72
+    },
+    {
+      "type": "crossbowman",
+      "x": 74,
+      "y": 72
+    },
+    {
+      "type": "pikeman",
+      "x": 73,
+      "y": 72
+    },
+    {
+      "type": "longsword",
+      "x": 72,
+      "y": 72
+    },
+    {
+      "type": "knight",
+      "x": 71,
+      "y": 72
+    },
+    {
+      "type": "crossbowman",
+      "x": 75,
+      "y": 73
+    },
+    {
+      "type": "pikeman",
+      "x": 74,
+      "y": 73
+    },
+    {
+      "type": "longsword",
+      "x": 73,
+      "y": 73
+    },
+    {
+      "type": "knight",
+      "x": 72,
+      "y": 73
+    },
+    {
+      "type": "crossbowman",
+      "x": 71,
+      "y": 73
+    },
+    {
+      "type": "pikeman",
+      "x": 75,
+      "y": 74
+    },
+    {
+      "type": "longsword",
+      "x": 74,
+      "y": 74
+    },
+    {
+      "type": "knight",
+      "x": 73,
+      "y": 74
+    },
+    {
+      "type": "crossbowman",
+      "x": 72,
+      "y": 74
+    },
+    {
+      "type": "pikeman",
+      "x": 71,
+      "y": 74
+    }
+  ]
+}

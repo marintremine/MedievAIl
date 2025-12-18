@@ -1,10 +1,4 @@
 from __future__ import annotations
-import random
-import math
-
-from Xlib.Xcursorfont import target
-
-from models.order import Attack, Move, Wait, Defense
 from models.unit import *
 from enum import Enum
 
@@ -122,6 +116,7 @@ class IA_Global(General):
             self.tactic_group_units,
             self.tactic_avoid_hard_counters,
         ]
+        self.army_size = None
         self.formation_broken = False
         super().__init__("IA_Global", battle_model)
 
@@ -135,7 +130,7 @@ class IA_Global(General):
         """Si le puissance de l'unité est inférieuers a 30% il joint le point de rassemblement qui est la moyenne de tous ces alléis"""
         weight = 0
         order = None
-        if unit.hp > (unit.max_hp * 15 / 100):
+        if unit.hp > (unit.max_hp * 25 / 100):
             return weight, order
         allies = self.battle_model.get_army(self)
         if not allies:
@@ -192,7 +187,6 @@ class IA_Global(General):
             else:
                 weight = 90
                 order = Move(unit, target.x, target.y)
-
         return weight, order
 
     def tactic_attack_weakest(self, unit):
@@ -317,6 +311,10 @@ class IA_Global(General):
         return (x_avg, y_avg)
 
     def decide(self) -> None:
+        if self.army_size is None:
+            self.army_size = len(self.battle_model.get_army(self))
+        if (self.army_size * 20 // 100) >= self.army_size and self.army_size is not None:
+            self.strategy = self.Strategy.DEFENSIVE
         busy_list = set()
         army = self.battle_model.get_army(self)
         self.squad_attack(busy_list, army)
@@ -335,8 +333,6 @@ class IA_Global(General):
                             best_weight = weight
                             best_order = order
                             best_tactic_name = tactic
-                    # if best_weight > 20:
-                    #     print(f"[{unit.name}] -> {best_tactic_name} (Poids: {best_weight}) -> {best_order}")
                     unit.order = best_order
             case self.Strategy.DEFENSIVE:
                 for unit in self.battle_model.get_army(self):
@@ -377,7 +373,7 @@ class Aegis(General):
             score = -(self.manhattan(unit, enemy))
             if unit.name == "Knight" and enemy.name == "Crossbowman":
                 score += 3
-            if unit.name == "Knight" and enemy.name == "Pikeman" and self.manhattan(unit, enemy) > 2:
+            if unit.name == "Knight" and (enemy.name == "Pikeman" or enemy.name == "Longsword") and self.manhattan(unit, enemy) > 2:
                 score -= 5
             if best_score is None or score > best_score:
                 best_score = score
@@ -404,7 +400,7 @@ class Aegis(General):
 
             if self.manhattan(unit, target) <= 2:
                unit.order = Attack(unit, target)
-            elif target.name == "Pikeman" and self.has_crossbow_support(unit):
+            elif (target.name == "Pikeman" or target.name == "Longsword") and self.has_crossbow_support(unit):
                unit.order = Wait(unit)
             else:
                unit.order = Attack(unit, target)

@@ -1,12 +1,958 @@
 {
   "map_width": 120,
   "map_height": 120,
-  "obstacles": [],
+  "obstacles": [
+    {
+      "type": "Bush",
+      "x": 106,
+      "y": 28
+    },
+    {
+      "type": "Bush",
+      "x": 4,
+      "y": 17
+    },
+    {
+      "type": "Bush",
+      "x": 81,
+      "y": 17
+    },
+    {
+      "type": "Bush",
+      "x": 62,
+      "y": 109
+    },
+    {
+      "type": "Bush",
+      "x": 27,
+      "y": 116
+    },
+    {
+      "type": "Bush",
+      "x": 17,
+      "y": 73
+    },
+    {
+      "type": "Bush",
+      "x": 83,
+      "y": 20
+    },
+    {
+      "type": "Bush",
+      "x": 80,
+      "y": 59
+    },
+    {
+      "type": "Bush",
+      "x": 71,
+      "y": 10
+    },
+    {
+      "type": "Bush",
+      "x": 20,
+      "y": 36
+    },
+    {
+      "type": "Rock",
+      "x": 90,
+      "y": 27
+    },
+    {
+      "type": "Rock",
+      "x": 26,
+      "y": 58
+    },
+    {
+      "type": "Rock",
+      "x": 95,
+      "y": 94
+    },
+    {
+      "type": "Rock",
+      "x": 11,
+      "y": 76
+    },
+    {
+      "type": "Rock",
+      "x": 80,
+      "y": 105
+    },
+    {
+      "type": "Rock",
+      "x": 28,
+      "y": 66
+    },
+    {
+      "type": "Rock",
+      "x": 66,
+      "y": 111
+    },
+    {
+      "type": "Rock",
+      "x": 106,
+      "y": 60
+    },
+    {
+      "type": "Rock",
+      "x": 115,
+      "y": 69
+    },
+    {
+      "type": "Rock",
+      "x": 116,
+      "y": 115
+    },
+    {
+      "type": "Tree",
+      "x": 54,
+      "y": 118
+    },
+    {
+      "type": "Tree",
+      "x": 5,
+      "y": 68
+    },
+    {
+      "type": "Tree",
+      "x": 17,
+      "y": 94
+    },
+    {
+      "type": "Tree",
+      "x": 90,
+      "y": 110
+    },
+    {
+      "type": "Tree",
+      "x": 29,
+      "y": 11
+    },
+    {
+      "type": "Tree",
+      "x": 59,
+      "y": 41
+    },
+    {
+      "type": "Tree",
+      "x": 28,
+      "y": 107
+    },
+    {
+      "type": "Tree",
+      "x": 94,
+      "y": 52
+    },
+    {
+      "type": "Tree",
+      "x": 104,
+      "y": 36
+    },
+    {
+      "type": "Tree",
+      "x": 106,
+      "y": 44
+    }
+  ],
   "army1": [
     {
       "type": "crossbowman",
       "x": 0,
       "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 1,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 2,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 3,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 4,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 5,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 6,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 7,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 8,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 9,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 10,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 11,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 12,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 13,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 14,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 15,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 16,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 17,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 18,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 19,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 20,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 21,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 22,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 23,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 24,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 25,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 26,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 27,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 28,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 29,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 30,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 31,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 32,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 33,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 34,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 35,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 36,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 37,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 38,
+      "y": 0
+    },
+    {
+      "type": "crossbowman",
+      "x": 39,
+      "y": 0
+    },
+    {
+      "type": "knight",
+      "x": 0,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 1,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 2,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 3,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 4,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 5,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 6,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 7,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 8,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 9,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 10,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 11,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 12,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 13,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 14,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 15,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 16,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 17,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 18,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 19,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 20,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 21,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 22,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 23,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 24,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 25,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 26,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 27,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 28,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 29,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 30,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 31,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 32,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 33,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 34,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 35,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 36,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 37,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 38,
+      "y": 10
+    },
+    {
+      "type": "knight",
+      "x": 39,
+      "y": 10
+    },
+    {
+      "type": "pikeman",
+      "x": 0,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 1,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 2,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 3,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 4,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 5,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 6,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 7,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 8,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 9,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 10,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 11,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 12,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 13,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 14,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 15,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 16,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 17,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 18,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 19,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 20,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 21,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 22,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 23,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 24,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 25,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 26,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 27,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 28,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 29,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 30,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 31,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 32,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 33,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 34,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 35,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 36,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 37,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 38,
+      "y": 16
+    },
+    {
+      "type": "pikeman",
+      "x": 39,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 0,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 1,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 2,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 3,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 4,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 5,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 6,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 7,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 8,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 9,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 10,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 11,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 12,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 13,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 14,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 15,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 16,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 17,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 18,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 19,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 20,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 21,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 22,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 23,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 24,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 25,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 26,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 27,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 28,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 29,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 30,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 31,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 32,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 33,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 34,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 35,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 36,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 37,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 38,
+      "y": 16
+    },
+    {
+      "type": "longsword",
+      "x": 39,
+      "y": 16
     }
   ],
   "army2": [
@@ -14,6 +960,801 @@
       "type": "crossbowman",
       "x": 119,
       "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 118,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 117,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 116,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 115,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 114,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 113,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 112,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 111,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 110,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 109,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 108,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 107,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 106,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 105,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 104,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 103,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 102,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 101,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 100,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 99,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 98,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 97,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 96,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 95,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 94,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 93,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 92,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 91,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 90,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 89,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 88,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 87,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 86,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 85,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 84,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 83,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 82,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 81,
+      "y": 119
+    },
+    {
+      "type": "crossbowman",
+      "x": 80,
+      "y": 119
+    },
+    {
+      "type": "knight",
+      "x": 119,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 118,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 117,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 116,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 115,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 114,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 113,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 112,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 111,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 110,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 109,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 108,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 107,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 106,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 105,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 104,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 103,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 102,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 101,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 100,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 99,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 98,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 97,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 96,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 95,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 94,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 93,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 92,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 91,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 90,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 89,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 88,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 87,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 86,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 85,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 84,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 83,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 82,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 81,
+      "y": 118
+    },
+    {
+      "type": "knight",
+      "x": 80,
+      "y": 118
+    },
+    {
+      "type": "pikeman",
+      "x": 119,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 118,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 117,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 116,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 115,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 114,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 113,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 112,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 111,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 110,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 109,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 108,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 107,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 106,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 105,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 104,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 103,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 102,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 101,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 100,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 99,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 98,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 97,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 96,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 95,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 94,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 93,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 92,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 91,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 90,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 89,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 88,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 87,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 86,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 85,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 84,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 83,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 82,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 81,
+      "y": 117
+    },
+    {
+      "type": "pikeman",
+      "x": 80,
+      "y": 117
+    },
+    {
+      "type": "longsword",
+      "x": 119,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 118,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 117,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 116,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 115,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 114,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 113,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 112,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 111,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 110,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 109,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 108,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 107,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 106,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 105,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 104,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 103,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 102,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 101,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 100,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 99,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 98,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 97,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 96,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 95,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 94,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 93,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 92,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 91,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 90,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 89,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 88,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 87,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 86,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 85,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 84,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 83,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 82,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 81,
+      "y": 104
+    },
+    {
+      "type": "longsword",
+      "x": 80,
+      "y": 104
     }
   ]
 }

@@ -30,6 +30,7 @@ class Battle:
         if should_capture:
             sys.stdout = self.controller.shared_log_buffer
 
+
         try:
             self.model.load(self.scenario, self.general_1, self.general_2)
             
