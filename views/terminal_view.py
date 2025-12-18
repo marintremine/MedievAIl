@@ -1,5 +1,5 @@
 import curses
-import sys
+import atexit
 import io
 
 from time import time
@@ -13,6 +13,8 @@ VIEW_ARMY_INFO = 1
 VIEW_MESSAGE = 2
 
 class TerminalView(BattleView):
+    _atexit_registered = False
+
     def __init__(self, model, controller):
         super().__init__(model, controller)
         self.stdscr = None  # Fenêtre principale curses
@@ -25,11 +27,18 @@ class TerminalView(BattleView):
             VIEW_MESSAGE: [0, 0]
         }
 
-        self._stdout_buffer = self.controller.shared_log_buffer
+        if hasattr(self.controller, 'shared_log_buffer'):
+            self._stdout_buffer = self.controller.shared_log_buffer
+        else:
+            self._stdout_buffer = io.StringIO()
 
-        # Rediriger la sortie standard vers le buffer
-        self._original_stdout = sys.stdout
-        sys.stdout = self._stdout_buffer
+        # On marque le début des logs pour CETTE bataille spécifique
+        self._stdout_buffer.seek(0, io.SEEK_END)
+        self.log_start_pos = self._stdout_buffer.tell()
+
+        if not TerminalView._atexit_registered:
+            atexit.register(self._print_final_summary)
+            TerminalView._atexit_registered = True
 
     def prepare(self):
         """Initialise la vue avant le début de la bataille."""
@@ -388,21 +397,44 @@ class TerminalView(BattleView):
         return 3
     
     def cleanup(self):
-        """Restaure les paramètres du terminal et affiche les logs."""
-
-        captured_logs = self._stdout_buffer.getvalue()
-
+        """Ferme uniquement la fenêtre Curses (appelé par le controller)."""
         try:
-            curses.curs_set(1)       # réaffiche le curseur
-            curses.nocbreak()        # désactive le mode cbreak
-            self.stdscr.keypad(False)
-            curses.echo()            # réactive l'écho des touches
-            curses.endwin()          # ferme curses proprement (revient au terminal normal)
+            if self.stdscr:
+                curses.curs_set(1)
+                curses.nocbreak()
+                self.stdscr.keypad(False)
+                curses.echo()
+                curses.endwin()
         except:
             pass
-        finally:
-            # Restauration de la sortie standard
-            sys.stdout = self._original_stdout
+
+    def cleanup(self):
+        """Ferme uniquement la fenêtre Curses (appelé par le controller)."""
+        try:
+            if self.stdscr:
+                curses.curs_set(1)
+                curses.nocbreak()
+                self.stdscr.keypad(False)
+                curses.echo()
+                curses.endwin()
+        except:
+            pass
+
+    def _print_final_summary(self):
+        """
+        Cette fonction est appelée automatiquement par Python à la toute fin du script.
+        Elle affiche tout l'historique accumulé.
+        """
+        # On vérifie que le buffer contient quelque chose
+        if hasattr(self, '_stdout_buffer') and self._stdout_buffer:
+            content = self._stdout_buffer.getvalue()
+            
+            if content.strip():
+                print("\n" + "="*60)
+                print("RÉSULTAT COMPLET DU TOURNOI")
+                print("="*60)
+                print(content)
+                print("="*60 + "\n")
 
     def next_view_mode(self):
         """Change le mode de vue."""

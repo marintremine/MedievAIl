@@ -1,4 +1,5 @@
 import time
+import json
 import pynput.keyboard as kb
 import pynput.mouse as ms
 import queue
@@ -144,6 +145,8 @@ class BattleController:
                             break
                         case "save":
                             self.last_saved = self.model.save()
+                            with open(self.datafile, "a") as f:
+                                json.dump(self.last_saved, f)
                             break
                         case "load":
                             if self.last_saved is not None:
