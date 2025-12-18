@@ -1,0 +1,558 @@
+from views.battle_view import BattleView
+from models.battle_model import BattleModel
+from settings import PYGAME_WIN
+import random
+import os
+import pygame
+import pygame.gfxdraw
+import math
+import json
+
+
+MINIMAP_SIZE = (300,150)
+MINIMAP_SCALE =  (MINIMAP_SIZE[0]*MINIMAP_SIZE[1])/(PYGAME_WIN[0]*PYGAME_WIN[1])
+LIST_UNITS = ["Pikeman","Crossbowman","Knight","Longsword"]
+LIST_OBSTACLES = ["Bush","Rock","Tree"]
+
+SIZE_TILE = (90,45)
+
+switchOrientation = {
+    "(1, 1)": "front",
+    "(-1, -1)": "back",
+    "(0, 1)": "s-west",
+    "(-1, 0)": "n-west",
+    "(1, 0)": "s-east",
+    "(0, -1)": "n-east",
+    "(-1, 1)": "left",
+    "(1, -1)": "right"
+}
+
+def assetLoaderUnits(unitname):
+    assetLoaded = {
+        "attack": {"front": [],
+                  "back": [],
+                  "s-west": [],
+                  "n-west": [],
+                  "s-east": [],
+                  "n-east": [],
+                  "left": [],
+                  "right": []
+                   },
+        "die": {"front": [],
+                  "back": [],
+                  "s-west": [],
+                  "n-west": [],
+                  "s-east": [],
+                  "n-east": [],
+                  "left": [],
+                  "right": []
+                },
+        "stand": {"front": [],
+                 "back": [],
+                 "s-west": [],
+                 "n-west": [],
+                 "s-east": [],
+                 "n-east": [],
+                 "left": [],
+                 "right": []
+                  },
+        "walk": {"front": [],
+                 "back": [],
+                 "s-west": [],
+                 "n-west": [],
+                 "s-east": [],
+                 "n-east": [],
+                 "left": [],
+                 "right": []
+                 }
+    }
+
+    with open("views/assets/units/{}/{}.json".format(unitname,unitname),"r", encoding="utf-8") as file:
+        unit_json_map = json.load(file)
+
+    for anim in assetLoaded:
+        path = "views/assets/units/{}/{}/{}{}".format(unitname,anim, unitname,anim)
+
+        for i in range(unit_json_map[anim]["side"]["front"]["start"],unit_json_map[anim]["side"]["front"]["end"]):
+            assetLoaded[anim]["front"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["front"][i-unit_json_map[anim]["side"]["front"]["start"]].set_colorkey((255, 0, 255))
+
+        for i in range(unit_json_map[anim]["side"]["s-west"]["start"],unit_json_map[anim]["side"]["s-west"]["end"]):
+            assetLoaded[anim]["s-west"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["s-west"][i - unit_json_map[anim]["side"]["s-west"]["start"]].set_colorkey((255, 0, 255))
+
+            assetLoaded[anim]["s-east"].append(pygame.transform.flip(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert(), True, False))
+            assetLoaded[anim]["s-east"][i - unit_json_map[anim]["side"]["s-west"]["start"]].set_colorkey((255, 0, 255))
+        for i in range(unit_json_map[anim]["side"]["left"]["start"],unit_json_map[anim]["side"]["left"]["end"]):
+            assetLoaded[anim]["left"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["left"][i - unit_json_map[anim]["side"]["left"]["start"]].set_colorkey((255, 0, 255))
+
+            assetLoaded[anim]["right"].append(pygame.transform.flip(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert(), True, False))
+            assetLoaded[anim]["right"][i - unit_json_map[anim]["side"]["left"]["start"]].set_colorkey((255, 0, 255))
+        for i in range(unit_json_map[anim]["side"]["n-west"]["start"],unit_json_map[anim]["side"]["n-west"]["end"]):
+            assetLoaded[anim]["n-west"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["n-west"][i - unit_json_map[anim]["side"]["n-west"]["start"]].set_colorkey((255, 0, 255))
+
+            assetLoaded[anim]["n-east"].append(pygame.transform.flip(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert(), True, False))
+            assetLoaded[anim]["n-east"][i - unit_json_map[anim]["side"]["n-west"]["start"]].set_colorkey((255, 0, 255))
+        for i in range(unit_json_map[anim]["side"]["back"]["start"],unit_json_map[anim]["side"]["back"]["end"]):
+            assetLoaded[anim]["back"].append(pygame.image.load(
+                "{}{:003d}.bmp".format(path,i)).convert())
+            assetLoaded[anim]["back"][i - unit_json_map[anim]["side"]["back"]["start"]].set_colorkey((255, 0, 255))
+    return assetLoaded
+
+def assetLoaderObstacles(obstaclesName):
+    assetLoaded = []
+    path = "views/assets/obstacles/{}/".format(obstaclesName)
+    for asset in os.listdir(path):
+        assetLoaded.append(pygame.image.load("{}{}".format(path,asset)))
+    for asset in range(0,len(assetLoaded)):
+        assetLoaded[asset].set_colorkey((255, 0, 255))
+    return assetLoaded
+
+def changeSpriteColor(spriteTab,color):
+    for unit in spriteTab:
+        for anim in spriteTab[unit]:
+            for side in spriteTab[unit][anim]:
+                for a in range(0,len(spriteTab[unit][anim][side])-1):
+                    textTmp = pygame.PixelArray(spriteTab[unit][anim][side][a])
+                    pygame.PixelArray.replace(textTmp, (0, 21, 130), color, 0.15)
+                    spriteTab[unit][anim][side][a] = textTmp.surface
+                    del textTmp
+
+def assetLoaderMap():
+    listmap = os.listdir('views/assets/grounds/')
+    return pygame.image.load('views/assets/grounds/{}'.format(listmap[random.randint(0,len(listmap)-1)])).convert()
+
+class obstacle(pygame.sprite.Sprite):
+    def __init__(self,obstacleData,texture,pygameSim):
+        super().__init__()
+        self.type = obstacleData.type
+        self.obstacleData = obstacleData
+        self.pygameSim = pygameSim
+        self.image = texture[self.type][random.randint(0,len(texture[self.type])-1)]
+        self.mapX = obstacleData.x
+        self.mapY = obstacleData.y
+        self.x , self.y = pygameSim.convertCartToIso((self.obstacleData.x, self.obstacleData.y))
+        self.x += pygameSim.mapX
+        self.y += pygameSim.mapY
+        self.rect = self.image.get_rect(midbottom=(self.x,self.y))
+
+    def updatePos(self):
+        pass
+
+    def update(self):
+        self.mapX = self.obstacleData.x
+        self.mapY = self.obstacleData.y
+        self.x, self.y = self.pygameSim.convertCartToIso((self.obstacleData.x, self.obstacleData.y))
+        self.x += self.pygameSim.mapX
+        self.y += self.pygameSim.mapY
+        self.rect = self.image.get_rect(midbottom=(self.x, self.y))
+
+
+class miniMap(pygame.sprite.Sprite):
+    def __init__(self, pygamesSim):
+        super().__init__()
+        self.visible = False
+        self.pygamesSim = pygamesSim
+        self.image = pygame.Surface(MINIMAP_SIZE).convert_alpha()
+        self.rect = self.image.get_rect(topright=(PYGAME_WIN[0], 0))
+        self.width = 2
+        self.scale_x = MINIMAP_SIZE[0] / self.pygamesSim.window.get_size()[0]
+        self.scale_y = MINIMAP_SIZE[1] / self.pygamesSim.window.get_size()[1]
+
+        self.scaleMap_x = MINIMAP_SIZE[0] / (self.pygamesSim.MAP_DIAG_W)
+        self.scaleMap_y = MINIMAP_SIZE[0] / (self.pygamesSim.MAP_DIAG_H)
+
+    def update(self):
+        """Update the minimap"""
+        self.image.fill((0, 0, 0, 0))
+        self.rect = self.image.get_rect(topright=(self.pygamesSim.window.get_width() - 1, 0))
+        self.makeMap(-self.pygamesSim.mapX, -self.pygamesSim.mapY)
+
+    def makeMap(self, pos_x, pos_y):
+        """MAP constructor"""
+
+        self.scale_x = MINIMAP_SIZE[0] / self.pygamesSim.window.get_size()[0]
+        self.scale_y = MINIMAP_SIZE[1] / self.pygamesSim.window.get_size()[1]
+
+        self.scaleMap_x = MINIMAP_SIZE[0] / (self.pygamesSim.MAP_DIAG_W)
+        self.scaleMap_y = MINIMAP_SIZE[1] / (self.pygamesSim.MAP_DIAG_H)
+
+        windowX = self.pygamesSim.window.get_width()
+        windowY = self.pygamesSim.window.get_height()
+
+        # Create the map surface on the minimap
+
+        tmpSurf = pygame.Surface((self.pygamesSim.MAP_DIAG_W * self.scaleMap_x,
+                                  self.pygamesSim.MAP_DIAG_H * self.scaleMap_y)).convert_alpha()
+        tmpSurf.fill((0, 0, 0, 0))
+
+        points = [self.convertPos((0, 0)),
+                  self.convertPos((self.pygamesSim.MAP_WIDTH, 0)),
+                  self.convertPos((self.pygamesSim.MAP_WIDTH, self.pygamesSim.MAP_HEIGHT)),
+                  self.convertPos((0, self.pygamesSim.MAP_HEIGHT))]
+
+        pygame.draw.polygon(tmpSurf, (0, 255, 0), points)
+        pygame.draw.polygon(tmpSurf, (255, 255, 255), points,width=2)
+        tmprect = tmpSurf.get_rect(center=(MINIMAP_SIZE[0] / 2, MINIMAP_SIZE[1] / 2))
+
+        # Populate minimap with units
+
+        for u in self.pygamesSim.object_list:
+            if isinstance(u, unit_model):
+                if u.is_alive:
+                    pygame.draw.circle(tmpSurf, u.color, self.convertPos((u.mapX, u.mapY)), 3)
+
+        self.image.blit(tmpSurf, tmprect)
+
+
+    def mapTouch(self, pos):
+        """Calculate the position of the touch on the minimap"""
+        if not self.visible:
+            return None
+
+        # Position relative au coin haut-gauche de la minimap
+        local_x = pos[0] - self.rect.left
+        local_y = pos[1] - self.rect.top
+
+        # Vérifie que le clic est bien dans la minimap
+        if local_x < 0 or local_y < 0 or local_x > MINIMAP_SIZE[0] or local_y > MINIMAP_SIZE[1]:
+            return None
+
+        # Conversion inverse iso -> carte (approximation suffisante)
+        map_x = (local_x / MINIMAP_SIZE[0]) * self.pygamesSim.MAP_WIDTH
+        map_y = (local_y / MINIMAP_SIZE[1]) * self.pygamesSim.MAP_HEIGHT
+
+        return (map_x, map_y)
+
+
+
+    def convertPos(self, pos):
+        """Convert cartesian coordinates to isometric coordinates"""
+        iso_X = ((pos[0] - pos[1]) + self.pygamesSim.MAP_WIDTH) * self.scaleMap_x
+        iso_Y = ((pos[0] + pos[1]) / 2) * self.scaleMap_y
+        return [iso_X, iso_Y]
+
+    def toggleVisible(self):
+        """Toggle visible minimap"""
+        self.visible = not self.visible
+
+
+class unit_model(pygame.sprite.Sprite):
+    def __init__(self,unitData,texture,pygameSim,color):
+        super().__init__()
+        self.unitData = unitData
+        self.mapX = unitData.x
+        self.mapY = unitData.y
+        self.x, self.y = pygameSim.convertCartToIso((unitData.x, unitData.y))
+        self.x += pygameSim.mapX
+        self.y += pygameSim.mapY
+        self.color = color
+        self.name = unitData.name
+        self.action = unitData.currentAction
+        self.TEXTURE = texture[self.name]
+        self.pygameSim = pygameSim
+        self.image = None
+        self.rect = None
+        self.direction = self.unitData.direction
+        self.animation = "stand"
+        self.animationKeyMax = len(self.TEXTURE["stand"][switchOrientation[str(self.direction)]]) -1
+        self.animationKey = random.randint(0, self.animationKeyMax)
+        self.is_alive = True
+        self.displayText = self.pygameSim.font.render(str(self.unitData.general.name), False, color)
+
+    def updatePos(self):
+        self.mapX = self.unitData.x
+        self.mapY = self.unitData.y
+        self.x, self.y = self.pygameSim.convertCartToIso((self.unitData.x, self.unitData.y))
+        self.x += self.pygameSim.mapX
+        self.y += self.pygameSim.mapY
+        # Play the dying animation
+        if self.is_alive != self.unitData.is_alive():
+            self.is_alive = False
+            self.animation = "die"
+            self.animationKeyMax = len(self.TEXTURE[self.animation][switchOrientation[str(self.direction)]])-1
+            self.animationKey = 0
+
+    def update (self):
+
+        try:
+            self.direction = (int(math.ceil(self.unitData.direction[0])), int(math.ceil(self.unitData.direction[1])))
+            _=switchOrientation[str(self.direction)]
+        except:
+            if self.unitData.direction[0] < 0 and self.unitData.direction[1] < 0:
+                self.direction = "(-1, -1)"
+            else:
+                self.direction = "(1, 1)"
+
+        # Play or actuate the actual animation
+        if self.pygameSim.model.running:
+            if self.unitData.currentAction != self.action and self.is_alive == True:
+                self.action = self.unitData.currentAction
+                self.animation = self.action
+                self.animationKeyMax = len(self.TEXTURE[self.action][switchOrientation[str(self.direction)]])-1
+                self.animationKey = random.randint(0, self.animationKeyMax)
+            elif self.animation == "die":
+                if self.animationKey < self.animationKeyMax: self.animationKey += 0.5
+                else:
+                    self.action = "dead"
+            else:
+                if self.animationKey > self.animationKeyMax:
+                    self.animationKey = 0
+                else:
+                    self.animationKey += 0.5
+
+        if True :#self.action != "dead":
+            try:
+                self.image = self.TEXTURE[self.animation][switchOrientation[str(self.direction)]][math.floor(self.animationKey)]
+            except IndexError:
+                pass
+            if self.is_alive:
+                pass
+
+        else:
+            self.image.set_alpha(0)
+        self.rect = self.image.get_rect(midbottom=(self.x, self.y))
+
+
+class PygameView(BattleView):
+    def __init__(self, model : BattleModel, controller):
+        super().__init__(model, controller)
+
+        #---MAP & WINDOW CONST---
+
+        self.MAP_HEIGHT = None
+        self.MAP_WIDTH = None
+        self.MAP_DIAG_W = None
+        self.MAP_DIAG_H = None
+
+        self.WINDOW_HEIGHT = PYGAME_WIN[1]
+        self.WINDOW_WIDTH = PYGAME_WIN[0]
+        self.WINDOW_OFFSET_H = self.WINDOW_HEIGHT / 2
+        self.WINDOW_OFFSET_W = self.WINDOW_WIDTH / 2
+
+        self.SCALE = 90
+        self.ZOOM = 1
+
+        #---PYGAME ENV DEFINE---
+        pygame.init()
+        pygame.font.init()
+        pygame.display.set_caption("MedievAIl")
+        pygame.display.set_icon(pygame.image.load("views/assets/icons/game.png"))
+        pygame.mouse.set_cursor(pygame.cursors.Cursor((0,0),pygame.image.load("views/assets/cursors/default32x32.cur")))
+
+        self.font = pygame.font.SysFont('Calibri', 20)
+        self.window = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT),pygame.HWSURFACE | pygame.DOUBLEBUF)
+        self.window.convert_alpha()
+
+        #---MAP VARIABLES---
+        self.MAP_TEXTURE = assetLoaderMap()
+        self.map = None
+        self.rect = None
+        self.mapX = 0
+        self.mapY = 0
+
+        #---Minimap---
+        self.miniMap = None
+        self.miniMapGrp = None
+
+        #---GUI---
+        self.generalNameText = None
+        self.commandText = self.font.render(" P : PAUSE/PLAY | +/- : SPEED | ZQSD : MOVE | M : MINIMAP | ESC : QUIT | F10 : FULLSCREEN | F11 : SAVE",False, (255, 255, 255))
+
+        #---Unit asset loading--
+        self.object_list = None
+        self.ASSETS_B = {}
+        self.ASSETS_R = {}
+
+        for u in LIST_UNITS:
+            self.ASSETS_B[u] = assetLoaderUnits(u)
+            self.ASSETS_R[u] = assetLoaderUnits(u)
+
+        changeSpriteColor(self.ASSETS_R,(255,0,0))
+
+        self.ASSETS_OBS = {}
+        for o in LIST_OBSTACLES:
+            self.ASSETS_OBS[o] = assetLoaderObstacles(o)
+
+        self.unit_spritegroup = pygame.sprite.Group()
+
+    def load(self):
+        self.MAP_HEIGHT = self.model.map_height
+        self.MAP_WIDTH = self.model.map_width
+        self.MAP_DIAG_W = abs( - self.MAP_HEIGHT - self.MAP_WIDTH)
+        self.MAP_DIAG_H = (self.MAP_HEIGHT + self.MAP_WIDTH) // 2
+
+        self.generalNameText = self.font.render("{} | {}".format(self.model.general_1.name, self.model.general_2.name),False, (255, 255, 255))
+
+        self.miniMap = miniMap(self)
+        self.miniMapGrp = pygame.sprite.Group()
+        self.miniMapGrp.add(self.miniMap)
+
+
+        self.gridSize = self.MAP_WIDTH
+        self.tiles = []
+        print(self.gridSize,self.MAP_DIAG_H,self.MAP_DIAG_W)
+
+        for grid_y in range(self.gridSize):
+            for grid_x in range(self.gridSize):
+                self.tiles.append({'grid_x': grid_x, 'grid_y': grid_y, 'color': (0,255,0)})
+
+        self.object_list = []
+        self.unit_spritegroup.empty()
+        # --- initialise army 1 units
+        for unit in self.model.get_army(self.model.general_1):
+            tmp = unit_model(unit,self.ASSETS_R,self,pygame.color.Color(255,0,0))
+            self.object_list.append(tmp)
+
+        # --- initialise army 2 units
+        for unit in self.model.get_army(self.model.general_2):
+            tmp = unit_model(unit,self.ASSETS_B,self,pygame.color.Color(0,0,255))
+            self.object_list.append(tmp)
+
+        # --- initialise obstacles
+        for obj in self.model.objects["obstacles"]:
+            tmp = obstacle(obj,self.ASSETS_OBS,self)
+            self.object_list.append(tmp)
+
+    def makeMap(self,pos_x,pos_y):
+        """MAP constructor"""
+        for tile in self.tiles:
+            x,y = self.convertCartToIso((tile['grid_x'],tile['grid_y']))
+            screen_X = x + self.mapX
+            screen_Y = y + self.mapY
+            if -SIZE_TILE[0] < screen_X < (self.window.get_width() + SIZE_TILE[0]) and -SIZE_TILE[1] < screen_Y < (self.window.get_height() + SIZE_TILE[1]) :
+                points = [
+                    (screen_X, screen_Y),
+                    (screen_X + SIZE_TILE[0]/2, screen_Y + SIZE_TILE[1]/2),
+                    (screen_X, screen_Y + SIZE_TILE[1]),
+                    (screen_X - SIZE_TILE[0]/2, screen_Y + SIZE_TILE[1]/2)
+                ]
+                try:
+                    pygame.gfxdraw.textured_polygon(self.window, points, self.MAP_TEXTURE, 0, 0)
+                except pygame.error:
+                    pass
+                pygame.draw.polygon(self.window, (100, 100, 100), points,width=2)
+
+    def convertCartToIso(self,points):
+        """Function to convert cartesian position to isometric position"""
+        iso_x = ((points[0] - points[1]) * ( SIZE_TILE[0] / 2 ))
+        iso_y =((points[0] + points[1]) * ( SIZE_TILE[1] / 2 ))
+        return [iso_x, iso_y]
+
+    def sortingUnits(self,word):
+        return word.x*word.y
+
+    def updateSpriteGroup(self):
+        """Method to update and order sprite group
+        used to resolve z-axis error"""
+        self.object_list.sort(key=self.sortingUnits)
+        for unit in self.object_list:
+            unit.updatePos()
+            if -SIZE_TILE[0] < unit.x < (self.window.get_width() + SIZE_TILE[0]) and -SIZE_TILE[1] < unit.y < (self.window.get_height() + SIZE_TILE[1]) :
+                self.unit_spritegroup.add(unit)
+
+    def render(self):
+        """Function to render the game screen"""
+
+        self.getInput()
+        #--- Render MAP & UNITS
+        self.window.fill((0,0,0))
+        self.makeMap(0,0)
+        self.updateSpriteGroup()
+        self.unit_spritegroup.update()
+        self.unit_spritegroup.draw(self.window)
+
+        if self.miniMap.visible:
+            self.miniMapGrp.update()
+            self.miniMapGrp.draw(self.window)
+
+        #--- Render UI
+
+        self.window.blit(self.generalNameText, ((self.window.get_width()/2)-self.generalNameText.get_width()/2, 0))
+
+        self.window.blit(self.font.render("Running : {} | Speed : {:.2f}x".format(self.model.running,self.controller.game_speed),
+                                    False, (255,255,255)),(0,0))
+
+        # self.window.blit(self.font.render("ZOOM : {:.2f}x".format(self.ZOOM),
+        #                           False, (255,255,255)),
+        #                             (self.window.get_width()-self.font.size("ZOOM : 0.00x")[0],0))
+        self.window.blit(self.commandText, (0,self.window.get_height()-self.font.get_height()))
+
+        pygame.display.flip()
+        self.unit_spritegroup.empty()
+        pygame.time.wait(1)
+
+    def getInput(self):
+        """Method who get all input for the pygame view"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                pygame.quit()
+                exit()
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    # self.zoomIn()
+                    pass
+                elif event.key == pygame.K_DOWN:
+                    # self.zoomOut()
+                    pass
+                elif event.key == pygame.K_F10:
+                    pygame.display.toggle_fullscreen()
+                elif event.key == pygame.K_m:
+                    self.miniMap.toggleVisible()
+
+            # elif event.type == pygame.MOUSEWHEEL:
+            #     if event.y == 1:
+            #         self.zoomIn()
+            #     elif event.y == -1:
+            #         self.zoomOut()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    self.moveMinimap(event.pos)
+
+        #It faster to use pygames build-in keyboard event than use an external API
+        key = pygame.key.get_pressed()
+        if key[pygame.K_z]:
+            self.mapY += 10*self.ZOOM
+        elif key[pygame.K_s]:
+            self.mapY -= 10*self.ZOOM
+        elif key[pygame.K_q]:
+            self.mapX += 10*self.ZOOM
+        elif key[pygame.K_d]:
+            self.mapX -= 10*self.ZOOM
+
+    # def zoomIn(self):
+    #    if self.ZOOM < 2: self.ZOOM += 0.5
+    #
+    # def zoomOut(self):
+    #     if self.ZOOM > 0.5:
+    #         self.ZOOM -= 0.5
+
+    def moveMinimap(self, pos):
+        """Move camera using minimap click"""
+
+        if not self.miniMap.visible:
+            return
+
+        target = self.miniMap.mapTouch(pos)
+        if target is None:
+            return
+
+        map_x, map_y = target
+
+        # Conversion carte -> iso
+        iso_x, iso_y = self.convertCartToIso((map_x, map_y))
+
+        # Centrage caméra
+        self.mapX = self.window.get_width() // 2 - iso_x
+        self.mapY = self.window.get_height() // 2 - iso_y

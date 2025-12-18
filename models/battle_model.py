@@ -1,0 +1,243 @@
+import json
+from pathlib import Path
+import random
+from jinja2 import Environment, FileSystemLoader
+
+from models.general import *
+from models.unit import *
+from models.order import *
+from models.general import *
+from models.obstacle import *
+from models.spatial_grid import SpatialGrid
+from utils import LIST_UNITS_TYPES
+
+
+class BattleModel:
+    def __init__(self)->None:
+        self.general_1 = None
+        self.general_2 = None
+        self.running = False
+        self.map_width = None
+        self.map_height = None
+        self.delta_time = 0.0
+        self.objects = {
+            'obstacles': set(),
+            'units': set(),
+            'armies': {}
+        }
+        self.spatial_grid = None
+        self.winner = None
+        
+    
+    def reset(self)->None:
+        """Réinitialise le modèle de bataille."""
+        self.general_1 = None
+        self.general_2 = None
+        self.map_width = None
+        self.map_height = None
+        self.objects = {
+            'obstacles': set(),
+            'units': set(),
+            'armies': {}
+        }
+        self.spatial_grid = None
+        self.winner = None
+
+    def load(self, data, general_1:General, general_2:General)->None:
+        """Charge le scénario de bataille à partir d'un fichier JSON et initialise les généraux et leurs armées."""
+
+        self.reset()
+
+        # assign generals
+        self.general_1 = general_1
+        self.general_2 = general_2
+
+        if isinstance(data, str):
+            with open(data, "r", encoding="utf-8") as f:
+                loaded_data = json.load(f)
+        else:
+            loaded_data = data
+
+        self.objects['armies'][self.general_1] = set()
+        self.objects['armies'][self.general_2] = set()
+            
+        # load map
+        self.map_width = loaded_data["map_width"]
+        self.map_height = loaded_data["map_height"]
+        self.spatial_grid = SpatialGrid(self.map_width, self.map_height)
+
+        armies_data = [
+            (loaded_data.get("army1", []), self.general_1),
+            (loaded_data.get("army2", []), self.general_2)
+        ]
+
+        # load army
+        for army_list, general in armies_data:
+            for unit_data in army_list:
+                # Création
+                unit = unitFactory(
+                    unit_type=unit_data["type"],
+                    general=general,
+                    x=unit_data["x"],
+                    y=unit_data["y"],
+                    battle_model=self
+                )
+                
+                # Restauration des stats
+                unit.hp = unit_data.get("hp", unit.hp)
+                
+                # Timers
+                unit.current_reload_time = unit_data.get("current_reload_time", 0)
+                unit.current_attack_delay = unit_data.get("current_attack_delay", 0)
+
+                # Etat actuel
+                unit.currentAction = "stand" 
+
+                # Enregistrement dans les collections
+                self.objects['units'].add(unit)
+                self.objects['armies'][general].add(unit)
+
+
+        # load obstacles
+        for obs_data in loaded_data.get("obstacles", []):
+            obstacle = ObstacleFactory(
+                obs_type=obs_data.get("type", "obstacle"),
+                x=obs_data["x"],
+                y=obs_data["y"],
+                battle_model=self,
+                )
+            self.objects['obstacles'].add(obstacle)
+
+        print(f"Battle loaded between {self.general_1.name} vs {self.general_2.name} from {data if isinstance(data, str) else 'quick save'}.")
+
+    def save(self) -> dict:
+        """
+        Enregistre l'état actuel de la bataille dans un dictionnaire.
+        """
+        data = self.to_dict()
+        print(f"BattleModel saved with {len(self.objects['units'])} units and {len(self.objects['obstacles'])} obstacles.")
+        return data
+
+    def snapshot_html(self) -> None:
+        """
+        Génère un snapshot HTML du modèle de bataille
+        """
+        file_loader = FileSystemLoader('templates') 
+        env = Environment(loader=file_loader)
+        template = env.get_template('snapshot.html')
+        html = template.render(model=self)
+        
+        snapshots_dir = Path("snapshots")
+        snapshots_dir.mkdir(parents=True, exist_ok=True)
+
+        with open(snapshots_dir / 'snapshot.html', "w", encoding="utf-8") as f:
+            f.write(html)
+
+    def remove_unit(self, unit: Unit) -> None:
+        """Supprime une unité du modèle de bataille."""
+        self.objects['units'].discard(unit)
+        
+        if unit.general in self.objects['armies']:
+            self.objects['armies'][unit.general].discard(unit)
+
+
+    def update(self) -> None:
+        """Met à jour l'état de la bataille à chaque tick."""
+
+        self.spatial_grid.clear()
+        
+        for unit in self.objects['units']:
+            self.spatial_grid.add_object(unit)
+        for obstacle in self.objects['obstacles']:
+            self.spatial_grid.add_object(obstacle)
+
+        # Generals decide in random order
+        generals = [g for g in (self.general_1, self.general_2) if g is not None]
+        random.shuffle(generals)
+        for gen in generals:
+            gen.decide()
+
+        for unit in list(self.objects['units']):
+            unit.action()
+        
+        # Retirer les unités mortes
+        dead_units = [u for u in self.objects['units'] if not u.is_alive()]
+        for dead in dead_units:
+            self.remove_unit(dead)
+                
+        # Check for end of battle
+        army1_alive = len(self.objects['armies'][self.general_1]) > 0
+        army2_alive = len(self.objects['armies'][self.general_2]) > 0
+        if army1_alive and not army2_alive:
+            self.winner = self.general_1
+        if army2_alive and not army1_alive:
+            self.winner = self.general_2
+
+    def summary(self):
+        """Fait un bilan des unités restantes a la fin d'une bataille"""
+        survivors = {unit_type: 0 for unit_type in LIST_UNITS_TYPES}
+
+        for unit in self.get_army(self.winner):
+            unit_name = unit.name.lower()
+            if unit_name in survivors:
+                survivors[unit_name] += 1
+
+        return survivors
+
+    def pause(self)->None:
+        """Met en pause ou reprend la simulation de la bataille."""
+        self.running = not self.running
+        if self.running:
+            print("Battle resumed.")
+        else:
+            print("Battle paused.")
+    
+    def is_in_map(self, x, y):
+        """Vérification si les coordonnées sont dans les limites de la carte"""
+        if self.map_width is None or self.map_height is None:
+            return False
+        return 0 <= x < self.map_width and 0 <= y < self.map_height
+    
+    def is_obstacle_at(self, x, y):
+        """Vérification de si un obstacle se trouve à la position (x, y)"""
+        for obstacle in self.objects['obstacles']:
+            if (obstacle.x <= x <= (obstacle.x + obstacle.sizeX)) and obstacle.y <= y <= (obstacle.y + obstacle.sizeY):
+                return True
+        return False
+
+    def get_units(self) -> set[Unit]:
+        """Retourne l'ensemble des unités dans le modèle de bataille."""
+        return self.objects['units']
+    
+    def get_obstacles(self) -> set[Obstacle]:
+        """Retourne l'ensemble des obstacles dans le modèle de bataille."""
+        return self.objects['obstacles']
+    
+    def get_army(self, general: General) -> set[Unit]:
+        """Retourne l'ensemble des unités appartenant au général spécifié."""
+        return self.objects['armies'].get(general, set())
+    
+    def get_enemy_army(self, general: General) -> set[Unit]:
+        """Retourne l'ensemble des unités ennemies par rapport au général spécifié."""
+        enemies = set()
+        for gen, army in self.objects['armies'].items():
+            if gen != general:
+                enemies.update(army)
+        return enemies
+    
+    def to_dict(self):
+        return {
+            "general1": self.general_1.name,
+            "general2": self.general_2.name,
+            "map_width": self.map_width,
+            "map_height": self.map_height,
+            "army1": [
+                unit.to_dict() for unit in self.objects['armies'][self.general_1]
+            ],
+            "army2": [
+                unit.to_dict() for unit in self.objects['armies'][self.general_2]
+            ],
+            "obstacles": [
+                obstacle.to_dict() for obstacle in self.objects['obstacles']
+            ],
+        }

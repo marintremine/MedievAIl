@@ -1,0 +1,10 @@
+[] global ia 
+[X] snapshot (ajouter l'odre en cours, cooldown, move_progress)
+[] Link datafile 
+[] STATS FIN DE PARTIE
+[X] Thread tournoi parallèle
+[] Entity block v2
+
+---
+
+[] F9
