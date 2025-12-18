@@ -6,11 +6,11 @@ map_width = 120
 map_height = 120
 
 # Paramètres des unités
-num_crossbow = 1
-num_knight = 0
-num_pikeman = 0
-num_longsword = 0
-num_obstacle = 0
+num_crossbow = 120
+num_knight = 120
+num_pikeman = 120
+num_longsword = 120
+num_obstacle = 100
 
 # Générer obstacles
 obstacles = []

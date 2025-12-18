@@ -104,9 +104,9 @@ class Unit(Object):
             self.currentAction = "stand" # On attend
             return False
 
-        self.currentAction = "attack"
         # Si l'animation d'attaque n'est pas finie (Wind-up)
         if self.current_attack_delay < self.attack_delay:
+                self.currentAction = "attack"
                 self.current_attack_delay += self.battle_model.delta_time
                 return False # L'attaque n'est pas encore partie
         
@@ -311,7 +311,7 @@ class Longsword(Unit):
             range_= 0,
             line_of_sight=6,
             speed=0.96,
-            attack_delay=0,
+            attack_delay=0.35,
             reload_time=2.0,
             x= x,
             y= y,

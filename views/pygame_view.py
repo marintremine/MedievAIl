@@ -145,6 +145,9 @@ class obstacle(pygame.sprite.Sprite):
         self.y += pygameSim.mapY
         self.rect = self.image.get_rect(midbottom=(self.x,self.y))
 
+    def updatePos(self):
+        pass
+
     def update(self):
         self.mapX = self.obstacleData.x
         self.mapY = self.obstacleData.y
@@ -204,7 +207,7 @@ class miniMap(pygame.sprite.Sprite):
         # Populate minimap with units
 
         for u in self.pygamesSim.object_list:
-            if  isinstance(u, unit_model):
+            if isinstance(u, unit_model):
                 if u.is_alive:
                     pygame.draw.circle(tmpSurf, u.color, self.convertPos((u.mapX, u.mapY)), 3)
 
@@ -278,13 +281,24 @@ class unit_model(pygame.sprite.Sprite):
         self.is_alive = True
         self.displayText = self.pygameSim.font.render(str(self.unitData.general.name), False, color)
 
-    def update (self):
+    def updatePos(self):
         self.mapX = self.unitData.x
         self.mapY = self.unitData.y
         self.x, self.y = self.pygameSim.convertCartToIso((self.unitData.x, self.unitData.y))
         self.x += self.pygameSim.mapX
         self.y += self.pygameSim.mapY
-        self.direction = "(1, 1)"  #(int(math.ceil(self.unitData.direction[0])), int(math.ceil(self.unitData.direction[1])))
+        self.is_alive = self.unitData.is_alive()
+
+    def update (self):
+
+        try:
+            self.direction = (int(math.ceil(self.unitData.direction[0])), int(math.ceil(self.unitData.direction[1])))
+            _=switchOrientation[str(self.direction)]
+        except:
+            if self.unitData.direction[0] < 0 and self.unitData.direction[1] < 0:
+                self.direction = "(-1, -1)"
+            else:
+                self.direction = "(1, 1)"
 
         # Play the dying animation
         if self.is_alive != self.unitData.is_alive():
@@ -300,7 +314,6 @@ class unit_model(pygame.sprite.Sprite):
                 self.animation = self.action
                 self.animationKeyMax = len(self.TEXTURE[self.action][switchOrientation[str(self.direction)]])-1
                 self.animationKey = random.randint(0, self.animationKeyMax)
-
             elif self.animation == "die":
                 if self.animationKey < self.animationKeyMax: self.animationKey += 0.5
                 else:
@@ -457,7 +470,7 @@ class PygameView(BattleView):
         used to resolve z-axis error"""
         self.object_list.sort(key=self.sortingUnits)
         for unit in self.object_list:
-            unit.update()
+            unit.updatePos()
             if -SIZE_TILE[0] < unit.x < (self.window.get_width() + SIZE_TILE[0]) and -SIZE_TILE[1] < unit.y < (self.window.get_height() + SIZE_TILE[1]) :
                 self.unit_spritegroup.add(unit)
 
