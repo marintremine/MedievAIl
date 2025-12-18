@@ -373,7 +373,7 @@ class Aegis(General):
             score = -(self.manhattan(unit, enemy))
             if unit.name == "Knight" and enemy.name == "Crossbowman":
                 score += 3
-            if unit.name == "Knight" and enemy.name == "Pikeman" and self.manhattan(unit, enemy) > 2:
+            if unit.name == "Knight" and (enemy.name == "Pikeman" or enemy.name == "Longsword") and self.manhattan(unit, enemy) > 2:
                 score -= 5
             if best_score is None or score > best_score:
                 best_score = score
@@ -400,7 +400,7 @@ class Aegis(General):
 
             if self.manhattan(unit, target) <= 2:
                unit.order = Attack(unit, target)
-            elif target.name == "Pikeman" and self.has_crossbow_support(unit):
+            elif (target.name == "Pikeman" or target.name == "Longsword") and self.has_crossbow_support(unit):
                unit.order = Wait(unit)
             else:
                unit.order = Attack(unit, target)

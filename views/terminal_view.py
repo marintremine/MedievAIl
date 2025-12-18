@@ -371,7 +371,7 @@ class TerminalView(BattleView):
             return "P"
         elif isinstance(obj, Crossbowman):
             return "C"
-        elif isinstance(obj, Longswordsman):
+        elif isinstance(obj, Longsword):
             return "L"
         elif isinstance(obj, Bush):
             return "B"
