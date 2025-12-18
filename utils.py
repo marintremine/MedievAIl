@@ -4,4 +4,4 @@ def ensure_key(d: dict, key, default):
         d[key] = default
     return d[key]
 
-LIST_UNITS_TYPES = ["pikeman", "knight", "crossbowman", "longswordsman"]
+LIST_UNITS_TYPES = ["pikeman", "knight", "crossbowman", "longsword"]
