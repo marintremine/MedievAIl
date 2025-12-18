@@ -48,6 +48,7 @@ def cli_battle(args):
 def cli_load(args):
     model = BattleModel()
     controller = BattleController(model)
+    controller.datafile = args.savedfile
 
     if isinstance(args.savedfile, str):
            with open(args.savedfile, "r", encoding="utf-8") as f:
