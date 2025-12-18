@@ -1,6 +1,9 @@
 from __future__ import annotations
 import random
 import math
+
+from Xlib.Xcursorfont import target
+
 from models.order import Attack, Move, Wait, Defense
 from models.unit import *
 from enum import Enum
@@ -116,62 +119,224 @@ class IA_Global(General):
             self.tactic_attack_weakest,
             self.tactic_one_shot_enemy,
             self.tactic_focus_nearest,
+            self.tactic_group_units,
+            self.tactic_avoid_hard_counters,
         ]
+        self.formation_broken = False
         super().__init__("IA_Global", battle_model)
+
 
     def tactic_hit_and_run(self, unit):
         weight = 0
         order = None
         return weight, order
 
-    def tactic_bonus_damage(self, unit):
-        weight = 0
-        order = None
-        return weight, order
-
-    #tactique se mettre en sécurité
     def tactic_safe_position(self, unit):
+        """Si le puissance de l'unité est inférieuers a 30% il joint le point de rassemblement qui est la moyenne de tous ces alléis"""
         weight = 0
         order = None
+        if unit.hp > (unit.max_hp * 15 / 100):
+            return weight, order
+        allies = self.battle_model.get_army(self)
+        if not allies:
+            return weight, order
+
+        coordd = self.find_meeting_point(allies)
+        #On regarde si on se trouve déjà dans le groupe de coordonnées
+        if abs(unit.x - coordd[0]) + abs(unit.y - coordd[1]) <=2:
+            return 0, None
+        weight= 40
+        order = Move(unit, coordd[0], coordd[1])
         return weight, order
 
-    def tactic_group_units(self, unit):
+    def tactic_avoid_hard_counters(self, unit):
+        """
+        fuis les bonus des ennemis
+        """
         weight = 0
         order = None
+        enemies = self.battle_model.get_enemy_army(self)
+        for enemy in enemies:
+            bonus= enemy.bonus_attacks.get(type(unit), 0)
+            if bonus > 0:
+                dist = self.manhattan(unit, enemy)
+                threat_range = enemy.range + enemy.speed + 1
+                if dist <= threat_range:
+                    if self.calc_damages(unit, enemy) >= enemy.hp:
+                        continue
+                    weight = 80
+                    coor= self.find_meeting_point(self.battle_model.get_army(self))
+                    order = Move(unit, coor[0], coor[1])
+                    return weight, order
         return weight, order
-    
+
+    def tactic_bonus_damage(self, unit):
+        """Cherche la cible sur laquelle on a un bonus d'attaque."""
+        weight = 0
+        order = None
+        if not unit.bonus_attacks:
+            return weight, order
+        enemy_army = self.battle_model.get_enemy_army(self)
+        target = None
+        best_dist = 999
+        for enemy in enemy_army:
+            if type(enemy) in unit.bonus_attacks:
+                dist = self.manhattan(unit, enemy)
+                if dist < best_dist:
+                    best_dist = dist
+                    target = enemy
+        if target:
+            if best_dist <= max(1, unit.range):
+                weight = 95
+                order = Attack(unit, target)
+            else:
+                weight = 90
+                order = Move(unit, target.x, target.y)
+
+        return weight, order
+
     def tactic_attack_weakest(self, unit):
+        """Attaque l'ennemi le plus faible à portée."""
         weight = 0
         order = None
+        targets = self.find_enemies_in_scope(unit, self.battle_model.get_enemy_army(self))
+        if targets:
+            weakest = min(targets, key=lambda e: e.hp)
+            weight = 60
+            order = Attack(unit, weakest)
         return weight, order
+
 
     def tactic_one_shot_enemy(self, unit):
+        """ Est il possibke de oneshotter un enemi et si oui le plus fort (max hp)"""
         weight = 0
         order = None
+        enemies = self.battle_model.get_enemy_army(self)
+        enemy_to_shot = self.find_enemies_in_scope(unit, enemies)
+        candidates = []
+        if enemy_to_shot:
+            for enemy in enemy_to_shot:
+                potential_dmg= self.calc_damages(unit, enemy)
+                if potential_dmg >= enemy.hp:
+                    weight = 100
+                    candidates.append(enemy)
+            if candidates:
+                target = self.find_highest_hp(candidates)
+                order = Attack(unit, target)
         return weight, order
 
+    def find_all_in_scope(self, target, list_candidate):
+        candidate_scope = set()
+        for candidate in list_candidate:
+            dist= self.manhattan(target, candidate)
+            if candidate.range >= dist:
+                candidate_scope.add(candidate)
+        return candidate_scope
+
+    def find_enemies_in_scope(self, unit, enemies):
+        return [enemy for enemy in enemies if unit.range >= self.manhattan(unit, enemy)]
+
+    def calc_damages(self, unit, target):
+        dmg = unit.attack
+        bonus = unit.bonus_attacks.get(type(target), 0)
+        return dmg + bonus
+
+    def squad_attack(self, busy_list, army):
+        """Attaque les enemis en groupe afin de faire le plus de dégâts possible"""
+
+        enemy_army = self.battle_model.get_enemy_army(self)
+        sorted_enemies = sorted([e for e in enemy_army], key=lambda x: x.hp)
+        for enemy in sorted_enemies:
+            squad = self.find_all_in_scope(enemy, army)
+            if squad:
+                target_hp = 0
+                candidates = set()
+                for soldier in squad:
+                    if soldier in busy_list:
+                        continue
+                    target_hp+= self.calc_damages(soldier, enemy)
+                    candidates.add(soldier)
+                    if target_hp >= enemy.hp:
+                        for unit in candidates:
+                            unit.order = Attack(unit, enemy)
+                            busy_list.add(unit)
+                        break
+
     def tactic_focus_nearest(self, unit):
-        weight = 0
+        """Le moteur principal : aller vers l'ennemi et taper"""
+        weight = 10  # Poids de base pour que l'unité fasse au moins ça
         order = None
         enemies = unit.nearest_enemies()
         if enemies:
             target = enemies[0]
-            order = Attack(unit, target)
-            weight = 5
+            dist = self.manhattan(unit, target)
+            if dist <= max(1,unit.range):
+                order = Attack(unit, target)
+                weight = 50
+            else:
+                order = Move(unit, target.x, target.y)
+                weight = 20
 
         return weight, order
 
+    def tactic_group_units(self, unit):
+        """Si aucun ennemi en vue, on se regroupe"""
+        weight = 5
+        order = Wait(unit)
+        friends = self.battle_model.get_army(self)
+        if len(friends) > 1:
+            coor= self.find_meeting_point(friends)
+
+            if abs(unit.x - coor[0]) + abs(unit.y - coor[1]) > 3:
+                order = Move(unit, coor[0], coor[1])
+
+        return weight, order
+
+    def find_highest_hp(self, units):
+        max_hp = units[0]
+        for unit in units:
+            if unit.hp > max_hp.hp:
+                max_hp = unit
+        return max_hp
+
+    def find_meeting_point(self, army):
+        x_avg = 0
+        y_avg = 0
+        min_x = self.battle_model.map_width
+        max_x = 0
+        for unit in army:
+            x_avg += unit.x
+            y_avg += unit.y
+            if unit.x > max_x:
+                max_x = unit.x
+            if unit.x < min_x:
+                min_x = unit.x
+
+        x_avg //= len(army)
+        y_avg //=len(army)
+        return (x_avg, y_avg)
+
     def decide(self) -> None:
+        busy_list = set()
+        army = self.battle_model.get_army(self)
+        self.squad_attack(busy_list, army)
         match self.strategy:
             case self.Strategy.OFFENSIVE:
                 for unit in self.battle_model.get_army(self):
+                    best_tactic_name = "Grouped"
+                    if unit in busy_list:
+                        continue
                     best_weight = 0
-                    best_order = Wait(unit)
+                    enemies = unit.nearest_enemies()
+                    best_order = Wait
                     for tactic in self.tactics_methods:
                         weight, order = tactic(unit)
                         if weight > best_weight:
                             best_weight = weight
                             best_order = order
+                            best_tactic_name = tactic
+                    if best_weight > 20:
+                        print(f"[{unit.name}] -> {best_tactic_name} (Poids: {best_weight}) -> {best_order}")
                     unit.order = best_order
             case self.Strategy.DEFENSIVE:
                 for unit in self.battle_model.get_army(self):

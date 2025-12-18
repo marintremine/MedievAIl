@@ -100,7 +100,7 @@ body {
                 <div class="unit_card {{color}}">
                     <div>
                         <strong>{{ unit.name }}</strong><br>
-                        Pos: ({{unit.x}}, {{unit.y}})<br>
+                        Pos: ({{ "%.2f"|format(unit.x) }}, {{ "%.2f"|format(unit.y) }})<br>
                         Order : {{ unit.order }}<br>
                         Cooldown : 
                         {% if unit.current_reload_time <= 0 %}

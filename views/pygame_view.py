@@ -11,7 +11,7 @@ import json
 
 MINIMAP_SIZE = (300,150)
 MINIMAP_SCALE =  (MINIMAP_SIZE[0]*MINIMAP_SIZE[1])/(PYGAME_WIN[0]*PYGAME_WIN[1])
-LIST_UNITS = ["Pikeman","Crossbowman","Knight"]
+LIST_UNITS = ["Pikeman","Crossbowman","Knight","Longsword"]
 LIST_OBSTACLES = ["Bush","Rock","Tree"]
 
 switchOrientation = {
@@ -398,6 +398,7 @@ class PygameView(BattleView):
         """MAP constructor"""
         self.map = pygame.Surface((self.MAP_DIAG_W * self.SCALE, self.MAP_DIAG_H * self.SCALE))
         self.map.fill((0,0,0))
+
         points = [self.convertCartToIso((pos_x, pos_y)),
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y)),
               self.convertCartToIso((pos_x+self.MAP_WIDTH, pos_y+self.MAP_HEIGHT)),
@@ -505,4 +506,3 @@ class PygameView(BattleView):
             if tmpPos is not None:
                 self.mapX = ((self.window.get_width()/2) - (tmpPos[0]*(self.ZOOM)))
                 self.mapY =  ((self.window.get_height()/2) - (tmpPos[1]*self.ZOOM))
-                print((self.window.get_width()/2 + self.mapX, self.window.get_height()/2 + self.mapY))
