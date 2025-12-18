@@ -168,8 +168,8 @@ class miniMap(pygame.sprite.Sprite):
         self.scale_x = MINIMAP_SIZE[0] / self.pygamesSim.window.get_size()[0]
         self.scale_y = MINIMAP_SIZE[1] / self.pygamesSim.window.get_size()[1]
 
-        self.scaleMap_x = MINIMAP_SIZE[0] / (self.pygamesSim.MAP_DIAG_W * self.pygamesSim.SCALE)
-        self.scaleMap_y = MINIMAP_SIZE[0] / (self.pygamesSim.MAP_DIAG_H * self.pygamesSim.SCALE)
+        self.scaleMap_x = MINIMAP_SIZE[0] / (self.pygamesSim.MAP_DIAG_W)
+        self.scaleMap_y = MINIMAP_SIZE[0] / (self.pygamesSim.MAP_DIAG_H)
 
     def update(self):
         """Update the minimap"""
@@ -236,16 +236,7 @@ class miniMap(pygame.sprite.Sprite):
 
     def mapTouch(self, pos):
         """Calculate the position of the touch on the minimap"""
-        windowX = self.pygamesSim.window.get_width()
-        coordX = pos[0] - (windowX - MINIMAP_SIZE[0])
-        coordY = pos[1]
 
-        if ((windowX - MINIMAP_SIZE[0]) <= pos[0] <= windowX and
-                pos[1] <= MINIMAP_SIZE[1]):
-
-            return [coordX / self.scale_x, coordY / self.scale_y]
-        else:
-            return None
 
     def convertPos(self, pos):
         """Convert cartesian coordinates to isometric coordinates"""
@@ -554,5 +545,6 @@ class PygameView(BattleView):
         if self.miniMap.visible:
             tmpPos = self.miniMap.mapTouch(pos)
             if tmpPos is not None:
-                self.mapX = ((self.window.get_width()/2) - (tmpPos[0] * self.ZOOM))
-                self.mapY =  ((self.window.get_height()/2) - (tmpPos[1] * self.ZOOM))
+                self.mapX = ((self.window.get_width()/2) - (tmpPos[0] ))
+                self.mapY = ((self.window.get_height()/2) - (tmpPos[1] ))
+            print(self.mapX,self.mapY)
