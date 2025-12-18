@@ -98,29 +98,6 @@ class Tournament:
         ensure_key(sg, winner, 0)
         sg[winner] += 1
 
-    # def run_sequential(self):
-    #     for scenario_path in self.scenarios:
-    #         for i in range(len(self.generals)):
-    #             for j in range(i + 1, len(self.generals)):
-    #                 gen1 = self.generals[i]
-    #                 gen2 = self.generals[j]
-
-    #                 for r in range(self.number_of_rounds):
-
-    #                     # alterner les positions
-    #                     g1 = gen1 if r % 2 == 0 else gen2
-    #                     g2 = gen2 if r % 2 == 0 else gen1
-
-    #                     battle = Battle(
-    #                         g1, g2, scenario_path,
-    #                         model=self.model,
-    #                         controller=self.controller,
-    #                     )
-    #                     winner = battle.run()
-    #                     self._update_scores(gen1, gen2, scenario_path, winner)
-
-    #     self.generate_html()
-
     def run_sequential(self):
         print("Sequential tournament started")
 
