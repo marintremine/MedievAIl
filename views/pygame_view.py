@@ -212,30 +212,27 @@ class miniMap(pygame.sprite.Sprite):
                     pygame.draw.circle(tmpSurf, u.color, self.convertPos((u.mapX, u.mapY)), 3)
 
         self.image.blit(tmpSurf, tmprect)
-        # Create the windows frame on the minimap
 
-
-        # tmpSurf = pygame.Surface(
-        #     (((windowX * self.scale_x) / (self.pygamesSim.ZOOM * self.pygamesSim.SCALE)) + self.width,
-        #      ((windowY * self.scale_y) / (self.pygamesSim.ZOOM * self.pygamesSim.SCALE)) + self.width)).convert_alpha()
-        # tmpSurf.fill((0, 0, 0, 0))
-        #
-        # # points = [(0, 0),
-        # #           (((windowX * self.scale_x) / (self.pygamesSim.ZOOM * self.pygamesSim.SCALE)), 0),
-        # #           (((windowX * self.scale_x) / (self.pygamesSim.ZOOM * self.pygamesSim.SCALE)),
-        # #            ((windowY * self.scale_y) / (self.pygamesSim.ZOOM * self.pygamesSim.SCALE))),
-        # #           (0, ((windowY * self.scale_y) / (self.pygamesSim.ZOOM * self.pygamesSim.SCALE)))]
-        #
-        # tpm = pygame.Rect(pos_x,pos_y,(windowX * self.scale_x)/(self.pygamesSim.ZOOM*self.pygamesSim.SCALE)  ,(windowY * self.scale_y)/(self.pygamesSim.ZOOM*self.pygamesSim.SCALE))
-        # pygame.draw.rect(self.image, (255, 255, 255),tpm,width=2)
-        # # pygame.draw.polygon(tmpSurf, (255, 255, 255), points, width=self.width)
-        # rect = tmpSurf.get_rect(
-        #     center=((pos_x * self.scale_x) + MINIMAP_SIZE[0] / 2, (pos_y * self.scale_y) + MINIMAP_SIZE[1] / 2))
-        #
-        # self.image.blit(tmpSurf, rect)
 
     def mapTouch(self, pos):
         """Calculate the position of the touch on the minimap"""
+        if not self.visible:
+            return None
+
+        # Position relative au coin haut-gauche de la minimap
+        local_x = pos[0] - self.rect.left
+        local_y = pos[1] - self.rect.top
+
+        # Vérifie que le clic est bien dans la minimap
+        if local_x < 0 or local_y < 0 or local_x > MINIMAP_SIZE[0] or local_y > MINIMAP_SIZE[1]:
+            return None
+
+        # Conversion inverse iso -> carte (approximation suffisante)
+        map_x = (local_x / MINIMAP_SIZE[0]) * self.pygamesSim.MAP_WIDTH
+        map_y = (local_y / MINIMAP_SIZE[1]) * self.pygamesSim.MAP_HEIGHT
+
+        return (map_x, map_y)
+
 
 
     def convertPos(self, pos):
@@ -541,10 +538,21 @@ class PygameView(BattleView):
     #     if self.ZOOM > 0.5:
     #         self.ZOOM -= 0.5
 
-    def moveMinimap(self,pos):
-        if self.miniMap.visible:
-            tmpPos = self.miniMap.mapTouch(pos)
-            if tmpPos is not None:
-                self.mapX = ((self.window.get_width()/2) - (tmpPos[0] ))
-                self.mapY = ((self.window.get_height()/2) - (tmpPos[1] ))
-            print(self.mapX,self.mapY)
+    def moveMinimap(self, pos):
+        """Move camera using minimap click"""
+
+        if not self.miniMap.visible:
+            return
+
+        target = self.miniMap.mapTouch(pos)
+        if target is None:
+            return
+
+        map_x, map_y = target
+
+        # Conversion carte -> iso
+        iso_x, iso_y = self.convertCartToIso((map_x, map_y))
+
+        # Centrage caméra
+        self.mapX = self.window.get_width() // 2 - iso_x
+        self.mapY = self.window.get_height() // 2 - iso_y
